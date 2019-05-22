@@ -50,7 +50,20 @@ public:
             m_end{end}
     {}
 
-    Sequence skip(const size_t offset) const
+    Sequence &skip(const size_t offset)
+    {
+        for (size_t i = 0; i < offset; ++i)
+        {
+            ++m_begin;
+            if (m_begin == end())
+            {
+                break;
+            }
+        }
+        return *this;
+    }
+
+    Sequence skipped(const size_t offset) const
     {
         auto iter = begin();
 
@@ -262,18 +275,12 @@ public:
 
     /// Returns the current first iteration of the sequence.
     /// Shrinks the sequence to right.
-    Iter next()
+    /// This must not be called on an empty sequence.
+    value_type next()
     {
-        if (begin() != end())
-        {
-            auto iter{begin()};
-            ++m_begin;
-            return iter;
-        }
-        else
-        {
-            return end();
-        }
+        auto iter{begin()};
+        ++m_begin;
+        return *iter;
     }
 
     /// Returns the value of the first sequence element.

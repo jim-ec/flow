@@ -4,6 +4,8 @@
 
 #include <cstring>
 #include <vector>
+#include <string>
+#include <sstream>
 
 #include "sequences/sequence.h"
 #include "sequences/mutation.h"
@@ -23,10 +25,10 @@ TEST_CASE("Sub-sequences")
     auto sequence = makeSequence(v);
 
     REQUIRE(sequence.count() == 6);
-    REQUIRE(sequence.skip(2).count() == 4);
+    REQUIRE(sequence.skipped(2).count() == 4);
     REQUIRE(sequence.range(3).count() == 3);
-    REQUIRE(sequence.skip(1).range(3).count() == 3);
-    REQUIRE(sequence.range(3).skip(1).count() == 2);
+    REQUIRE(sequence.skipped(1).range(3).count() == 3);
+    REQUIRE(sequence.range(3).skipped(1).count() == 2);
 }
 
 TEST_CASE("Empty sequences")
@@ -60,12 +62,12 @@ TEST_CASE("Iteration")
     std::vector<int> v{1, 2, 3, 4, 5};
     auto sequence = makeSequence(v);
 
-    REQUIRE(*sequence.next() == 1);
-    REQUIRE(*sequence.next() == 2);
-    REQUIRE(*sequence.next() == 3);
-    REQUIRE(*sequence.next() == 4);
-    REQUIRE(*sequence.next() == 5);
-    REQUIRE(sequence.next() == sequence.end());
+    REQUIRE(sequence.next() == 1);
+    REQUIRE(sequence.next() == 2);
+    REQUIRE(sequence.next() == 3);
+    REQUIRE(sequence.next() == 4);
+    REQUIRE(sequence.next() == 5);
+    REQUIRE(sequence.empty());
 }
 
 TEST_CASE("Mapping")
@@ -73,12 +75,12 @@ TEST_CASE("Mapping")
     std::vector<int> v{1, 2, 3, 4, 5};
     auto sequence = makeSequence(v).map<int>([](int n) { return n * n; });
 
-    REQUIRE(*sequence.next() == 1);
-    REQUIRE(*sequence.next() == 4);
-    REQUIRE(*sequence.next() == 9);
-    REQUIRE(*sequence.next() == 16);
-    REQUIRE(*sequence.next() == 25);
-    REQUIRE(sequence.next() == sequence.end());
+    REQUIRE(sequence.next() == 1);
+    REQUIRE(sequence.next() == 4);
+    REQUIRE(sequence.next() == 9);
+    REQUIRE(sequence.next() == 16);
+    REQUIRE(sequence.next() == 25);
+    REQUIRE(sequence.empty());
 }
 
 TEST_CASE("Filtering")
@@ -88,10 +90,10 @@ TEST_CASE("Filtering")
         return n % 2 == 0;
     });
 
-    REQUIRE(*sequence.next() == 2);
-    REQUIRE(*sequence.next() == 4);
-    REQUIRE(*sequence.next() == 6);
-    REQUIRE(sequence.next() == sequence.end());
+    REQUIRE(sequence.next() == 2);
+    REQUIRE(sequence.next() == 4);
+    REQUIRE(sequence.next() == 6);
+    REQUIRE(sequence.empty());
 }
 
 TEST_CASE("Zipping")
@@ -101,11 +103,11 @@ TEST_CASE("Zipping")
 
     auto sequence = makeSequence(v).zip(makeSequence(w));
 
-    REQUIRE(makePair(1, 'a') == *sequence.next());
-    REQUIRE(makePair(2, 'b') == *sequence.next());
-    REQUIRE(makePair(3, 'c') == *sequence.next());
-    REQUIRE(makePair(4, 'd') == *sequence.next());
-    REQUIRE(sequence.next() == sequence.end());
+    REQUIRE(makePair(1, 'a') == sequence.next());
+    REQUIRE(makePair(2, 'b') == sequence.next());
+    REQUIRE(makePair(3, 'c') == sequence.next());
+    REQUIRE(makePair(4, 'd') == sequence.next());
+    REQUIRE(sequence.empty());
 }
 
 TEST_CASE("Inspecting")
@@ -145,10 +147,10 @@ TEST_CASE("Mutation sequence")
         return n * n;
     });
 
-    REQUIRE(*sequence.next() == 2);
-    REQUIRE(*sequence.next() == 4);
+    REQUIRE(sequence.next() == 2);
+    REQUIRE(sequence.next() == 4);
     REQUIRE(*sequence == 16);
-    REQUIRE(*sequence.skip(2) == 1u << 16u);
+    REQUIRE(*sequence.skipped(2) == 1u << 16u);
     REQUIRE(counter == 4);
 }
 
@@ -157,11 +159,11 @@ TEST_CASE("Finite mutation")
     auto sequence = makeMutation(1, [](int n) {
         return 2 * n;
     }).range(4);
-    REQUIRE(*sequence.next() == 1);
-    REQUIRE(*sequence.next() == 2);
-    REQUIRE(*sequence.next() == 4);
-    REQUIRE(*sequence.next() == 8);
-    REQUIRE(sequence.next() == sequence.end());
+    REQUIRE(sequence.next() == 1);
+    REQUIRE(sequence.next() == 2);
+    REQUIRE(sequence.next() == 4);
+    REQUIRE(sequence.next() == 8);
+    REQUIRE(sequence.empty());
 }
 
 TEST_CASE("Skipping over end")
@@ -169,29 +171,38 @@ TEST_CASE("Skipping over end")
     auto sequence = makeMutation(1, [](int n) {
         return 2 * n;
     }).range(1).skip(10);
-    REQUIRE(sequence.next() == sequence.end());
+    REQUIRE(sequence.empty());
 }
 
 TEST_CASE("Combine mapping and filtering")
 {
-    auto sequence = makeMutationLinear()
+    std::vector<int> v{0, 1, 2, 3, 4, 5, 6, 7, 8,
+                       9, 10, 11, 12, 13, 14, 15, 16};
+
+    auto sequence = makeSequence(v)
             .map<int>([](int n) {
                 return n * n;
             })
             .filter([](int n) {
                 return n % 2 == 0;
             })
-            .map<int>([](int n) {
-                return n + 1;
+            .map<std::string>([](int n) {
+                std::stringstream ss;
+                ss << "Number: " << n;
+                return ss.str();
             });
 
-    REQUIRE(*sequence.next() == 0 + 1);
-    REQUIRE(*sequence.next() == 4 + 1);
-    REQUIRE(*sequence.next() == 16 + 1);
-    REQUIRE(*sequence.next() == 36 + 1);
-    REQUIRE(*sequence.next() == 64 + 1);
-    REQUIRE(*sequence.next() == 100 + 1);
-    REQUIRE(*sequence.skip(2) == 256 + 1);
+    // Take first entry and move sequence the next element.
+    REQUIRE(sequence.next() == "Number: 0");
+    REQUIRE(sequence.next() == "Number: 4");
+    REQUIRE(sequence.next() == "Number: 16");
+    REQUIRE(sequence.next() == "Number: 36");
+    REQUIRE(sequence.next() == "Number: 64");
+    REQUIRE(sequence.next() == "Number: 100");
+
+    // Skip 12^2 and 14^2 and move to next element.
+    REQUIRE(sequence.skip(2).next() == "Number: 256");
+    REQUIRE(sequence.empty());
 }
 
 TEST_CASE("Pair mapping")
@@ -223,9 +234,13 @@ TEST_CASE("Sequence of write-through pointers")
         *n = 10;
     });
 
-    REQUIRE(*sequence.next() == &a);
-    REQUIRE(*sequence.next() == &b);
-    REQUIRE(sequence.next() == sequence.end());
+    REQUIRE(a == 1);
+    REQUIRE(b == 2);
+    REQUIRE(sequence.next() == &a);
+    REQUIRE(sequence.next() == &b);
+    REQUIRE(sequence.empty());
+    REQUIRE(a == 10);
+    REQUIRE(b == 10);
 }
 
 TEST_CASE("Copy to other sequence")
@@ -265,12 +280,11 @@ TEST_CASE("Chaining")
 
     auto s3 = s1.chain(s2);
 
-    REQUIRE(0 == *s3.next());
-    REQUIRE(1 == *s3.next());
-    REQUIRE(2 == *s3.next());
-    REQUIRE(3 == *s3.next());
-    REQUIRE(4 == *s3.next());
-    REQUIRE(5 == *s3.next());
-    REQUIRE(s3.end() == s3.next());
+    REQUIRE(0 == s3.next());
+    REQUIRE(1 == s3.next());
+    REQUIRE(2 == s3.next());
+    REQUIRE(3 == s3.next());
+    REQUIRE(4 == s3.next());
+    REQUIRE(5 == s3.next());
+    REQUIRE(s3.empty());
 }
-
