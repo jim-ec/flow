@@ -39,7 +39,7 @@ Currently, the following combinator operations are available and can be chained 
 - `.map(T → R)`: Map a single input argument to an output of any type.
 - `.filter(T → Bool)`: Take only elements for which a predicate function returns true.
 - `.inspect(T → Void)`: Runs a function on each element, without returning new elements. Useful for printing values.
-- `.zip({T})`: Zips to sequences of possibly different types together to sequence of pairs.
+- `.zip({T})`: Zips two sequences of possibly different types together to sequence of pairs.
 - `.map2((T, E) → R)`: Similar to mapping, but the function takes two arguments.
   Works for sequences of pairs, like the ones created by zipping.
   You could use the normal map, but the function would have to accept pairs, and first defining
@@ -49,7 +49,10 @@ Currently, the following combinator operations are available and can be chained 
 - `.skipped(n)`: Like skip, but returns a new sequence instead of modifying the original one.
 - `.range(n)`: Creates a new sequence over the first n elements.
 
-`T`, `E` and `R` are arbitrary type parameters, `{T}` denotes a sequence over elements of the type `T` and n ∈ ℕ.
+Where:
+1) `T`, `E` and `R` are arbitrary type parameters.
+2) `{T}` denotes a sequence over elements of the type `T`.
+3) `n` ∈ ℕ.
 
 Furthermore, the following operations are available.
 
