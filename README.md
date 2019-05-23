@@ -98,7 +98,7 @@ Each sequence contains two iterators, the current iteration element and the end 
 while the end iterator - just as in STL traditions - works like a beyond-the-end marker.
 When combinating new sequences, special iterator classes such as `MapIterator` wrap the
 sequence. The iterator type is not exposed directly, but rather wrapped in a sequence
-to provide a consistent interface.
+so that the resulting sequence can be further piped through combinators.
 
 A sequence does not make any heap allocations. Everything is handled on the stack.
 Sequences are lazily evaluated. This means that a map does not run immediately,
