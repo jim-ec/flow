@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "tools.h"
+#include "sequences/tools.h"
 
 namespace sequences
 {

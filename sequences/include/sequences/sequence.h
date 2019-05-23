@@ -4,14 +4,14 @@
 
 #pragma once
 
-#include "map.h"
-#include "map2.h"
-#include "filter.h"
-#include "zip.h"
-#include "discrete_range.h"
-#include "chain.h"
-#include "inspect.h"
-#include "flatten.h"
+#include "sequences/combinators/map.h"
+#include "sequences/combinators/map2.h"
+#include "sequences/combinators/filter.h"
+#include "sequences/combinators/zip.h"
+#include "sequences/combinators/discrete_range.h"
+#include "sequences/combinators/chain.h"
+#include "sequences/combinators/inspect.h"
+#include "sequences/combinators/flatten.h"
 
 namespace sequences
 {
