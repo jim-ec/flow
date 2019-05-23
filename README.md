@@ -8,7 +8,7 @@ std::vector<int> v{0, 1, 2, 3, 4, 5, 6, 7, 8,
 
 // Square all numbers, then take only the even one
 // and put them into a string.
-auto sequence = makeSequence(v)
+auto sequence = make_sequence(v)
         .map<int>([](int n) { return n * n; })
         .filter([](int n) { return n % 2 == 0; })
         .map<std::string>([](int n) {
@@ -71,20 +71,20 @@ The predefined linear mutation generates values of a linear function.
 For example, this sequence yields all numbers from 0 to 999, without actually putting 1000 values into memory:
 
 ```c++
-auto s = makeMutationLinear().range(1000); // 0, 1, 2, ..., 999
+auto s = make_mutation_linear().range(1000); // 0, 1, 2, ..., 999
 ```
 
 Of course, the attempt to iterate over all elements of a mutation leads inherently to an infinite loop:
 
 ```c++
-for(auto n : makeMutationLinear())
+for(auto n : make_mutation_linear())
 {
     printf("%d\n", n); // Prints 0, 1, 2, 3, .... unfinitely
 }
 ```
 
-You can provide own mutations by using `makeMutation()`.
-The `makeMutation()` and `makeMutationLinear()` function actually not only creates a mutation
+You can provide own mutations by using `make_mutation()`.
+The `make_mutation()` and `make_mutation_linear()` function actually not only creates a mutation
 but also wraps it in a sequence.
 
 ## Integrity
@@ -116,7 +116,7 @@ This gives additional flexibility.
 
 ```c++
 std::vector<int> v{1, 2, 3};
-auto s = makeSequence(v)
+auto s = make_sequence(v)
         .inspect([](int &n) { n += 10; });
 
 // Original values.

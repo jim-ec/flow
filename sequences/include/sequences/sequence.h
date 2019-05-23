@@ -21,10 +21,10 @@ class Sequence;
 
 /// Creates a sequence from a collection defining a @a begin() and @a end() function.
 template<class C>
-Sequence<typename C::iterator> makeSequence(C &c);
+Sequence<typename C::iterator> make_sequence(C &c);
 
 template<class Iter>
-const Sequence<Iter> makeSequence(
+const Sequence<Iter> make_sequence(
         const Iter &begin,
         const Iter &end
 );
@@ -72,18 +72,18 @@ public:
             ++iter;
             if (iter == end())
             {
-                return makeSequence(end(), end());
+                return make_sequence(end(), end());
             }
         }
 
-        return makeSequence(iter, end());
+        return make_sequence(iter, end());
     }
 
     Sequence<DiscreteRangeIterator<Iter>> range(const size_t count) const
     {
-        return makeSequence(
-                makeDiscreteSequence(m_begin, 0),
-                makeDiscreteSequence(m_end, count)
+        return make_sequence(
+                make_discrete_range_iter(m_begin, 0),
+                make_discrete_range_iter(m_end, count)
         );
     }
 
@@ -148,7 +148,7 @@ public:
 
     /// Returns the last element.
     /// Must not be called if the sequence is empty.
-    value_type lastElement() const
+    value_type last_element() const
     {
         auto iter = begin();
         while (iter + 1 != end())
@@ -163,9 +163,9 @@ public:
             const Sequence<IterRhs> &rhs
     ) const
     {
-        return makeSequence(
-                makeZipSequence(begin(), rhs.begin()),
-                makeZipSequence(end(), rhs.end())
+        return make_sequence(
+                make_zip_iter(begin(), rhs.begin()),
+                make_zip_iter(end(), rhs.end())
         );
     }
 
@@ -174,9 +174,9 @@ public:
             F function
     ) const
     {
-        return makeSequence(
-                makeMapSequence<R>(m_begin, function),
-                makeMapSequence<R>(m_end, function)
+        return make_sequence(
+                make_map_iter<R>(m_begin, function),
+                make_map_iter<R>(m_end, function)
         );
     }
 
@@ -185,18 +185,18 @@ public:
             F function
     ) const
     {
-        return makeSequence(
-                makeMap2Sequence<R>(begin(), function),
-                makeMap2Sequence<R>(end(), function)
+        return make_sequence(
+                make_map2_iter<R>(begin(), function),
+                make_map2_iter<R>(end(), function)
         );
     }
 
     template<class F>
     Sequence<InspectIterator<Iter, F>> inspect(F function) const
     {
-        return makeSequence(
-                makeInspectSequence(m_begin, function),
-                makeInspectSequence(m_end, function)
+        return make_sequence(
+                make_inspect_iter(m_begin, function),
+                make_inspect_iter(m_end, function)
         );
     }
 
@@ -205,9 +205,9 @@ public:
             Sequence<IterRhs> &rhs
     )
     {
-        return makeSequence(
-                makeChainSequence(begin(), end(), rhs.begin()),
-                makeChainSequence(end(), end(), rhs.end(), rhs.begin())
+        return make_sequence(
+                make_chain_iter(begin(), end(), rhs.begin(), rhs.begin()),
+                make_chain_iter(end(), end(), rhs.end(), rhs.begin())
         );
     }
 
@@ -216,15 +216,15 @@ public:
             F function
     ) const
     {
-        return makeSequence(
-                makeFilterSequence(m_begin, m_end, function),
-                makeFilterSequence(m_end, m_end, function)
+        return make_sequence(
+                make_filter_iter(m_begin, m_end, function),
+                make_filter_iter(m_end, m_end, function)
         );
     }
 
 //				decltype(auto) flatten() const
 //				{
-//					return makeSequence(
+//					return make_sequence(
 //
 //							);
 //				}
@@ -304,7 +304,7 @@ public:
     }
 
     template<class C>
-    void emplaceTo(C &c)
+    void emplace_to(C &c)
     {
         for (const value_type &el : *this)
         {
@@ -315,7 +315,7 @@ public:
 };
 
 template<class Iter>
-const Sequence<Iter> makeSequence(
+const Sequence<Iter> make_sequence(
         const Iter &begin,
         const Iter &end
 )
@@ -324,9 +324,9 @@ const Sequence<Iter> makeSequence(
 }
 
 template<class C>
-Sequence<typename C::iterator> makeSequence(C &c)
+Sequence<typename C::iterator> make_sequence(C &c)
 {
-    return makeSequence(c.begin(), c.end());
+    return make_sequence(c.begin(), c.end());
 }
 
 }

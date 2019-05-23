@@ -96,17 +96,16 @@ public:
 };
 
 template<class T, class F>
-Sequence <Mutation<T, F>>
-makeMutation(T &&init, F f)
+Sequence <Mutation<T, F>> make_mutation(T &&init, F f)
 {
     Mutation<T, F> mutation{std::forward<T>(init), f};
-    return makeSequence(mutation, mutation);
+    return make_sequence(mutation, mutation);
 }
 
 template<class T = int>
-decltype(auto) makeMutationLinear(T &&init = T{0}, T step = T{1})
+decltype(auto) make_mutation_linear(T &&init = T{0}, T step = T{1})
 {
-    return makeMutation(std::forward<T>(init), [step](T n) { return n + step; });
+    return make_mutation(std::forward<T>(init), [step](T n) { return n + step; });
 }
 
 }

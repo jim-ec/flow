@@ -19,9 +19,9 @@ public:
 private:
 
     Iter m_iter; // while flattening, this does not get ended
-    Iter m_currentEnd;
-    F m_nextBegin;
-    G m_nextEnd;
+    Iter m_current_end;
+    F m_next_begin;
+    G m_next_end;
 
 public:
 
@@ -30,9 +30,9 @@ public:
             G nextEnd
     ) :
             m_iter{nextBegin()},
-            m_currentEnd{nextEnd()},
-            m_nextBegin{nextBegin},
-            m_nextEnd{nextEnd}
+            m_current_end{nextEnd()},
+            m_next_begin{nextBegin},
+            m_next_end{nextEnd}
     {
     }
 
@@ -43,9 +43,9 @@ public:
             G nextEnd
     ) :
             m_iter{iter},
-            m_currentEnd{currentEnd},
-            m_nextBegin{nextBegin},
-            m_nextEnd{nextEnd}
+            m_current_end{currentEnd},
+            m_next_begin{nextBegin},
+            m_next_end{nextEnd}
     {
     }
 
@@ -62,17 +62,17 @@ public:
     FlattenIterator &operator++()
     {
         ++m_iter;
-        if (m_iter == m_currentEnd)
+        if (m_iter == m_current_end)
         {
-            m_iter = m_nextBegin();
-            m_currentEnd = m_nextEnd();
+            m_iter = m_next_begin();
+            m_current_end = m_next_end();
         }
         return *this;
     }
 
     FlattenIterator operator+(const size_t offset) const
     {
-        FlattenIterator result{m_iter, m_currentEnd, m_nextBegin, m_nextEnd};
+        FlattenIterator result{m_iter, m_current_end, m_next_begin, m_next_end};
         for (size_t i = 0; i < offset; i++)
         {
             ++result;
@@ -91,27 +91,4 @@ public:
     }
 };
 
-template<class F, class G, class Iter>
-FlattenIterator<F, G, Iter>
-makeChainSequence(
-        F nextBegin,
-        G nextEnd
-)
-{
-    return FlattenIterator<F, G, Iter>{nextBegin, nextEnd};
 }
-
-template<class F, class G, class Iter>
-FlattenIterator<F, G, Iter>
-makeChainSequence(
-        const Iter &iter,
-        const Iter &currentEnd,
-        F nextBegin,
-        G nextEnd
-)
-{
-    return FlattenIterator<F, G, Iter>{iter, currentEnd, nextBegin, nextEnd};
-}
-
-}
-

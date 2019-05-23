@@ -15,85 +15,73 @@ namespace sequences
 template<class IterFirst, class IterSecond>
 class ChainIterator
 {
-    IterFirst m_first;
-    IterFirst m_end;
-    IterSecond m_second;
-    IterSecond m_begin;
+    IterFirst m_first_iter;
+    IterFirst m_first_end;
+    IterSecond m_second_iter;
+    IterSecond m_second_begin;
 
 public:
 
     using value_type = typename IterFirst::value_type;
 
     ChainIterator(
-            const IterFirst &first,
-            const IterFirst &end,
-            const IterSecond &begin
+            const IterFirst &first_iter,
+            const IterFirst &first_end,
+            const IterSecond &second_iter,
+            const IterSecond &second_begin
     ) :
-            m_first{first},
-            m_end{end},
-            m_second{begin},
-            m_begin{begin}
+            m_first_iter{first_iter},
+            m_first_end{first_end},
+            m_second_iter{second_iter},
+            m_second_begin{second_begin}
     {
     }
 
-    ChainIterator(
-            const IterFirst &first,
-            const IterFirst &end,
-            const IterSecond &second,
-            const IterSecond &begin
-    ) :
-            m_first{first},
-            m_end{end},
-            m_second{second},
-            m_begin{begin}
+    bool left_iter_is_valid() const
     {
-    }
-
-    bool leftIterIsValid() const
-    {
-        return m_first != m_end;
+        return m_first_iter != m_first_end;
     }
 
     value_type &operator*()
     {
-        if (leftIterIsValid())
+        if (left_iter_is_valid())
         {
-            return *m_first;
+            return *m_first_iter;
         }
         else
         {
-            return *m_second;
+            return *m_second_iter;
         }
     }
 
     const value_type &operator*() const
     {
-        if (leftIterIsValid())
+        if (left_iter_is_valid())
         {
-            return *m_first;
+            return *m_first_iter;
         }
         else
         {
-            return *m_second;
+            return *m_second_iter;
         }
     }
 
     ChainIterator &operator++()
     {
-        if (leftIterIsValid())
+        if (left_iter_is_valid())
         {
-            ++m_first;
+            ++m_first_iter;
         }
         else
         {
-            ++m_second;
+            ++m_second_iter;
         }
         return *this;
     }
 
     ChainIterator operator+(const size_t offset) const
     {
-        ChainIterator result{m_first, m_end, m_second, m_begin};
+        ChainIterator result{m_first_iter, m_first_end, m_second_iter, m_second_begin};
         for (size_t i = 0; i < offset; i++)
         {
             ++result;
@@ -103,7 +91,7 @@ public:
 
     bool operator==(const ChainIterator &rhs) const
     {
-        return m_first == rhs.m_first && m_second == rhs.m_second;
+        return m_first_iter == rhs.m_first_iter && m_second_iter == rhs.m_second_iter;
     }
 
     bool operator!=(const ChainIterator &rhs) const
@@ -113,26 +101,14 @@ public:
 };
 
 template<class IterLeft, class IterRight>
-ChainIterator<IterLeft, IterRight>
-makeChainSequence(
-        const IterLeft &first,
-        const IterLeft &end,
-        const IterRight &begin
+ChainIterator<IterLeft, IterRight> make_chain_iter(
+        const IterLeft &first_iter,
+        const IterLeft &first_end,
+        const IterRight &second_iter,
+        const IterRight &second_begin
 )
 {
-    return ChainIterator<IterLeft, IterRight>{first, end, begin};
-}
-
-template<class IterLeft, class IterRight>
-ChainIterator<IterLeft, IterRight>
-makeChainSequence(
-        const IterLeft &first,
-        const IterLeft &end,
-        const IterRight &second,
-        const IterRight &begin
-)
-{
-    return ChainIterator<IterLeft, IterRight>{first, end, second, begin};
+    return ChainIterator<IterLeft, IterRight>{first_iter, first_end, second_iter, second_begin};
 }
 
 }

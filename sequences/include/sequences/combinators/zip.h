@@ -35,13 +35,13 @@ public:
 
     const value_type &operator*() const
     {
-        m_cache = makePair(&*m_left, &*m_right);
+        m_cache = make_pair(&*m_left, &*m_right);
         return m_cache;
     }
 
     value_type &operator*()
     {
-        m_cache = makePair(&*m_left, &*m_right);
+        m_cache = make_pair(&*m_left, &*m_right);
         return m_cache;
     }
 
@@ -70,8 +70,7 @@ public:
 };
 
 template<class IterLeft, class IterRight>
-const ZipIterator<IterLeft, IterRight>
-makeZipSequence(
+const ZipIterator<IterLeft, IterRight> make_zip_iter(
         const IterLeft &left,
         const IterRight &right
 )

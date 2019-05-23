@@ -70,7 +70,7 @@ public:
 };
 
 template<class R, class Iter, class F>
-MapIterator<R, Iter, F> makeMapSequence(
+MapIterator<R, Iter, F> make_map_iter(
         const Iter &iter,
         F f
 )

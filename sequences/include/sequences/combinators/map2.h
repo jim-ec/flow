@@ -14,8 +14,6 @@ class Map2Iterator
 public:
     using value_type = R;
     using pair_type = typename Iter::value_type;
-//				using pair_type_left = typename Iter::value_type_left;
-//				using pair_type_right = typename Iter::value_type_right;
 
 private:
     Iter m_iter;
@@ -75,7 +73,7 @@ public:
 };
 
 template<class R, class Iter, class F>
-Map2Iterator<R, Iter, F> makeMap2Sequence(
+Map2Iterator<R, Iter, F> make_map2_iter(
         const Iter &iter,
         F f
 )

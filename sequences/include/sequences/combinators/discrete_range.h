@@ -44,9 +44,9 @@ public:
         return *this;
     }
 
-    DiscreteRangeIterator<Iter> operator+(const size_t offset) const
+    DiscreteRangeIterator operator+(const size_t offset) const
     {
-        DiscreteRangeIterator<Iter> result{m_iter, m_index};
+        DiscreteRangeIterator result{m_iter, m_index};
         for (size_t i = 0; i < offset; i++)
         {
             ++result;
@@ -66,7 +66,7 @@ public:
 };
 
 template<class Iter>
-DiscreteRangeIterator<Iter> makeDiscreteSequence(
+DiscreteRangeIterator<Iter> make_discrete_range_iter(
         const Iter &iter,
         const size_t index
 )

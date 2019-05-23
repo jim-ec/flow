@@ -76,9 +76,9 @@ public:
         return *this;
     }
 
-    FilterIterator<Iter, F> operator+(const size_t offset) const
+    FilterIterator operator+(const size_t offset) const
     {
-        FilterIterator<Iter, F> result{m_iter, m_function};
+        FilterIterator result{m_iter, m_function};
         for (size_t i = 0; i < offset; i++)
         {
             ++result;
@@ -98,7 +98,7 @@ public:
 };
 
 template<class Iter, class F>
-FilterIterator<Iter, F> makeFilterSequence(
+FilterIterator<Iter, F> make_filter_iter(
         const Iter &begin,
         const Iter &end,
         F f

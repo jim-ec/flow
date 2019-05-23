@@ -71,7 +71,7 @@ public:
 };
 
 template<class Iter, class F>
-InspectIterator<Iter, F> makeInspectSequence(
+InspectIterator<Iter, F> make_inspect_iter(
         const Iter &iter,
         F f
 )

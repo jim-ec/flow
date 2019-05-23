@@ -51,7 +51,7 @@ struct Pair
 };
 
 template<class T, class U>
-Pair<T, U> makePair(T a,U b)
+Pair<T, U> make_pair(T a, U b)
 {
     return Pair<T, U>{a, b};
 }

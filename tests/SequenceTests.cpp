@@ -15,14 +15,14 @@ using namespace sequences;
 TEST_CASE("Counting")
 {
     std::vector<int> v{1, 2, 3, 4, 3, 2, 1};
-    auto sequence = makeSequence(v);
+    auto sequence = make_sequence(v);
     REQUIRE(sequence.count() == v.size());
 }
 
 TEST_CASE("Sub-sequences")
 {
     std::vector<int> v{1, 2, 3, 4, 5, 6};
-    auto sequence = makeSequence(v);
+    auto sequence = make_sequence(v.begin(), v.end());
 
     REQUIRE(sequence.count() == 6);
     REQUIRE(sequence.skipped(2).count() == 4);
@@ -34,7 +34,7 @@ TEST_CASE("Sub-sequences")
 TEST_CASE("Empty sequences")
 {
     std::vector<int> v{1, 2, 3, 4, 5, 6};
-    auto sequence = makeSequence(v).range(0);
+    auto sequence = make_sequence(v).range(0);
 
     REQUIRE(sequence.count() == 0);
     REQUIRE(sequence.empty());
@@ -43,7 +43,7 @@ TEST_CASE("Empty sequences")
 TEST_CASE("Containment")
 {
     std::vector<int> v{1, 2, 3, 4, 5, 6};
-    auto sequence = makeSequence(v);
+    auto sequence = make_sequence(v);
 
     REQUIRE(sequence.contains(4));
     REQUIRE(!sequence.contains(0));
@@ -52,15 +52,15 @@ TEST_CASE("Containment")
 TEST_CASE("Last")
 {
     std::vector<int> v{1, 2, 3, 4, 5, 6};
-    auto sequence = makeSequence(v);
+    auto sequence = make_sequence(v);
 
-    REQUIRE(sequence.lastElement() == 6);
+    REQUIRE(sequence.last_element() == 6);
 }
 
 TEST_CASE("Iteration")
 {
     std::vector<int> v{1, 2, 3, 4, 5};
-    auto sequence = makeSequence(v);
+    auto sequence = make_sequence(v);
 
     REQUIRE(sequence.next() == 1);
     REQUIRE(sequence.next() == 2);
@@ -73,7 +73,7 @@ TEST_CASE("Iteration")
 TEST_CASE("Mapping")
 {
     std::vector<int> v{1, 2, 3, 4, 5};
-    auto sequence = makeSequence(v).map<int>([](int n) { return n * n; });
+    auto sequence = make_sequence(v).map<int>([](int n) { return n * n; });
 
     REQUIRE(sequence.next() == 1);
     REQUIRE(sequence.next() == 4);
@@ -86,7 +86,7 @@ TEST_CASE("Mapping")
 TEST_CASE("Filtering")
 {
     std::vector<int> v{1, 2, 3, 4, 5, 6};
-    auto sequence = makeSequence(v).filter([](int n) {
+    auto sequence = make_sequence(v).filter([](int n) {
         return n % 2 == 0;
     });
 
@@ -101,12 +101,12 @@ TEST_CASE("Zipping")
     std::vector<int> v{1, 2, 3, 4, 5, 6};
     std::vector<char> w{'a', 'b', 'c', 'd'};
 
-    auto sequence = makeSequence(v).zip(makeSequence(w));
+    auto sequence = make_sequence(v).zip(make_sequence(w));
 
-    REQUIRE(makePair(1, 'a') == sequence.next());
-    REQUIRE(makePair(2, 'b') == sequence.next());
-    REQUIRE(makePair(3, 'c') == sequence.next());
-    REQUIRE(makePair(4, 'd') == sequence.next());
+    REQUIRE(make_pair(1, 'a') == sequence.next());
+    REQUIRE(make_pair(2, 'b') == sequence.next());
+    REQUIRE(make_pair(3, 'c') == sequence.next());
+    REQUIRE(make_pair(4, 'd') == sequence.next());
     REQUIRE(sequence.empty());
 }
 
@@ -115,7 +115,7 @@ TEST_CASE("Inspecting")
     std::vector<char> v{'a', 'b', 'c'};
     char buf[4] = {};
     int i = 0;
-    makeSequence(v).inspect([&buf, &i](char &c) {
+    make_sequence(v).inspect([&buf, &i](char &c) {
         buf[i++] = c;
         ++c;
     }).close();
@@ -131,7 +131,7 @@ TEST_CASE("For each")
     std::vector<char> v{'a', 'b', 'c'};
     char buf[4] = {};
     int i = 0;
-    makeSequence(v).forEach([&buf, &i](char c) {
+    make_sequence(v).forEach([&buf, &i](char c) {
         buf[i++] = c;
     });
     REQUIRE(i == 3);
@@ -142,7 +142,7 @@ TEST_CASE("Mutation sequence")
 {
     int counter = 0;
 
-    auto sequence = makeMutation(2, [&counter](int n) {
+    auto sequence = make_mutation(2, [&counter](int n) {
         ++counter;
         return n * n;
     });
@@ -156,7 +156,7 @@ TEST_CASE("Mutation sequence")
 
 TEST_CASE("Finite mutation")
 {
-    auto sequence = makeMutation(1, [](int n) {
+    auto sequence = make_mutation(1, [](int n) {
         return 2 * n;
     }).range(4);
     REQUIRE(sequence.next() == 1);
@@ -168,7 +168,7 @@ TEST_CASE("Finite mutation")
 
 TEST_CASE("Skipping over end")
 {
-    auto sequence = makeMutation(1, [](int n) {
+    auto sequence = make_mutation(1, [](int n) {
         return 2 * n;
     }).range(1).skip(10);
     REQUIRE(sequence.empty());
@@ -179,7 +179,7 @@ TEST_CASE("Combine mapping and filtering")
     std::vector<int> v{0, 1, 2, 3, 4, 5, 6, 7, 8,
                        9, 10, 11, 12, 13, 14, 15, 16};
 
-    auto sequence = makeSequence(v)
+    auto sequence = make_sequence(v)
             .map<int>([](int n) {
                 return n * n;
             })
@@ -207,8 +207,8 @@ TEST_CASE("Combine mapping and filtering")
 
 TEST_CASE("Pair mapping")
 {
-    auto evenNumberSequence = makeMutationLinear(0, 2);
-    auto oddNumberSequence = makeMutationLinear(1, 2);
+    auto evenNumberSequence = make_mutation_linear(0, 2);
+    auto oddNumberSequence = make_mutation_linear(1, 2);
 
     auto numbers = evenNumberSequence
             .zip(oddNumberSequence)
@@ -230,7 +230,7 @@ TEST_CASE("Sequence of write-through pointers")
 
     std::vector<int *> pointers{&a, &b};
 
-    auto sequence = makeSequence(pointers).inspect([](int *n) {
+    auto sequence = make_sequence(pointers).inspect([](int *n) {
         *n = 10;
     });
 
@@ -246,9 +246,9 @@ TEST_CASE("Sequence of write-through pointers")
 TEST_CASE("Copy to other sequence")
 {
     std::vector<int> v;
-    auto sequence = makeMutationLinear().range(3);
-    sequence.emplaceTo(v);
-    sequence.emplaceTo(v);
+    auto sequence = make_mutation_linear().range(3);
+    sequence.emplace_to(v);
+    sequence.emplace_to(v);
 
     REQUIRE(v[0] == 0);
     REQUIRE(v[1] == 1);
@@ -260,7 +260,7 @@ TEST_CASE("Copy to other sequence")
 
 TEST_CASE("Index access")
 {
-    auto sequence = makeMutationLinear(1, 2);
+    auto sequence = make_mutation_linear(1, 2);
 
     int a = sequence[0];
     int b = sequence[1];
@@ -273,8 +273,8 @@ TEST_CASE("Index access")
 
 TEST_CASE("Chaining")
 {
-    auto s1 = makeMutationLinear().range(3);
-    auto s2 = makeMutationLinear().range(3).map<int>([](int n) {
+    auto s1 = make_mutation_linear().range(3);
+    auto s2 = make_mutation_linear().range(3).map<int>([](int n) {
         return n + 3;
     });
 
@@ -292,7 +292,7 @@ TEST_CASE("Chaining")
 TEST_CASE("Mutating underlying elements")
 {
     std::vector<int> v{1, 2, 3};
-    auto s = makeSequence(v)
+    auto s = make_sequence(v)
             .inspect([](int &n) { n += 10; });
 
     REQUIRE(v[0] == 1);
