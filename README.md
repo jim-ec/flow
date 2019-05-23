@@ -59,8 +59,14 @@ Furthermore, the following operations are available.
 - `.forEach(T → Void)`: Runs a function on each element, without returning new elements.
   Unlike `inspect()`, this forces the sequence to immediately iterate over all elements.
 - `.count()`: Counts the elements of the sequence.
+- `.empty()`: Checks if the sequence is empty.
+  Does not dereference the iterators, so no supplied function is actually invoked.
 - `.empty()`: Checks whether a sequences has zero elements.
 - `.next()`: Returns the current element, and moves the sequences start to the next element.
+- `.close()`: Dereferences and increments the begin iterator as long as the sequence is not empty.
+- `.contains(T):` Checks if the sequence contains an element equal to the given one.
+- `.last_element():` Returns the last element of the sequence.
+- `.emplace_to()`: Call the `emplace_back()` function on the given container for each element in the sequence.
 
 The range-based for loop can be used with any sequence to iterate over all elements.
 
