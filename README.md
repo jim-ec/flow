@@ -115,28 +115,25 @@ so the underlying elements can be mutated.
 This gives additional flexibility.
 
 ```c++
-int a = 1;
-int b = 2;
-
-std::vector<int *> pointers{&a, &b};
-
-auto sequence = makeSequence(pointers).inspect([](int *n) {
-    *n = 10;
-});
+std::vector<int> v{1, 2, 3};
+auto s = makeSequence(v)
+        .inspect([](int &n) { n += 10; });
 
 // Original values.
-assert(a == 1);
-assert(b == 2);
+REQUIRE(v[0] == 1);
+REQUIRE(v[1] == 2);
+REQUIRE(v[2] == 3);
 
 // Run inspection function.
-assert(sequence.next() == &a);
-assert(sequence.next() == &b);
-assert(sequence.empty());
+s.close();
 
 // Now the values are mutated.
-assert(a == 10);
-assert(b == 10);
+REQUIRE(v[0] == 11);
+REQUIRE(v[1] == 12);
+REQUIRE(v[2] == 13);
 ```
+
+Of course, the sample would not compile if the vector would be `const`.
 
 ## Hints
 

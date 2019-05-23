@@ -94,10 +94,18 @@ public:
         while (iter != end())
         {
             ++result;
-            *iter;
             ++iter;
         }
         return result;
+    }
+
+    Sequence &close()
+    {
+        while (m_begin != end())
+        {
+            *m_begin;
+            ++m_begin;
+        }
     }
 
     const value_type &operator[](const size_t index) const
@@ -184,7 +192,7 @@ public:
     }
 
     template<class F>
-    decltype(auto) inspect(F function) const
+    Sequence<InspectIterator<Iter, F>> inspect(F function) const
     {
         return makeSequence(
                 makeInspectSequence(m_begin, function),

@@ -118,7 +118,7 @@ TEST_CASE("Inspecting")
     makeSequence(v).inspect([&buf, &i](char &c) {
         buf[i++] = c;
         ++c;
-    }).count();
+    }).close();
     REQUIRE(v[0] == 'b');
     REQUIRE(v[1] == 'c');
     REQUIRE(v[2] == 'd');
@@ -287,4 +287,19 @@ TEST_CASE("Chaining")
     REQUIRE(4 == s3.next());
     REQUIRE(5 == s3.next());
     REQUIRE(s3.empty());
+}
+
+TEST_CASE("Mutating underlying elements")
+{
+    std::vector<int> v{1, 2, 3};
+    auto s = makeSequence(v)
+            .inspect([](int &n) { n += 10; });
+
+    REQUIRE(v[0] == 1);
+    REQUIRE(v[1] == 2);
+    REQUIRE(v[2] == 3);
+    s.close();
+    REQUIRE(v[0] == 11);
+    REQUIRE(v[1] == 12);
+    REQUIRE(v[2] == 13);
 }
