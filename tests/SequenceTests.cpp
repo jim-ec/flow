@@ -131,7 +131,7 @@ TEST_CASE("For each")
     std::vector<char> v{'a', 'b', 'c'};
     char buf[4] = {};
     int i = 0;
-    make_sequence(v).forEach([&buf, &i](char c) {
+    make_sequence(v).for_each([&buf, &i](char c) {
         buf[i++] = c;
     });
     REQUIRE(i == 3);

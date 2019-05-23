@@ -230,7 +230,7 @@ public:
 //				}
 
     template<class F>
-    void forEach(F function) const
+    void for_each(F function) const
     {
         for (const auto &el : *this)
         {

@@ -37,14 +37,14 @@ public:
     {
     }
 
-    bool left_iter_is_valid() const
+    bool first_iter_is_valid() const
     {
         return m_first_iter != m_first_end;
     }
 
     value_type &operator*()
     {
-        if (left_iter_is_valid())
+        if (first_iter_is_valid())
         {
             return *m_first_iter;
         }
@@ -56,7 +56,7 @@ public:
 
     const value_type &operator*() const
     {
-        if (left_iter_is_valid())
+        if (first_iter_is_valid())
         {
             return *m_first_iter;
         }
@@ -68,7 +68,7 @@ public:
 
     ChainIterator &operator++()
     {
-        if (left_iter_is_valid())
+        if (first_iter_is_valid())
         {
             ++m_first_iter;
         }

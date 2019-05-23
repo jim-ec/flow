@@ -56,7 +56,7 @@ Where:
 
 Furthermore, the following operations are available.
 
-- `.forEach(T → Void)`: Runs a function on each element, without returning new elements.
+- `.for_each(T → Void)`: Runs a function on each element, without returning new elements.
   Unlike `inspect()`, this forces the sequence to immediately iterate over all elements.
 - `.count()`: Counts the elements of the sequence.
 - `.empty()`: Checks if the sequence is empty.
