@@ -29,11 +29,6 @@ const Sequence<Iter> make_sequence(
         const Iter &end
 );
 
-/// yet to implement:
-/// - sequence over array
-/// - move
-/// - flatten / flat_map
-/// - inner_product
 template<class Iter>
 class Sequence
 {
