@@ -4,8 +4,6 @@
 
 #pragma once
 
-#include <limits>
-
 #include "tools.h"
 #include "sequence.h"
 
@@ -28,23 +26,14 @@ public:
     F m_function;
     value_type m_carry;
 
-	explicit Mutation(
-			T&& init,
-			F f
-	) :
-		m_function{f},
-		m_carry{std::forward<T>(init)}
-	{
-	}
-
-	explicit Mutation(
-			const T& init,
-			F f
-	) :
-		m_function{f},
-		m_carry{init}
-	{
-	}
+    explicit Mutation(
+            const T &init,
+            F f
+    ) :
+            m_function{f},
+            m_carry{init}
+    {
+    }
 
     Mutation &begin()
     {
@@ -105,16 +94,40 @@ public:
 };
 
 template<class T, class F>
-Sequence <Mutation<T, F>> make_mutation(T &&init, F f)
+Sequence <Mutation<T, F>> make_mutation(const T &init, F f)
 {
-    Mutation<T, F> mutation{std::forward<T>(init), f};
+    Mutation<T, F> mutation{init, f};
     return make_sequence(mutation, mutation);
 }
 
-template<class T = int>
-decltype(auto) make_mutation_linear(T &&init = T{0}, T step = T{1})
+namespace impl
 {
-    return make_mutation(std::forward<T>(init), [step](T n) { return n + step; });
+
+template<class T>
+struct LinearMutation
+{
+    T step;
+
+    LinearMutation(const LinearMutation &rhs) = default;
+
+    LinearMutation(LinearMutation &&rhs) noexcept = default;
+
+    LinearMutation &operator=(const LinearMutation &rhs) = default;
+
+    LinearMutation &operator=(LinearMutation &&rhs) noexcept = default;
+
+    int operator()(int n)
+    {
+        return n + step;
+    }
+};
+
+}
+
+template<class T = int>
+Sequence <Mutation<T, impl::LinearMutation<T>>> make_mutation_linear(const T &init = T{0}, const T &step = T{1})
+{
+    return make_mutation(init, impl::LinearMutation<T>{step});
 }
 
 }
