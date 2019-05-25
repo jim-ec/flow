@@ -8,6 +8,7 @@
 
 namespace sequences
 {
+// The function's return type must be default constructable and assignable.
 template<class Iter, class F>
 class MapIterator
 {

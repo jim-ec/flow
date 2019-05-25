@@ -40,6 +40,13 @@ public:
 
     using value_type = typename Iter::value_type;
 
+    Sequence() = default;
+    Sequence(const Sequence &rhs) = default;
+    Sequence(Sequence &&rhs) noexcept = default;
+
+    Sequence &operator=(const Sequence &rhs) = default;
+    Sequence &operator=(Sequence &&rhs) noexcept = default;
+
     Sequence(const Iter &begin, const Iter &end) :
             m_begin{begin},
             m_end{end}
