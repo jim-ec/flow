@@ -22,6 +22,13 @@ private:
 
 public:
 
+    MapIterator() = default;
+    MapIterator(const MapIterator &rhs) = default;
+    MapIterator(MapIterator &&rhs) noexcept = default;
+
+    MapIterator &operator=(const MapIterator &rhs) = default;
+    MapIterator &operator=(MapIterator &&rhs) noexcept = default;
+
     MapIterator(
             const Iter &iter,
             F function

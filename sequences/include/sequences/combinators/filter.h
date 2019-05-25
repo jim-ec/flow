@@ -22,6 +22,13 @@ private:
 
 public:
 
+    FilterIterator() = default;
+    FilterIterator(const FilterIterator &rhs) = default;
+    FilterIterator(FilterIterator &&rhs) noexcept = default;
+
+    FilterIterator &operator=(const FilterIterator &rhs) = default;
+    FilterIterator &operator=(FilterIterator &&rhs) noexcept = default;
+
     FilterIterator(
             const Iter &iter,
             const Iter &end,

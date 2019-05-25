@@ -24,6 +24,13 @@ public:
 
     using value_type = typename IterFirst::value_type;
 
+    ChainIterator() = default;
+    ChainIterator(const ChainIterator &rhs) = default;
+    ChainIterator(ChainIterator &&rhs) noexcept = default;
+
+    ChainIterator &operator=(const ChainIterator &rhs) = default;
+    ChainIterator &operator=(ChainIterator &&rhs) noexcept = default;
+
     ChainIterator(
             const IterFirst &first_iter,
             const IterFirst &first_end,

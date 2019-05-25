@@ -25,6 +25,13 @@ private:
 
 public:
 
+    Map2Iterator() = default;
+    Map2Iterator(const Map2Iterator &rhs) = default;
+    Map2Iterator(Map2Iterator &&rhs) noexcept = default;
+
+    Map2Iterator &operator=(const Map2Iterator &rhs) = default;
+    Map2Iterator &operator=(Map2Iterator &&rhs) noexcept = default;
+
     Map2Iterator(
             const Iter &iter,
             F function

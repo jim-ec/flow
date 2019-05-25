@@ -18,6 +18,13 @@ public:
 
     using value_type = typename Iter::value_type;
 
+    DiscreteRangeIterator() = default;
+    DiscreteRangeIterator(const DiscreteRangeIterator &rhs) = default;
+    DiscreteRangeIterator(DiscreteRangeIterator &&rhs) noexcept = default;
+
+    DiscreteRangeIterator &operator=(const DiscreteRangeIterator &rhs) = default;
+    DiscreteRangeIterator &operator=(DiscreteRangeIterator &&rhs) noexcept = default;
+
     DiscreteRangeIterator(
             const Iter &iter,
             const size_t index

@@ -20,6 +20,13 @@ private:
 
 public:
 
+    InspectIterator() = default;
+    InspectIterator(const InspectIterator &rhs) = default;
+    InspectIterator(InspectIterator &&rhs) noexcept = default;
+
+    InspectIterator &operator=(const InspectIterator &rhs) = default;
+    InspectIterator &operator=(InspectIterator &&rhs) noexcept = default;
+
     InspectIterator(
             const Iter &iter,
             F function

@@ -25,6 +25,13 @@ private:
 
 public:
 
+    FlattenIterator() = default;
+    FlattenIterator(const FlattenIterator &rhs) = default;
+    FlattenIterator(FlattenIterator &&rhs) noexcept = default;
+
+    FlattenIterator &operator=(const FlattenIterator &rhs) = default;
+    FlattenIterator &operator=(FlattenIterator &&rhs) noexcept = default;
+
     FlattenIterator(
             F nextBegin,
             G nextEnd

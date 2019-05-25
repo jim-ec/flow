@@ -26,6 +26,13 @@ public:
     F m_function;
     value_type m_carry;
 
+    Mutation() = default;
+    Mutation(const Mutation &rhs) = default;
+    Mutation(Mutation &&rhs) noexcept = default;
+
+    Mutation &operator=(const Mutation &rhs) = default;
+    Mutation &operator=(Mutation &&rhs) noexcept = default;
+
     explicit Mutation(
             const T &init,
             F f

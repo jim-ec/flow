@@ -23,6 +23,13 @@ private:
 
 public:
 
+    ZipIterator() = default;
+    ZipIterator(const ZipIterator &rhs) = default;
+    ZipIterator(ZipIterator &&rhs) noexcept = default;
+
+    ZipIterator &operator=(const ZipIterator &rhs) = default;
+    ZipIterator &operator=(ZipIterator &&rhs) noexcept = default;
+
     ZipIterator(
             const IterLeft &left,
             const IterRight &right
