@@ -101,6 +101,7 @@ public:
             *m_begin;
             ++m_begin;
         }
+        return *this;
     }
 
     const value_type &operator[](const size_t index) const
@@ -164,14 +165,14 @@ public:
         );
     }
 
-    template<class R, class F>
-    Sequence<MapIterator<R, Iter, F>> map(
+    template<class F>
+    Sequence<MapIterator<Iter, F>> map(
             F function
     ) const
     {
         return make_sequence(
-                make_map_iter<R>(m_begin, function),
-                make_map_iter<R>(m_end, function)
+                make_map_iter(m_begin, function),
+                make_map_iter(m_end, function)
         );
     }
 

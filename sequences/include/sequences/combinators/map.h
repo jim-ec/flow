@@ -8,16 +8,16 @@
 
 namespace sequences
 {
-template<class R, class Iter, class F>
+template<class Iter, class F>
 class MapIterator
 {
 public:
-    using value_type = R;
+    using value_type = decltype(std::declval<F>()(std::declval<typename Iter::value_type>()));
 
 private:
     Iter m_iter;
     F m_function;
-    mutable R m_cache;
+    mutable value_type m_cache;
 
 public:
 
@@ -69,13 +69,13 @@ public:
     }
 };
 
-template<class R, class Iter, class F>
-MapIterator<R, Iter, F> make_map_iter(
+template<class Iter, class F>
+MapIterator<Iter, F> make_map_iter(
         const Iter &iter,
         F f
 )
 {
-    return MapIterator<R, Iter, F>{iter, f};
+    return MapIterator<Iter, F>{iter, f};
 }
 
 }

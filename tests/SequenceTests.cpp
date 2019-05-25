@@ -73,7 +73,7 @@ TEST_CASE("Iteration")
 TEST_CASE("Mapping")
 {
     std::vector<int> v{1, 2, 3, 4, 5};
-    auto sequence = make_sequence(v).map<int>([](int n) { return n * n; });
+    auto sequence = make_sequence(v).map([](int n) { return n * n; });
 
     REQUIRE(sequence.next() == 1);
     REQUIRE(sequence.next() == 4);
@@ -180,13 +180,13 @@ TEST_CASE("Combine mapping and filtering")
                        9, 10, 11, 12, 13, 14, 15, 16};
 
     auto sequence = make_sequence(v)
-            .map<int>([](int n) {
+            .map([](int n) {
                 return n * n;
             })
             .filter([](int n) {
                 return n % 2 == 0;
             })
-            .map<std::string>([](int n) {
+            .map([](int n) {
                 std::stringstream ss;
                 ss << "Number: " << n;
                 return ss.str();
@@ -274,7 +274,7 @@ TEST_CASE("Index access")
 TEST_CASE("Chaining")
 {
     auto s1 = make_mutation_linear().range(3);
-    auto s2 = make_mutation_linear().range(3).map<int>([](int n) {
+    auto s2 = make_mutation_linear().range(3).map([](int n) {
         return n + 3;
     });
 
