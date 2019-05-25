@@ -12,9 +12,9 @@ template<class IterLeft, class IterRight>
 class ZipIterator
 {
 public:
-    using value_type_left = typename IterLeft::value_type *;
-    using value_type_right = typename IterRight::value_type *;
-    using value_type = Pair<value_type_left, value_type_right>;
+    using value_type_left = typename IterLeft::value_type;
+    using value_type_right = typename IterRight::value_type;
+    using value_type = Pair<value_type_left *, value_type_right *>;
 
 private:
     IterLeft m_left;

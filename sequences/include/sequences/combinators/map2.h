@@ -8,12 +8,15 @@
 
 namespace sequences
 {
-template<class R, class Iter, class F>
+template<class Iter, class F>
 class Map2Iterator
 {
 public:
-    using value_type = R;
     using pair_type = typename Iter::value_type;
+    using value_type = decltype(std::declval<F>()(
+            std::declval<typename Iter::value_type_left>(),
+            std::declval<typename Iter::value_type_right>()
+    ));
 
 private:
     Iter m_iter;
@@ -72,13 +75,13 @@ public:
     }
 };
 
-template<class R, class Iter, class F>
-Map2Iterator<R, Iter, F> make_map2_iter(
+template<class Iter, class F>
+Map2Iterator<Iter, F> make_map2_iter(
         const Iter &iter,
         F f
 )
 {
-    return Map2Iterator<R, Iter, F>{iter, f};
+    return Map2Iterator<Iter, F>{iter, f};
 }
 
 }

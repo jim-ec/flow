@@ -212,7 +212,7 @@ TEST_CASE("Pair mapping")
 
     auto numbers = evenNumberSequence
             .zip(oddNumberSequence)
-            .map2<int>([](int even, int odd) {
+            .map2([](int even, int odd) {
                 return odd - even;
             })
             .range(20);

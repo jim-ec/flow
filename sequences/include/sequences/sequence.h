@@ -183,14 +183,14 @@ public:
         );
     }
 
-    template<class R, class F>
-    Sequence<Map2Iterator<R, Iter, F>> map2(
+    template<class F>
+    Sequence<Map2Iterator<Iter, F>> map2(
             F function
     ) const
     {
         return make_sequence(
-                make_map2_iter<R>(begin(), function),
-                make_map2_iter<R>(end(), function)
+                make_map2_iter(begin(), function),
+                make_map2_iter(end(), function)
         );
     }
 
