@@ -28,14 +28,23 @@ public:
     F m_function;
     value_type m_carry;
 
-    explicit Mutation(
-            T &&init,
-            F f
-    ) :
-            m_function{f},
-            m_carry{std::forward<T>(init)}
-    {
-    }
+	explicit Mutation(
+			T&& init,
+			F f
+	) :
+		m_function{f},
+		m_carry{std::forward<T>(init)}
+	{
+	}
+
+	explicit Mutation(
+			const T& init,
+			F f
+	) :
+		m_function{f},
+		m_carry{init}
+	{
+	}
 
     Mutation &begin()
     {
