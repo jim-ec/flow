@@ -240,6 +240,12 @@ public:
     }
 
     template<class F>
+    Sequence<FlattenIterator<MapIterator<Iter, F>>> flat_map(F function) const
+    {
+        return map(function).flatten();
+    }
+
+    template<class F>
     void for_each(F function) const
     {
         for (const auto &el : *this)
