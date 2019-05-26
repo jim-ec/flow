@@ -23,6 +23,21 @@ TEST_CASE("Sequence over array, iterator can be raw pointer")
     REQUIRE(s.empty());
 }
 
+TEST_CASE("Zipping raw pointer iterators")
+{
+    int data1[] = {5, 6, 7};
+    int data2[] = {13, 15, 17};
+
+    auto s = make_sequence(data1)
+            .zip(make_sequence(data2))
+            .map2([](int a, int b) { return a + b; });
+
+    REQUIRE(s.next() == 18);
+    REQUIRE(s.next() == 21);
+    REQUIRE(s.next() == 24);
+    REQUIRE(s.empty());
+}
+
 TEST_CASE("Flattening")
 {
     std::vector<int> v{10, 100, 1000};
