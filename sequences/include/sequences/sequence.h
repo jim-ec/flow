@@ -39,7 +39,7 @@ class Sequence
 public:
 
     using iter_type = Iter;
-    using value_type = typename Iter::value_type;
+    using value_type = iter_value_type_t<Iter>;
 
     Sequence() = default;
 
@@ -309,7 +309,7 @@ public:
 
     /// Returns the value of the first sequence element.
     /// This should never be called if the sequence is empty.
-    typename Iter::value_type operator*()
+    value_type operator*()
     {
         return *begin();
     }
@@ -343,6 +343,12 @@ template<class C>
 Sequence<typename C::iterator> make_sequence(C &c)
 {
     return make_sequence(c.begin(), c.end());
+}
+
+template<class T, size_t size>
+Sequence<T *> make_sequence(T(&array)[size]) {
+    //return MemoryRange<T>(array);
+    return make_sequence(&array[0], &array[size]);
 }
 
 }

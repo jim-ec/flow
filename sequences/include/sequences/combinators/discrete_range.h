@@ -16,7 +16,7 @@ class DiscreteRangeIterator
 
 public:
 
-    using value_type = typename Iter::value_type;
+    using value_type = iter_value_type_t<Iter>;
 
     DiscreteRangeIterator() = default;
     DiscreteRangeIterator(const DiscreteRangeIterator &rhs) = default;

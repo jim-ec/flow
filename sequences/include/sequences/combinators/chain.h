@@ -22,7 +22,7 @@ class ChainIterator
 
 public:
 
-    using value_type = typename IterFirst::value_type;
+    using value_type = iter_value_type_t<IterFirst>;
 
     ChainIterator() = default;
     ChainIterator(const ChainIterator &rhs) = default;

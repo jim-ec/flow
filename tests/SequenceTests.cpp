@@ -12,6 +12,17 @@
 
 using namespace sequences;
 
+TEST_CASE("Sequence over array, iterator can be raw pointer")
+{
+    int data[] = {5, 7, 8};
+
+    auto s = make_sequence(data).map([](int n) { return n * n; });
+    REQUIRE(s.next() == 25);
+    REQUIRE(s.next() == 49);
+    REQUIRE(s.next() == 64);
+    REQUIRE(s.empty());
+}
+
 TEST_CASE("Flattening")
 {
     std::vector<int> v{10, 100, 1000};

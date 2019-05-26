@@ -12,7 +12,7 @@ template<class Iter, class F>
 class InspectIterator
 {
 public:
-    using value_type = typename Iter::value_type;
+    using value_type = iter_value_type_t<Iter>;
 
 private:
     Iter m_iter;

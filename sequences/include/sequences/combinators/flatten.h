@@ -14,7 +14,7 @@ class FlattenIterator
 {
 public:
     using child_iter_type = typename Iter::value_type::iter_type;
-    using value_type = typename child_iter_type::value_type;
+    using value_type = iter_value_type_t<child_iter_type>;
 
 private:
 

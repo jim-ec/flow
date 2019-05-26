@@ -8,6 +8,7 @@
 
 namespace sequences
 {
+// Can only work on iterators which's values are a pair-like type.
 template<class Iter, class F>
 class Map2Iterator
 {

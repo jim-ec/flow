@@ -13,7 +13,9 @@ template<class Iter, class F>
 class MapIterator
 {
 public:
-    using value_type = decltype(std::declval<F>()(std::declval<typename Iter::value_type>()));
+    using value_type = decltype(std::declval<F>()(
+            std::declval<iter_value_type_t<Iter>>()
+    ));
 
 private:
     Iter m_iter;
@@ -23,10 +25,13 @@ private:
 public:
 
     MapIterator() = default;
+
     MapIterator(const MapIterator &rhs) = default;
+
     MapIterator(MapIterator &&rhs) noexcept = default;
 
     MapIterator &operator=(const MapIterator &rhs) = default;
+
     MapIterator &operator=(MapIterator &&rhs) noexcept = default;
 
     MapIterator(
