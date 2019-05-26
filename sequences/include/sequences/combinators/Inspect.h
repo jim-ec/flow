@@ -9,7 +9,7 @@
 namespace sequences
 {
 template<class Iter, class F>
-class InspectIterator
+class Inspect
 {
 public:
     using value_type = iter_value_type_t<Iter>;
@@ -20,14 +20,14 @@ private:
 
 public:
 
-    InspectIterator() = default;
-    InspectIterator(const InspectIterator &rhs) = default;
-    InspectIterator(InspectIterator &&rhs) noexcept = default;
+    Inspect() = default;
+    Inspect(const Inspect &rhs) = default;
+    Inspect(Inspect &&rhs) noexcept = default;
 
-    InspectIterator &operator=(const InspectIterator &rhs) = default;
-    InspectIterator &operator=(InspectIterator &&rhs) noexcept = default;
+    Inspect &operator=(const Inspect &rhs) = default;
+    Inspect &operator=(Inspect &&rhs) noexcept = default;
 
-    InspectIterator(
+    Inspect(
             const Iter &iter,
             F function
     ) :
@@ -50,15 +50,15 @@ public:
         return n;
     }
 
-    InspectIterator &operator++()
+    Inspect &operator++()
     {
         ++m_iter;
         return *this;
     }
 
-    InspectIterator operator+(const size_t offset) const
+    Inspect operator+(const size_t offset) const
     {
-        InspectIterator result{m_iter, m_function};
+        Inspect result{m_iter, m_function};
         for (size_t i = 0; i < offset; i++)
         {
             ++result.m_iter;
@@ -66,24 +66,24 @@ public:
         return result;
     }
 
-    bool operator==(const InspectIterator &rhs) const
+    bool operator==(const Inspect &rhs) const
     {
         return m_iter == rhs.m_iter;
     }
 
-    bool operator!=(const InspectIterator &rhs) const
+    bool operator!=(const Inspect &rhs) const
     {
         return m_iter != rhs.m_iter;
     }
 };
 
 template<class Iter, class F>
-InspectIterator<Iter, F> make_inspect_iter(
+Inspect<Iter, F> make_inspect(
         const Iter &iter,
         F f
 )
 {
-    return InspectIterator<Iter, F>{iter, f};
+    return Inspect<Iter, F>{iter, f};
 }
 
 }

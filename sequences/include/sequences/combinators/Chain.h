@@ -13,7 +13,7 @@ namespace sequences
 /// and then iterating over all elements yielded by the second iterator.
 /// The first and second iterator types need not to be same, but the yielded element type must be the same.
 template<class IterFirst, class IterSecond>
-class ChainIterator
+class Chain
 {
     IterFirst m_first_iter;
     IterFirst m_first_end;
@@ -24,14 +24,14 @@ public:
 
     using value_type = iter_value_type_t<IterFirst>;
 
-    ChainIterator() = default;
-    ChainIterator(const ChainIterator &rhs) = default;
-    ChainIterator(ChainIterator &&rhs) noexcept = default;
+    Chain() = default;
+    Chain(const Chain &rhs) = default;
+    Chain(Chain &&rhs) noexcept = default;
 
-    ChainIterator &operator=(const ChainIterator &rhs) = default;
-    ChainIterator &operator=(ChainIterator &&rhs) noexcept = default;
+    Chain &operator=(const Chain &rhs) = default;
+    Chain &operator=(Chain &&rhs) noexcept = default;
 
-    ChainIterator(
+    Chain(
             const IterFirst &first_iter,
             const IterFirst &first_end,
             const IterSecond &second_iter,
@@ -73,7 +73,7 @@ public:
         }
     }
 
-    ChainIterator &operator++()
+    Chain &operator++()
     {
         if (first_iter_is_valid())
         {
@@ -86,9 +86,9 @@ public:
         return *this;
     }
 
-    ChainIterator operator+(const size_t offset) const
+    Chain operator+(const size_t offset) const
     {
-        ChainIterator result{m_first_iter, m_first_end, m_second_iter, m_second_begin};
+        Chain result{m_first_iter, m_first_end, m_second_iter, m_second_begin};
         for (size_t i = 0; i < offset; i++)
         {
             ++result;
@@ -96,26 +96,26 @@ public:
         return result;
     }
 
-    bool operator==(const ChainIterator &rhs) const
+    bool operator==(const Chain &rhs) const
     {
         return m_first_iter == rhs.m_first_iter && m_second_iter == rhs.m_second_iter;
     }
 
-    bool operator!=(const ChainIterator &rhs) const
+    bool operator!=(const Chain &rhs) const
     {
         return !(*this == rhs);
     }
 };
 
 template<class IterLeft, class IterRight>
-ChainIterator<IterLeft, IterRight> make_chain_iter(
+Chain<IterLeft, IterRight> make_chain(
         const IterLeft &first_iter,
         const IterLeft &first_end,
         const IterRight &second_iter,
         const IterRight &second_begin
 )
 {
-    return ChainIterator<IterLeft, IterRight>{first_iter, first_end, second_iter, second_begin};
+    return Chain<IterLeft, IterRight>{first_iter, first_end, second_iter, second_begin};
 }
 
 }

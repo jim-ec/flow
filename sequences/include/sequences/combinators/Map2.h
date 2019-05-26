@@ -10,7 +10,7 @@ namespace sequences
 {
 // Can only work on iterators which's values are a pair-like type.
 template<class Iter, class F>
-class Map2Iterator
+class Map2
 {
 public:
     using pair_type = typename Iter::value_type;
@@ -26,14 +26,14 @@ private:
 
 public:
 
-    Map2Iterator() = default;
-    Map2Iterator(const Map2Iterator &rhs) = default;
-    Map2Iterator(Map2Iterator &&rhs) noexcept = default;
+    Map2() = default;
+    Map2(const Map2 &rhs) = default;
+    Map2(Map2 &&rhs) noexcept = default;
 
-    Map2Iterator &operator=(const Map2Iterator &rhs) = default;
-    Map2Iterator &operator=(Map2Iterator &&rhs) noexcept = default;
+    Map2 &operator=(const Map2 &rhs) = default;
+    Map2 &operator=(Map2 &&rhs) noexcept = default;
 
-    Map2Iterator(
+    Map2(
             const Iter &iter,
             F function
     ) :
@@ -56,15 +56,15 @@ public:
         return m_cache;
     }
 
-    Map2Iterator &operator++()
+    Map2 &operator++()
     {
         ++m_iter;
         return *this;
     }
 
-    Map2Iterator operator+(const size_t offset) const
+    Map2 operator+(const size_t offset) const
     {
-        Map2Iterator result{m_iter, m_function};
+        Map2 result{m_iter, m_function};
         for (size_t i = 0; i < offset; i++)
         {
             ++result.m_iter;
@@ -72,24 +72,24 @@ public:
         return result;
     }
 
-    bool operator==(const Map2Iterator &rhs) const
+    bool operator==(const Map2 &rhs) const
     {
         return m_iter == rhs.m_iter;
     }
 
-    bool operator!=(const Map2Iterator &rhs) const
+    bool operator!=(const Map2 &rhs) const
     {
         return m_iter != rhs.m_iter;
     }
 };
 
 template<class Iter, class F>
-Map2Iterator<Iter, F> make_map2_iter(
+Map2<Iter, F> make_map2(
         const Iter &iter,
         F f
 )
 {
-    return Map2Iterator<Iter, F>{iter, f};
+    return Map2<Iter, F>{iter, f};
 }
 
 }

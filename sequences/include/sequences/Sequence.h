@@ -4,14 +4,14 @@
 
 #pragma once
 
-#include "sequences/combinators/map.h"
-#include "sequences/combinators/map2.h"
-#include "sequences/combinators/filter.h"
-#include "sequences/combinators/zip.h"
-#include "sequences/combinators/discrete_range.h"
-#include "sequences/combinators/chain.h"
-#include "sequences/combinators/inspect.h"
-#include "sequences/combinators/flatten.h"
+#include "sequences/combinators/Map.h"
+#include "sequences/combinators/Map2.h"
+#include "sequences/combinators/Filter.h"
+#include "sequences/combinators/Zip.h"
+#include "sequences/combinators/Range.h"
+#include "sequences/combinators/Chain.h"
+#include "sequences/combinators/Inspect.h"
+#include "sequences/combinators/Flatten.h"
 
 namespace sequences
 {
@@ -85,11 +85,11 @@ public:
         return make_sequence(iter, end());
     }
 
-    Sequence<DiscreteRangeIterator<Iter>> range(const size_t count) const
+    Sequence<Range<Iter>> range(const size_t count) const
     {
         return make_sequence(
-                make_discrete_range_iter(m_begin, 0),
-                make_discrete_range_iter(m_end, count)
+                make_range(m_begin, 0),
+                make_range(m_end, count)
         );
     }
 
@@ -166,81 +166,81 @@ public:
     }
 
     template<class IterRhs>
-    Sequence<ZipIterator<Iter, IterRhs>> zip(
+    Sequence<Zip<Iter, IterRhs>> zip(
             const Sequence<IterRhs> &rhs
     ) const
     {
         return make_sequence(
-                make_zip_iter(begin(), rhs.begin()),
-                make_zip_iter(end(), rhs.end())
+                make_zip(begin(), rhs.begin()),
+                make_zip(end(), rhs.end())
         );
     }
 
     template<class F>
-    Sequence<MapIterator<Iter, F>> map(
+    Sequence<Map<Iter, F>> map(
             F function
     ) const
     {
         return make_sequence(
-                make_map_iter(m_begin, function),
-                make_map_iter(m_end, function)
+                make_map(m_begin, function),
+                make_map(m_end, function)
         );
     }
 
     template<class F>
-    Sequence<Map2Iterator<Iter, F>> map2(
+    Sequence<Map2<Iter, F>> map2(
             F function
     ) const
     {
         return make_sequence(
-                make_map2_iter(begin(), function),
-                make_map2_iter(end(), function)
+                make_map2(begin(), function),
+                make_map2(end(), function)
         );
     }
 
     template<class F>
-    Sequence<InspectIterator<Iter, F>> inspect(F function) const
+    Sequence<Inspect<Iter, F>> inspect(F function) const
     {
         return make_sequence(
-                make_inspect_iter(m_begin, function),
-                make_inspect_iter(m_end, function)
+                make_inspect(m_begin, function),
+                make_inspect(m_end, function)
         );
     }
 
     template<class IterRhs>
-    Sequence<ChainIterator<Iter, IterRhs>> chain(
+    Sequence<Chain<Iter, IterRhs>> chain(
             Sequence<IterRhs> &rhs
     )
     {
         return make_sequence(
-                make_chain_iter(begin(), end(), rhs.begin(), rhs.begin()),
-                make_chain_iter(end(), end(), rhs.end(), rhs.begin())
+                make_chain(begin(), end(), rhs.begin(), rhs.begin()),
+                make_chain(end(), end(), rhs.end(), rhs.begin())
         );
     }
 
     template<class F>
-    Sequence<FilterIterator<Iter, F>> filter(
+    Sequence<Filter<Iter, F>> filter(
             F function
     ) const
     {
         return make_sequence(
-                make_filter_iter(m_begin, m_end, function),
-                make_filter_iter(m_end, m_end, function)
+                make_filter(m_begin, m_end, function),
+                make_filter(m_end, m_end, function)
         );
     }
 
     // The current Iter's value_type must be an iterator itself.
-    Sequence<FlattenIterator<Iter>> flatten() const
+    Sequence<Flatten<Iter>> flatten() const
     {
-        using ChildIter = const typename FlattenIterator<Iter>::child_iter_type;
+        using ChildIter = const typename Flatten<Iter>::child_iter_type;
         return make_sequence(
-                make_flatten_iter(begin(), end(), (*begin()).begin(), (*begin()).end()),
-                make_flatten_iter(end(), end(), ChildIter{}, ChildIter{})
+                make_flatten(begin(), end(), (*begin()).begin(), (*begin()).end()),
+                make_flatten(end(), end(), ChildIter{}, ChildIter{})
         );
     }
 
     template<class F>
-    Sequence<FlattenIterator<MapIterator<Iter, F>>> flat_map(F function) const
+    Sequence<Flatten<Map<Iter, F>>> flat_map(F function) const
     {
         return map(function).flatten();
     }
@@ -347,7 +347,6 @@ Sequence<typename C::iterator> make_sequence(C &c)
 
 template<class T, size_t size>
 Sequence<T *> make_sequence(T(&array)[size]) {
-    //return MemoryRange<T>(array);
     return make_sequence(&array[0], &array[size]);
 }
 

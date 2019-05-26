@@ -9,7 +9,7 @@
 namespace sequences
 {
 template<class Iter>
-class DiscreteRangeIterator
+class Range
 {
     Iter m_iter;
     size_t m_index;
@@ -18,14 +18,14 @@ public:
 
     using value_type = iter_value_type_t<Iter>;
 
-    DiscreteRangeIterator() = default;
-    DiscreteRangeIterator(const DiscreteRangeIterator &rhs) = default;
-    DiscreteRangeIterator(DiscreteRangeIterator &&rhs) noexcept = default;
+    Range() = default;
+    Range(const Range &rhs) = default;
+    Range(Range &&rhs) noexcept = default;
 
-    DiscreteRangeIterator &operator=(const DiscreteRangeIterator &rhs) = default;
-    DiscreteRangeIterator &operator=(DiscreteRangeIterator &&rhs) noexcept = default;
+    Range &operator=(const Range &rhs) = default;
+    Range &operator=(Range &&rhs) noexcept = default;
 
-    DiscreteRangeIterator(
+    Range(
             const Iter &iter,
             const size_t index
     ) :
@@ -44,16 +44,16 @@ public:
         return *m_iter;
     }
 
-    DiscreteRangeIterator &operator++()
+    Range &operator++()
     {
         ++m_iter;
         ++m_index;
         return *this;
     }
 
-    DiscreteRangeIterator operator+(const size_t offset) const
+    Range operator+(const size_t offset) const
     {
-        DiscreteRangeIterator result{m_iter, m_index};
+        Range result{m_iter, m_index};
         for (size_t i = 0; i < offset; i++)
         {
             ++result;
@@ -61,23 +61,23 @@ public:
         return result;
     }
 
-    bool operator==(const DiscreteRangeIterator &rhs) const
+    bool operator==(const Range &rhs) const
     {
         return m_index == rhs.m_index || m_iter == rhs.m_iter;
     }
 
-    bool operator!=(const DiscreteRangeIterator &rhs) const
+    bool operator!=(const Range &rhs) const
     {
         return m_index != rhs.m_index && m_iter != rhs.m_iter;
     }
 };
 
 template<class Iter>
-DiscreteRangeIterator<Iter> make_discrete_range_iter(
+Range<Iter> make_range(
         const Iter &iter,
         const size_t index
 )
 {
-    return DiscreteRangeIterator<Iter>{iter, index};
+    return Range<Iter>{iter, index};
 }
 }

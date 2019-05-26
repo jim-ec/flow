@@ -9,7 +9,7 @@
 namespace sequences
 {
 template<class IterLeft, class IterRight>
-class ZipIterator
+class Zip
 {
 public:
     using value_type_left = iter_value_type_t<IterLeft>;
@@ -23,14 +23,14 @@ private:
 
 public:
 
-    ZipIterator() = default;
-    ZipIterator(const ZipIterator &rhs) = default;
-    ZipIterator(ZipIterator &&rhs) noexcept = default;
+    Zip() = default;
+    Zip(const Zip &rhs) = default;
+    Zip(Zip &&rhs) noexcept = default;
 
-    ZipIterator &operator=(const ZipIterator &rhs) = default;
-    ZipIterator &operator=(ZipIterator &&rhs) noexcept = default;
+    Zip &operator=(const Zip &rhs) = default;
+    Zip &operator=(Zip &&rhs) noexcept = default;
 
-    ZipIterator(
+    Zip(
             const IterLeft &left,
             const IterRight &right
     ) :
@@ -52,14 +52,14 @@ public:
         return m_cache;
     }
 
-    ZipIterator operator++()
+    Zip operator++()
     {
         ++m_left;
         ++m_right;
         return *this;
     }
 
-    bool operator==(const ZipIterator &rhs) const
+    bool operator==(const Zip &rhs) const
     {
         // This might look like a weird implementation, because intuitively two zip sequences
         // are the same if both iterator pairs equal, and not only one them.
@@ -70,19 +70,19 @@ public:
         return m_left == rhs.m_left || m_right == rhs.m_right;
     }
 
-    bool operator!=(const ZipIterator &rhs) const
+    bool operator!=(const Zip &rhs) const
     {
         return m_left != rhs.m_left && m_right != rhs.m_right;
     }
 };
 
 template<class IterLeft, class IterRight>
-const ZipIterator<IterLeft, IterRight> make_zip_iter(
+const Zip<IterLeft, IterRight> make_zip(
         const IterLeft &left,
         const IterRight &right
 )
 {
-    return ZipIterator<IterLeft, IterRight>{left, right};
+    return Zip<IterLeft, IterRight>{left, right};
 }
 
 }

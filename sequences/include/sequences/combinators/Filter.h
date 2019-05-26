@@ -9,7 +9,7 @@
 namespace sequences
 {
 template<class Iter, class F>
-class FilterIterator
+class Filter
 {
 public:
     using value_type = iter_value_type_t<Iter>;
@@ -22,14 +22,14 @@ private:
 
 public:
 
-    FilterIterator() = default;
-    FilterIterator(const FilterIterator &rhs) = default;
-    FilterIterator(FilterIterator &&rhs) noexcept = default;
+    Filter() = default;
+    Filter(const Filter &rhs) = default;
+    Filter(Filter &&rhs) noexcept = default;
 
-    FilterIterator &operator=(const FilterIterator &rhs) = default;
-    FilterIterator &operator=(FilterIterator &&rhs) noexcept = default;
+    Filter &operator=(const Filter &rhs) = default;
+    Filter &operator=(Filter &&rhs) noexcept = default;
 
-    FilterIterator(
+    Filter(
             const Iter &iter,
             const Iter &end,
             F function
@@ -66,7 +66,7 @@ public:
         return m_cache;
     }
 
-    FilterIterator &operator++()
+    Filter &operator++()
     {
         do
         {
@@ -83,9 +83,9 @@ public:
         return *this;
     }
 
-    FilterIterator operator+(const size_t offset) const
+    Filter operator+(const size_t offset) const
     {
-        FilterIterator result{m_iter, m_function};
+        Filter result{m_iter, m_function};
         for (size_t i = 0; i < offset; i++)
         {
             ++result;
@@ -93,25 +93,25 @@ public:
         return result;
     }
 
-    bool operator==(const FilterIterator &rhs) const
+    bool operator==(const Filter &rhs) const
     {
         return m_iter == rhs.m_iter;
     }
 
-    bool operator!=(const FilterIterator &rhs) const
+    bool operator!=(const Filter &rhs) const
     {
         return m_iter != rhs.m_iter;
     }
 };
 
 template<class Iter, class F>
-FilterIterator<Iter, F> make_filter_iter(
+Filter<Iter, F> make_filter(
         const Iter &begin,
         const Iter &end,
         F f
 )
 {
-    return FilterIterator<Iter, F>{begin, end, f};
+    return Filter<Iter, F>{begin, end, f};
 }
 
 }

@@ -10,7 +10,7 @@ namespace sequences
 {
 
 template<class Iter>
-class FlattenIterator
+class Flatten
 {
 public:
     using child_iter_type = typename Iter::value_type::iter_type;
@@ -25,17 +25,17 @@ private:
 
 public:
 
-    FlattenIterator() = default;
+    Flatten() = default;
 
-    FlattenIterator(const FlattenIterator &rhs) = default;
+    Flatten(const Flatten &rhs) = default;
 
-    FlattenIterator(FlattenIterator &&rhs) noexcept = default;
+    Flatten(Flatten &&rhs) noexcept = default;
 
-    FlattenIterator &operator=(const FlattenIterator &rhs) = default;
+    Flatten &operator=(const Flatten &rhs) = default;
 
-    FlattenIterator &operator=(FlattenIterator &&rhs) noexcept = default;
+    Flatten &operator=(Flatten &&rhs) noexcept = default;
 
-    FlattenIterator(
+    Flatten(
             const Iter &iter,
             const Iter &end,
             const child_iter_type &child_iter,
@@ -57,7 +57,7 @@ public:
         return *m_child_iter;
     }
 
-    FlattenIterator &operator++()
+    Flatten &operator++()
     {
         ++m_child_iter;
         if (m_child_iter == m_child_end)
@@ -73,9 +73,9 @@ public:
         return *this;
     }
 
-    FlattenIterator operator+(const size_t offset) const
+    Flatten operator+(const size_t offset) const
     {
-        FlattenIterator result{m_base_iter, m_child_iter, m_child_end};
+        Flatten result{m_base_iter, m_child_iter, m_child_end};
         for (size_t i = 0; i < offset; i++)
         {
             ++result;
@@ -83,26 +83,26 @@ public:
         return result;
     }
 
-    bool operator==(const FlattenIterator &rhs) const
+    bool operator==(const Flatten &rhs) const
     {
         return m_base_iter == rhs.m_base_iter;
     }
 
-    bool operator!=(const FlattenIterator &rhs) const
+    bool operator!=(const Flatten &rhs) const
     {
         return !(*this == rhs);
     }
 };
 
 template<class Iter>
-FlattenIterator<Iter> make_flatten_iter(
+Flatten<Iter> make_flatten(
         const Iter &iter,
         const Iter &end,
-        const typename FlattenIterator<Iter>::child_iter_type &child_iter,
-        const typename FlattenIterator<Iter>::child_iter_type &child_end
+        const typename Flatten<Iter>::child_iter_type &child_iter,
+        const typename Flatten<Iter>::child_iter_type &child_end
 )
 {
-    return FlattenIterator<Iter>{iter, end, child_iter, child_end};
+    return Flatten<Iter>{iter, end, child_iter, child_end};
 }
 
 }

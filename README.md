@@ -102,7 +102,7 @@ This means all STL containers are supported out of the box.
 
 Each sequence contains two iterators, the current iteration element and the end iterator,
 while the end iterator - just as in STL traditions - works like a beyond-the-end marker.
-When combinating new sequences, special iterator classes such as `MapIterator` wrap the
+When combinating new sequences, special iterator classes such as `Map` wrap the
 sequence. The iterator type is not exposed directly, but rather wrapped in a sequence
 so that the resulting sequence can be further piped through combinators.
 

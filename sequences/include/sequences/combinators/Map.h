@@ -10,7 +10,7 @@ namespace sequences
 {
 // The function's return type must be default constructable and assignable.
 template<class Iter, class F>
-class MapIterator
+class Map
 {
 public:
     using value_type = decltype(std::declval<F>()(
@@ -24,17 +24,17 @@ private:
 
 public:
 
-    MapIterator() = default;
+    Map() = default;
 
-    MapIterator(const MapIterator &rhs) = default;
+    Map(const Map &rhs) = default;
 
-    MapIterator(MapIterator &&rhs) noexcept = default;
+    Map(Map &&rhs) noexcept = default;
 
-    MapIterator &operator=(const MapIterator &rhs) = default;
+    Map &operator=(const Map &rhs) = default;
 
-    MapIterator &operator=(MapIterator &&rhs) noexcept = default;
+    Map &operator=(Map &&rhs) noexcept = default;
 
-    MapIterator(
+    Map(
             const Iter &iter,
             F function
     ) :
@@ -55,15 +55,15 @@ public:
         return m_cache;
     }
 
-    MapIterator &operator++()
+    Map &operator++()
     {
         ++m_iter;
         return *this;
     }
 
-    MapIterator operator+(const size_t offset) const
+    Map operator+(const size_t offset) const
     {
-        MapIterator result{m_iter, m_function};
+        Map result{m_iter, m_function};
         for (size_t i = 0; i < offset; i++)
         {
             ++result.m_iter;
@@ -71,24 +71,24 @@ public:
         return result;
     }
 
-    bool operator==(const MapIterator &rhs) const
+    bool operator==(const Map &rhs) const
     {
         return m_iter == rhs.m_iter;
     }
 
-    bool operator!=(const MapIterator &rhs) const
+    bool operator!=(const Map &rhs) const
     {
         return m_iter != rhs.m_iter;
     }
 };
 
 template<class Iter, class F>
-MapIterator<Iter, F> make_map_iter(
+Map<Iter, F> make_map(
         const Iter &iter,
         F f
 )
 {
-    return MapIterator<Iter, F>{iter, f};
+    return Map<Iter, F>{iter, f};
 }
 
 }

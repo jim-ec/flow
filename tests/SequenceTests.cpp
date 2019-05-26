@@ -7,8 +7,8 @@
 #include <string>
 #include <sstream>
 
-#include "sequences/sequence.h"
-#include "sequences/mutation.h"
+#include "sequences/Sequence.h"
+#include "sequences/Mutation.h"
 
 using namespace sequences;
 
