@@ -19,6 +19,7 @@ public:
 private:
 
     Iter m_base_iter;
+    Iter m_base_end;
     child_iter_type m_child_iter;
     child_iter_type m_child_end;
 
@@ -34,14 +35,14 @@ public:
 
     FlattenIterator &operator=(FlattenIterator &&rhs) noexcept = default;
 
-    explicit FlattenIterator(const Iter &iter) :
+    FlattenIterator(
+            const Iter &iter,
+            const Iter &end,
+            const child_iter_type &child_iter,
+            const child_iter_type &child_end
+    ) :
             m_base_iter{iter},
-            m_child_iter{iter.begin()},
-            m_child_end{iter.end()}
-    {}
-
-    FlattenIterator(const Iter &iter, const child_iter_type &child_iter, const child_iter_type &child_end) :
-            m_base_iter{iter},
+            m_base_end{end},
             m_child_iter{child_iter},
             m_child_end{child_end}
     {}
@@ -63,8 +64,11 @@ public:
         {
             // Go to next child.
             ++m_base_iter;
-            m_child_iter = (*m_base_iter).begin();
-            m_child_end = (*m_base_iter).end();
+            if(m_base_iter != m_base_end)
+            {
+                m_child_iter = (*m_base_iter).begin();
+                m_child_end = (*m_base_iter).end();
+            }
         }
         return *this;
     }
@@ -93,11 +97,12 @@ public:
 template<class Iter>
 FlattenIterator<Iter> make_flatten_iter(
         const Iter &iter,
+        const Iter &end,
         const typename FlattenIterator<Iter>::child_iter_type &child_iter,
         const typename FlattenIterator<Iter>::child_iter_type &child_end
 )
 {
-    return FlattenIterator<Iter>{iter, child_iter, child_end};
+    return FlattenIterator<Iter>{iter, end, child_iter, child_end};
 }
 
 }

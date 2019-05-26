@@ -234,8 +234,8 @@ public:
     {
         using ChildIter = const typename FlattenIterator<Iter>::child_iter_type;
         return make_sequence(
-                make_flatten_iter(begin(), (*begin()).begin(), (*begin()).end()),
-                make_flatten_iter(end(), ChildIter{}, ChildIter{})
+                make_flatten_iter(begin(), end(), (*begin()).begin(), (*begin()).end()),
+                make_flatten_iter(end(), end(), ChildIter{}, ChildIter{})
         );
     }
 
