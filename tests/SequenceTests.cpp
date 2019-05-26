@@ -12,6 +12,23 @@
 
 using namespace sequences;
 
+TEST_CASE("Flattening")
+{
+    std::vector<int> v{10, 100, 1000};
+
+    auto s = make_sequence(v) // {10, 100, 1000}
+            .map([](int n) { return make_mutation_linear(n).range(2); }) // {{10, 11}, {100, 101}, {1000, 1001}}
+            .flatten(); // {10, 11, 100, 101, 1000, 1001}
+
+    REQUIRE(s.next() == 10);
+    REQUIRE(s.next() == 11);
+    REQUIRE(s.next() == 100);
+    REQUIRE(s.next() == 101);
+    REQUIRE(s.next() == 1000);
+    REQUIRE(s.next() == 1001);
+    REQUIRE(s.empty());
+}
+
 TEST_CASE("Counting")
 {
     std::vector<int> v{1, 2, 3, 4, 3, 2, 1};

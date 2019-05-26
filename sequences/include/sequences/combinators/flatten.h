@@ -9,77 +9,69 @@
 namespace sequences
 {
 
-/// F: Generates next iterator
-template<class F, class G, class Iter>
+template<class Iter>
 class FlattenIterator
 {
 public:
-    using value_type = typename Iter::value_type; // This is also an iterator type
+    using child_iter_type = typename Iter::value_type::iter_type;
+    using value_type = typename child_iter_type::value_type;
 
 private:
 
-    Iter m_iter; // while flattening, this does not get ended
-    Iter m_current_end;
-    F m_next_begin;
-    G m_next_end;
+    Iter m_base_iter;
+    child_iter_type m_child_iter;
+    child_iter_type m_child_end;
 
 public:
 
     FlattenIterator() = default;
+
     FlattenIterator(const FlattenIterator &rhs) = default;
+
     FlattenIterator(FlattenIterator &&rhs) noexcept = default;
 
     FlattenIterator &operator=(const FlattenIterator &rhs) = default;
+
     FlattenIterator &operator=(FlattenIterator &&rhs) noexcept = default;
 
-    FlattenIterator(
-            F nextBegin,
-            G nextEnd
-    ) :
-            m_iter{nextBegin()},
-            m_current_end{nextEnd()},
-            m_next_begin{nextBegin},
-            m_next_end{nextEnd}
-    {
-    }
+    explicit FlattenIterator(const Iter &iter) :
+            m_base_iter{iter},
+            m_child_iter{iter.begin()},
+            m_child_end{iter.end()}
+    {}
 
-    FlattenIterator(
-            const Iter &iter,
-            const Iter &currentEnd,
-            F nextBegin,
-            G nextEnd
-    ) :
-            m_iter{iter},
-            m_current_end{currentEnd},
-            m_next_begin{nextBegin},
-            m_next_end{nextEnd}
-    {
-    }
+    FlattenIterator(const Iter &iter, const child_iter_type &child_iter, const child_iter_type &child_end) :
+            m_base_iter{iter},
+            m_child_iter{child_iter},
+            m_child_end{child_end}
+    {}
 
     value_type &operator*()
     {
-        return *m_iter;
+        return *m_child_iter;
     }
 
     const value_type &operator*() const
     {
-        return *m_iter;
+        return *m_child_iter;
     }
 
     FlattenIterator &operator++()
     {
-        ++m_iter;
-        if (m_iter == m_current_end)
+        ++m_child_iter;
+        if (m_child_iter == m_child_end)
         {
-            m_iter = m_next_begin();
-            m_current_end = m_next_end();
+            // Go to next child.
+            ++m_base_iter;
+            m_child_iter = (*m_base_iter).begin();
+            m_child_end = (*m_base_iter).end();
         }
         return *this;
     }
 
     FlattenIterator operator+(const size_t offset) const
     {
-        FlattenIterator result{m_iter, m_current_end, m_next_begin, m_next_end};
+        FlattenIterator result{m_base_iter, m_child_iter, m_child_end};
         for (size_t i = 0; i < offset; i++)
         {
             ++result;
@@ -89,7 +81,7 @@ public:
 
     bool operator==(const FlattenIterator &rhs) const
     {
-        return m_iter == rhs.m_iter;
+        return m_base_iter == rhs.m_base_iter;
     }
 
     bool operator!=(const FlattenIterator &rhs) const
@@ -97,5 +89,15 @@ public:
         return !(*this == rhs);
     }
 };
+
+template<class Iter>
+FlattenIterator<Iter> make_flatten_iter(
+        const Iter &iter,
+        const typename FlattenIterator<Iter>::child_iter_type &child_iter,
+        const typename FlattenIterator<Iter>::child_iter_type &child_end
+)
+{
+    return FlattenIterator<Iter>{iter, child_iter, child_end};
+}
 
 }

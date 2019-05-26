@@ -115,6 +115,8 @@ struct LinearMutation
 {
     T step;
 
+    LinearMutation() = default;
+
     LinearMutation(const LinearMutation &rhs) = default;
 
     LinearMutation(LinearMutation &&rhs) noexcept = default;

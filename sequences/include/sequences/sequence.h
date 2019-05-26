@@ -38,13 +38,17 @@ class Sequence
 
 public:
 
+    using iter_type = Iter;
     using value_type = typename Iter::value_type;
 
     Sequence() = default;
+
     Sequence(const Sequence &rhs) = default;
+
     Sequence(Sequence &&rhs) noexcept = default;
 
     Sequence &operator=(const Sequence &rhs) = default;
+
     Sequence &operator=(Sequence &&rhs) noexcept = default;
 
     Sequence(const Iter &begin, const Iter &end) :
@@ -225,12 +229,15 @@ public:
         );
     }
 
-//				decltype(auto) flatten() const
-//				{
-//					return make_sequence(
-//
-//							);
-//				}
+    // The current Iter's value_type must be an iterator itself.
+    Sequence<FlattenIterator<Iter>> flatten() const
+    {
+        using ChildIter = const typename FlattenIterator<Iter>::child_iter_type;
+        return make_sequence(
+                make_flatten_iter(begin(), (*begin()).begin(), (*begin()).end()),
+                make_flatten_iter(end(), ChildIter{}, ChildIter{})
+        );
+    }
 
     template<class F>
     void for_each(F function) const
