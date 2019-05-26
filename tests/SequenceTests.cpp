@@ -12,6 +12,27 @@
 
 using namespace sequences;
 
+static std::string concat(const std::string &a, const std::string &b)
+{
+    std::stringstream ss;
+    ss << a << b;
+    return ss.str();
+}
+
+TEST_CASE("Folding")
+{
+    const char *data[] = {"a", "bc", "d"};
+
+    std::string string = make_sequence(data).fold<std::string>([] (const std::string &acc, const char *str) {
+        return concat(acc, std::string{str});
+    });
+    REQUIRE(string == "abcd");
+
+    REQUIRE(make_mutation_linear(1).range(4).sum() == 10);
+    REQUIRE(make_mutation_linear(1).range(4).product() == 24);
+    REQUIRE(make_mutation_linear().range(4).product<float>() == 0.0);
+}
+
 TEST_CASE("Sequence over array, iterator can be raw pointer")
 {
     int data[] = {5, 7, 8};

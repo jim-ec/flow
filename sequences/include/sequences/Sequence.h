@@ -254,6 +254,45 @@ public:
         }
     }
 
+    /// Folds the sequence, using a accumulator function.
+    /// The function should be of the type: (R, T) -> R.
+    template<class R = value_type, class F>
+    R fold(F f, const R &init = R{}) const
+    {
+        R acc = init;
+        for (const auto &el : *this)
+        {
+            acc = f(acc, el);
+        }
+        return acc;
+    }
+
+    /// Sums all the elements.
+    /// The following must be defined: `+: (R, T) -> R`
+    template<class R = value_type>
+    R sum(const R &init = R{}) const
+    {
+        R acc = init;
+        for (const auto &el : *this)
+        {
+            acc = acc + el;
+        }
+        return acc;
+    }
+
+    /// Multiplies all the elements.
+    /// The following must be defined: `*: (R, T) -> R`
+    template<class R = value_type>
+    R product(const R &init = R{1}) const
+    {
+        R acc = init;
+        for (const auto &el : *this)
+        {
+            acc = acc * el;
+        }
+        return acc;
+    }
+
     /// Two sequences are considered equal if they contain the same elements
     /// in the same order, where two elements are equal if there is a defined
     /// == operator of this value type over the other value type, and this
