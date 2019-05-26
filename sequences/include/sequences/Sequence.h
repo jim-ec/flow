@@ -10,7 +10,7 @@
 #include "sequences/combinators/Zip.h"
 #include "sequences/combinators/Range.h"
 #include "sequences/combinators/Chain.h"
-#include "sequences/combinators/Inspect.h"
+#include "sequences/combinators/OnEach.h"
 #include "sequences/combinators/Flatten.h"
 
 namespace sequences
@@ -199,11 +199,11 @@ public:
     }
 
     template<class F>
-    Sequence<Inspect<Iter, F>> inspect(F function) const
+    Sequence<OnEach<Iter, F>> on_each(F function) const
     {
         return make_sequence(
-                make_inspect(m_begin, function),
-                make_inspect(m_end, function)
+                make_on_each(m_begin, function),
+                make_on_each(m_end, function)
         );
     }
 

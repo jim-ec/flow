@@ -174,7 +174,7 @@ TEST_CASE("Inspecting")
     std::vector<char> v{'a', 'b', 'c'};
     char buf[4] = {};
     int i = 0;
-    make_sequence(v).inspect([&buf, &i](char &c) {
+    make_sequence(v).on_each([&buf, &i](char &c) {
         buf[i++] = c;
         ++c;
     }).close();
@@ -289,7 +289,7 @@ TEST_CASE("Sequence of write-through pointers")
 
     std::vector<int *> pointers{&a, &b};
 
-    auto sequence = make_sequence(pointers).inspect([](int *n) {
+    auto sequence = make_sequence(pointers).on_each([](int *n) {
         *n = 10;
     });
 
@@ -352,7 +352,7 @@ TEST_CASE("Mutating underlying elements")
 {
     std::vector<int> v{1, 2, 3};
     auto s = make_sequence(v)
-            .inspect([](int &n) { n += 10; });
+            .on_each([](int &n) { n += 10; });
 
     REQUIRE(v[0] == 1);
     REQUIRE(v[1] == 2);

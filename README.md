@@ -38,7 +38,7 @@ Currently, the following combinator operations are available and can be chained 
 
 - `.map(T → R)`: Map a single input argument to an output of any type.
 - `.filter(T → Bool)`: Take only elements for which a predicate function returns true.
-- `.inspect(T → Void)`: Runs a function on each element, without returning new elements. Useful for printing values.
+- `.on_each(T → Void)`: Runs a function on each element, without returning new elements. Useful for printing values.
 - `.zip({T})`: Zips two sequences of possibly different types together to sequence of pairs.
 - `.map2((T, E) → R)`: Similar to mapping, but the function takes two arguments.
   Works for sequences of pairs, like the ones created by zipping.
@@ -57,7 +57,7 @@ Where:
 Furthermore, the following operations are available.
 
 - `.for_each(T → Void)`: Runs a function on each element, without returning new elements.
-  Unlike `inspect()`, this forces the sequence to immediately iterate over all elements.
+  Unlike `on_each()`, this forces the sequence to immediately iterate over all elements.
 - `.count()`: Counts the elements of the sequence.
 - `.empty()`: Checks if the sequence is empty.
   Does not dereference the iterators, so no supplied function is actually invoked.
@@ -123,7 +123,7 @@ This gives additional flexibility.
 ```c++
 std::vector<int> v{1, 2, 3};
 auto s = make_sequence(v)
-        .inspect([](int &n) { n += 10; });
+        .on_each([](int &n) { n += 10; });
 
 // Original values.
 REQUIRE(v[0] == 1);
