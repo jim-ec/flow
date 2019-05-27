@@ -5,7 +5,6 @@
 #pragma once
 
 #include "tools.h"
-#include "Sequence.h"
 
 namespace sequences
 {
@@ -99,44 +98,5 @@ public:
     }
 
 };
-
-template<class T, class F>
-Sequence <Mutation<T, F>> make_mutation(const T &init, F f)
-{
-    Mutation<T, F> mutation{init, f};
-    return make_sequence(mutation, mutation);
-}
-
-namespace impl
-{
-
-template<class T>
-struct LinearMutation
-{
-    T step;
-
-    LinearMutation() = default;
-
-    LinearMutation(const LinearMutation &rhs) = default;
-
-    LinearMutation(LinearMutation &&rhs) noexcept = default;
-
-    LinearMutation &operator=(const LinearMutation &rhs) = default;
-
-    LinearMutation &operator=(LinearMutation &&rhs) noexcept = default;
-
-    int operator()(int n)
-    {
-        return n + step;
-    }
-};
-
-}
-
-template<class T = int>
-Sequence <Mutation<T, impl::LinearMutation<T>>> make_mutation_linear(const T &init = T{0}, const T &step = T{1})
-{
-    return make_mutation(init, impl::LinearMutation<T>{step});
-}
 
 }

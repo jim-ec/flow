@@ -6,7 +6,6 @@
 
 #include "tools.h"
 #include "sequences/Sequence.h"
-#include "sequences/Mutation.h"
 
 using namespace sequences;
 
