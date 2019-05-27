@@ -64,49 +64,9 @@ struct Pair
     }
 
     template<class A, class B>
-    bool operator==(const Pair<A &, B &> &rhs) const
+    bool operator==(const Pair<A, B> &rhs) const
     {
         return m_first == rhs.m_first && m_second == rhs.m_second;
-    }
-
-//    template<class A, class B>
-//    bool operator==(const Pair<A, B> &rhs) const
-//    {
-//        return m_first == rhs.m_first && m_second == rhs.m_second;
-//    }
-
-//    template<class A, class B>
-//    bool operator==(const Pair<A &, const B &> &rhs) const
-//    {
-//        return m_first == rhs.m_first && m_second == rhs.m_second;
-//    }
-
-    template<class A, class B>
-    bool operator==(const Pair<A *, B *> &rhs) const
-    {
-        return m_first == *rhs.m_first && m_second == *rhs.m_second;
-    }
-
-//    template<class A, class B>
-//    bool operator==(const Pair<A, B *> &rhs) const
-//    {
-//        return m_first == rhs.m_first && m_second == *rhs.m_second;
-//    }
-
-    template<class A, class B>
-    Pair &operator=(const Pair<A, B> &rhs)
-    {
-        m_first = rhs.m_first;
-        m_second = rhs.m_second;
-        return *this;
-    }
-
-    template<class A, class B>
-    Pair &operator=(const Pair<A *, B *> &rhs)
-    {
-        m_first = *rhs.m_first;
-        m_second = *rhs.m_second;
-        return *this;
     }
 
 };

@@ -45,14 +45,14 @@ public:
     value_type &operator*()
     {
         const pair_type &pair = *m_iter;
-        m_cache = m_function(*pair.m_first, *pair.m_second);
+        m_cache = m_function(pair.m_first, pair.m_second);
         return m_cache;
     }
 
     const value_type &operator*() const
     {
         pair_type &pair = *m_iter;
-        m_cache = m_function(*pair.m_first, *pair.m_second);
+        m_cache = m_function(pair.m_first, pair.m_second);
         return m_cache;
     }
 

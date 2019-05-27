@@ -19,15 +19,38 @@ TEST_CASE("As pointer")
     REQUIRE(s.empty());
 }
 
+TEST_CASE("Zipping pointers")
+{
+    int data0[] = {2, 3, 4};
+    int data1[] = {5, 6, 7};
+
+    make_sequence(data0)
+            .as_pointer()
+            .zip(make_sequence(data1))
+            .map2([](int *const a, const int b) {
+                *a += b;
+                return 0;
+            })
+            .close();
+
+    REQUIRE(data0[0] == 7);
+    REQUIRE(data0[1] == 9);
+    REQUIRE(data0[2] == 11);
+
+    REQUIRE(data1[0] == 5);
+    REQUIRE(data1[1] == 6);
+    REQUIRE(data1[2] == 7);
+}
+
 TEST_CASE("Indexing")
 {
     char data[] = {'a', 'b', 'c'};
 
     auto s = make_sequence(data).index();
 
-    REQUIRE((make_pair(0, 'a') == s.next()));
-    REQUIRE((make_pair(1, 'b') == s.next()));
-    REQUIRE((make_pair(2, 'c') == s.next()));
+    REQUIRE(make_pair(0, 'a') == s.next());
+    REQUIRE(make_pair(1, 'b') == s.next());
+    REQUIRE(make_pair(2, 'c') == s.next());
     REQUIRE(s.empty());
 }
 
