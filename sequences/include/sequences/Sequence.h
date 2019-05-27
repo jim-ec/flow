@@ -9,7 +9,6 @@
 #include "sequences/combinators/Filter.h"
 #include "sequences/combinators/Zip.h"
 #include "sequences/combinators/Range.h"
-#include "sequences/combinators/Index.h"
 #include "sequences/combinators/Chain.h"
 #include "sequences/combinators/OnEach.h"
 #include "sequences/combinators/Flatten.h"
@@ -25,6 +24,12 @@ class Sequence;
 /// Creates a sequence from a collection defining a @a begin() and @a end() function.
 template<class C>
 Sequence<typename C::iterator> make_sequence(C &c);
+
+template<class T, class F>
+Sequence <Mutation<T, F>> make_mutation(const T &init, F f);
+
+template<class T = int>
+Sequence <Mutation<T, impl::LinearMutation<T>>> make_mutation_linear(const T &init = T{0}, const T &step = T{1});
 
 template<class Iter>
 const Sequence<Iter> make_sequence(
@@ -257,12 +262,11 @@ public:
         }
     }
 
-    Sequence<Index<Iter>> index() const
+    template<class Idx = size_t>
+    Sequence<Zip<Mutation<Idx, impl::LinearMutation<Idx>>, Iter>>
+    index() const
     {
-        return make_sequence(
-                make_index(begin()),
-                make_index(end())
-        );
+        return make_mutation_linear<Idx>().zip(*this);
     }
 
     /// Folds the sequence, using a accumulator function.
@@ -402,40 +406,14 @@ Sequence<T *> make_sequence(T(&array)[size])
 }
 
 template<class T, class F>
-Sequence <Mutation<T, F>> make_mutation(const T &init, F f)
+Sequence<Mutation<T, F>> make_mutation(const T &init, F f)
 {
     Mutation<T, F> mutation{init, f};
     return make_sequence(mutation, mutation);
 }
 
-namespace impl
-{
-
 template<class T>
-struct LinearMutation
-{
-    T step;
-
-    LinearMutation() = default;
-
-    LinearMutation(const LinearMutation &rhs) = default;
-
-    LinearMutation(LinearMutation &&rhs) noexcept = default;
-
-    LinearMutation &operator=(const LinearMutation &rhs) = default;
-
-    LinearMutation &operator=(LinearMutation &&rhs) noexcept = default;
-
-    int operator()(int n)
-    {
-        return n + step;
-    }
-};
-
-}
-
-template<class T = int>
-Sequence <Mutation<T, impl::LinearMutation<T>>> make_mutation_linear(const T &init = T{0}, const T &step = T{1})
+Sequence<Mutation<T, impl::LinearMutation<T>>> make_mutation_linear(const T &init, const T &step)
 {
     return make_mutation(init, impl::LinearMutation<T>{step});
 }

@@ -69,11 +69,11 @@ struct Pair
         return m_first == rhs.m_first && m_second == rhs.m_second;
     }
 
-    template<class A, class B>
-    bool operator==(const Pair<A, B> &rhs) const
-    {
-        return m_first == rhs.m_first && m_second == rhs.m_second;
-    }
+//    template<class A, class B>
+//    bool operator==(const Pair<A, B> &rhs) const
+//    {
+//        return m_first == rhs.m_first && m_second == rhs.m_second;
+//    }
 
 //    template<class A, class B>
 //    bool operator==(const Pair<A &, const B &> &rhs) const
@@ -87,11 +87,11 @@ struct Pair
         return m_first == *rhs.m_first && m_second == *rhs.m_second;
     }
 
-    template<class A, class B>
-    bool operator==(const Pair<A, B *> &rhs) const
-    {
-        return m_first == rhs.m_first && m_second == *rhs.m_second;
-    }
+//    template<class A, class B>
+//    bool operator==(const Pair<A, B *> &rhs) const
+//    {
+//        return m_first == rhs.m_first && m_second == *rhs.m_second;
+//    }
 
     template<class A, class B>
     Pair &operator=(const Pair<A, B> &rhs)
@@ -115,6 +115,32 @@ template<class T, class U>
 Pair<T, U> make_pair(T a, U b)
 {
     return Pair<T, U>{a, b};
+}
+
+namespace impl
+{
+
+template<class T>
+struct LinearMutation
+{
+    T step;
+
+    LinearMutation() = default;
+
+    LinearMutation(const LinearMutation &rhs) = default;
+
+    LinearMutation(LinearMutation &&rhs) noexcept = default;
+
+    LinearMutation &operator=(const LinearMutation &rhs) = default;
+
+    LinearMutation &operator=(LinearMutation &&rhs) noexcept = default;
+
+    int operator()(int n)
+    {
+        return n + step;
+    }
+};
+
 }
 
 }
