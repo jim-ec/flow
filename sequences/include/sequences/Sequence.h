@@ -12,6 +12,7 @@
 #include "sequences/combinators/Chain.h"
 #include "sequences/combinators/OnEach.h"
 #include "sequences/combinators/Flatten.h"
+#include "sequences/combinators/AsPointer.h"
 
 #include "Mutation.h"
 
@@ -26,10 +27,10 @@ template<class C>
 Sequence<typename C::iterator> make_sequence(C &c);
 
 template<class T, class F>
-Sequence <Mutation<T, F>> make_mutation(const T &init, F f);
+Sequence<Mutation<T, F>> make_mutation(const T &init, F f);
 
 template<class T = int>
-Sequence <Mutation<T, impl::LinearMutation<T>>> make_mutation_linear(const T &init = T{0}, const T &step = T{1});
+Sequence<Mutation<T, impl::LinearMutation<T>>> make_mutation_linear(const T &init = T{0}, const T &step = T{1});
 
 template<class Iter>
 const Sequence<Iter> make_sequence(
@@ -171,6 +172,15 @@ public:
             iter++;
         }
         return *iter;
+    }
+
+    Sequence<AsPointer<Iter>>
+    as_pointer() const
+    {
+        return make_sequence(
+                make_as_pointer(begin()),
+                make_as_pointer(end())
+        );
     }
 
     template<class IterRhs>

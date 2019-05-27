@@ -9,13 +9,23 @@
 
 using namespace sequences;
 
+TEST_CASE("As pointer")
+{
+    int data[] = {1, 2, 3};
+    auto s = make_sequence(data).as_pointer();
+    REQUIRE(&data[0] == s.next());
+    REQUIRE(&data[1] == s.next());
+    REQUIRE(&data[2] == s.next());
+    REQUIRE(s.empty());
+}
+
 TEST_CASE("Indexing")
 {
     char data[] = {'a', 'b', 'c'};
 
     auto s = make_sequence(data).index();
 
-    REQUIRE((make_pair(0, 'a') ==  s.next()));
+    REQUIRE((make_pair(0, 'a') == s.next()));
     REQUIRE((make_pair(1, 'b') == s.next()));
     REQUIRE((make_pair(2, 'c') == s.next()));
     REQUIRE(s.empty());
@@ -25,7 +35,7 @@ TEST_CASE("Folding")
 {
     const char *data[] = {"a", "bc", "d"};
 
-    std::string string = make_sequence(data).fold<std::string>([] (const std::string &acc, const char *str) {
+    std::string string = make_sequence(data).fold<std::string>([](const std::string &acc, const char *str) {
         return concat(acc, std::string{str});
     });
     REQUIRE(string == "abcd");
