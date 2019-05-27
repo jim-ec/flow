@@ -12,7 +12,7 @@ template<class Iter>
 class Range
 {
     Iter m_iter;
-    size_t m_index;
+    size_t m_index{};
 
 public:
 

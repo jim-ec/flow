@@ -19,7 +19,7 @@ public:
 private:
     IterLeft m_left;
     IterRight m_right;
-    value_type m_cache;
+    value_type m_cache{};
 
 public:
 
@@ -65,7 +65,7 @@ public:
         // are the same if both iterator pairs equal, and not only one them.
         // The reason for this implementation is that this is simply the negation
         // of the != operator, so there are no cases where two zip sequences are neither equal
-        // not not equal. And the != operator is choosen in such a way that if either the left
+        // not not equal. And the != operator is chosen in such a way that if either the left
         // or the right iterator reaches end, the whole zip sequence is considered to reached the end.
         return m_left == rhs.m_left || m_right == rhs.m_right;
     }

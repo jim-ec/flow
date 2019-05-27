@@ -18,7 +18,7 @@ private:
     Iter m_iter;
     Iter m_end;
     F m_function;
-    value_type m_cache;
+    value_type m_cache{};
 
 public:
 

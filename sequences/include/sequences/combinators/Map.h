@@ -20,7 +20,7 @@ public:
 private:
     Iter m_iter;
     F m_function;
-    mutable value_type m_cache;
+    mutable value_type m_cache{};
 
 public:
 
