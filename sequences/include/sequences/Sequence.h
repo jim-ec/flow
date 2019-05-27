@@ -9,6 +9,7 @@
 #include "sequences/combinators/Filter.h"
 #include "sequences/combinators/Zip.h"
 #include "sequences/combinators/Range.h"
+#include "sequences/combinators/Index.h"
 #include "sequences/combinators/Chain.h"
 #include "sequences/combinators/OnEach.h"
 #include "sequences/combinators/Flatten.h"
@@ -254,6 +255,14 @@ public:
         }
     }
 
+    Sequence<Index<Iter>> index() const
+    {
+        return make_sequence(
+                make_index(begin()),
+                make_index(end())
+        );
+    }
+
     /// Folds the sequence, using a accumulator function.
     /// The function should be of the type: (R, T) -> R.
     template<class R = value_type, class F>
@@ -385,7 +394,8 @@ Sequence<typename C::iterator> make_sequence(C &c)
 }
 
 template<class T, size_t size>
-Sequence<T *> make_sequence(T(&array)[size]) {
+Sequence<T *> make_sequence(T(&array)[size])
+{
     return make_sequence(&array[0], &array[size]);
 }
 

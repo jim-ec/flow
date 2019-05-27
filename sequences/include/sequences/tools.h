@@ -38,6 +38,26 @@ struct Pair
     T m_first;
     U m_second;
 
+    Pair() = default;
+
+    Pair(const Pair &) = default;
+
+    Pair(Pair &&) noexcept = default;
+
+    Pair(const T &first, const U &second) :
+            m_first{first},
+            m_second{second}
+    {}
+
+    Pair(T &&first, U &&second) :
+            m_first{std::move(first)},
+            m_second{std::move(second)}
+    {}
+
+    Pair &operator=(const Pair &rhs) = default;
+
+    Pair &operator=(Pair &&rhs) noexcept = default;
+
     bool operator==(const Pair &rhs) const
     {
         return m_first == rhs.m_first && m_second == rhs.m_second;
@@ -50,9 +70,27 @@ struct Pair
     }
 
     template<class A, class B>
+    bool operator==(const Pair<A, B> &rhs) const
+    {
+        return m_first == rhs.m_first && m_second == rhs.m_second;
+    }
+
+//    template<class A, class B>
+//    bool operator==(const Pair<A &, const B &> &rhs) const
+//    {
+//        return m_first == rhs.m_first && m_second == rhs.m_second;
+//    }
+
+    template<class A, class B>
     bool operator==(const Pair<A *, B *> &rhs) const
     {
         return m_first == *rhs.m_first && m_second == *rhs.m_second;
+    }
+
+    template<class A, class B>
+    bool operator==(const Pair<A, B *> &rhs) const
+    {
+        return m_first == rhs.m_first && m_second == *rhs.m_second;
     }
 
     template<class A, class B>

@@ -19,6 +19,17 @@ static std::string concat(const std::string &a, const std::string &b)
     return ss.str();
 }
 
+TEST_CASE("Indexing")
+{
+    char data[] = {'a', 'b', 'c'};
+
+    auto s = make_sequence(data).index();
+    REQUIRE(make_pair(0, 'a') == s.next());
+    REQUIRE(make_pair(1, 'b') == s.next());
+    REQUIRE(make_pair(2, 'c') == s.next());
+    REQUIRE(s.empty());
+}
+
 TEST_CASE("Folding")
 {
     const char *data[] = {"a", "bc", "d"};
