@@ -1,23 +1,14 @@
-#define CATCH_CONFIG_MAIN
-
 #include "catch2/catch.hpp"
 
 #include <cstring>
 #include <vector>
 #include <string>
-#include <sstream>
 
+#include "tools.h"
 #include "sequences/Sequence.h"
 #include "sequences/Mutation.h"
 
 using namespace sequences;
-
-static std::string concat(const std::string &a, const std::string &b)
-{
-    std::stringstream ss;
-    ss << a << b;
-    return ss.str();
-}
 
 TEST_CASE("Indexing")
 {
@@ -103,13 +94,6 @@ TEST_CASE("Flat mapping")
     REQUIRE(s.empty());
 }
 
-TEST_CASE("Counting")
-{
-    std::vector<int> v{1, 2, 3, 4, 3, 2, 1};
-    auto sequence = make_sequence(v);
-    REQUIRE(sequence.count() == v.size());
-}
-
 TEST_CASE("Sub-sequences")
 {
     std::vector<int> v{1, 2, 3, 4, 5, 6};
@@ -120,45 +104,6 @@ TEST_CASE("Sub-sequences")
     REQUIRE(sequence.range(3).count() == 3);
     REQUIRE(sequence.skipped(1).range(3).count() == 3);
     REQUIRE(sequence.range(3).skipped(1).count() == 2);
-}
-
-TEST_CASE("Empty sequences")
-{
-    std::vector<int> v{1, 2, 3, 4, 5, 6};
-    auto sequence = make_sequence(v).range(0);
-
-    REQUIRE(sequence.count() == 0);
-    REQUIRE(sequence.empty());
-}
-
-TEST_CASE("Containment")
-{
-    std::vector<int> v{1, 2, 3, 4, 5, 6};
-    auto sequence = make_sequence(v);
-
-    REQUIRE(sequence.contains(4));
-    REQUIRE(!sequence.contains(0));
-}
-
-TEST_CASE("Last")
-{
-    std::vector<int> v{1, 2, 3, 4, 5, 6};
-    auto sequence = make_sequence(v);
-
-    REQUIRE(sequence.last_element() == 6);
-}
-
-TEST_CASE("Iteration")
-{
-    std::vector<int> v{1, 2, 3, 4, 5};
-    auto sequence = make_sequence(v);
-
-    REQUIRE(sequence.next() == 1);
-    REQUIRE(sequence.next() == 2);
-    REQUIRE(sequence.next() == 3);
-    REQUIRE(sequence.next() == 4);
-    REQUIRE(sequence.next() == 5);
-    REQUIRE(sequence.empty());
 }
 
 TEST_CASE("Mapping")
@@ -201,7 +146,7 @@ TEST_CASE("Zipping")
     REQUIRE(sequence.empty());
 }
 
-TEST_CASE("Inspecting")
+TEST_CASE("On each")
 {
     std::vector<char> v{'a', 'b', 'c'};
     char buf[4] = {};
@@ -229,42 +174,6 @@ TEST_CASE("For each")
     REQUIRE(strcmp("abc", buf) == 0);
 }
 
-TEST_CASE("Mutation sequence")
-{
-    int counter = 0;
-
-    auto sequence = make_mutation(2, [&counter](int n) {
-        ++counter;
-        return n * n;
-    });
-
-    REQUIRE(sequence.next() == 2);
-    REQUIRE(sequence.next() == 4);
-    REQUIRE(*sequence == 16);
-    REQUIRE(*sequence.skipped(2) == 1u << 16u);
-    REQUIRE(counter == 4);
-}
-
-TEST_CASE("Finite mutation")
-{
-    auto sequence = make_mutation(1, [](int n) {
-        return 2 * n;
-    }).range(4);
-    REQUIRE(sequence.next() == 1);
-    REQUIRE(sequence.next() == 2);
-    REQUIRE(sequence.next() == 4);
-    REQUIRE(sequence.next() == 8);
-    REQUIRE(sequence.empty());
-}
-
-TEST_CASE("Skipping over end")
-{
-    auto sequence = make_mutation(1, [](int n) {
-        return 2 * n;
-    }).range(1).skip(10);
-    REQUIRE(sequence.empty());
-}
-
 TEST_CASE("Combine mapping and filtering")
 {
     std::vector<int> v{0, 1, 2, 3, 4, 5, 6, 7, 8,
@@ -278,9 +187,7 @@ TEST_CASE("Combine mapping and filtering")
                 return n % 2 == 0;
             })
             .map([](int n) {
-                std::stringstream ss;
-                ss << "Number: " << n;
-                return ss.str();
+                return concat("Number: ", n);
             });
 
     // Take first entry and move sequence the next element.
@@ -332,21 +239,6 @@ TEST_CASE("Sequence of write-through pointers")
     REQUIRE(sequence.empty());
     REQUIRE(a == 10);
     REQUIRE(b == 10);
-}
-
-TEST_CASE("Copy to other sequence")
-{
-    std::vector<int> v;
-    auto sequence = make_mutation_linear().range(3);
-    sequence.emplace_to(v);
-    sequence.emplace_to(v);
-
-    REQUIRE(v[0] == 0);
-    REQUIRE(v[1] == 1);
-    REQUIRE(v[2] == 2);
-    REQUIRE(v[3] == 0);
-    REQUIRE(v[4] == 1);
-    REQUIRE(v[5] == 2);
 }
 
 TEST_CASE("Index access")
