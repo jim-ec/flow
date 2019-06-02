@@ -102,16 +102,17 @@ public:
         );
     }
 
-    size_t count() const
+    /// Consumes the iterator, counting the number of iterations and returning it.
+    size_t
+    count()
     {
-        size_t result = 0;
-        auto iter = begin();
-        while (iter != end())
+        size_t count = 0;
+        while (m_begin != m_end)
         {
-            ++result;
-            ++iter;
+            ++count;
+            ++m_begin;
         }
-        return result;
+        return count;
     }
 
     Sequence &close()

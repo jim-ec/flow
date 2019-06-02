@@ -132,7 +132,7 @@ TEST_CASE("Sub-sequences")
     std::vector<int> v{1, 2, 3, 4, 5, 6};
     auto sequence = make_sequence(v.begin(), v.end());
 
-    REQUIRE(sequence.count() == 6);
+    REQUIRE(sequence.skipped(0).count() == 6);
     REQUIRE(sequence.skipped(2).count() == 4);
     REQUIRE(sequence.take(3).count() == 3);
     REQUIRE(sequence.skipped(1).take(3).count() == 3);
