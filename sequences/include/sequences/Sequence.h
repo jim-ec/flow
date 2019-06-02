@@ -5,7 +5,7 @@
 #pragma once
 
 #include "sequences/combinators/Map.h"
-#include "sequences/combinators/Map2.h"
+#include "sequences/combinators/MapPair.h"
 #include "sequences/combinators/Filter.h"
 #include "sequences/combinators/Zip.h"
 #include "sequences/combinators/Take.h"
@@ -206,13 +206,13 @@ public:
     }
 
     template<class F>
-    Sequence<Map2<Iter, F>> map2(
+    Sequence<MapPair<Iter, F>> map_pair(
             F function
     ) const
     {
         return make_sequence(
-                make_map2(begin(), function),
-                make_map2(end(), function)
+                make_map_pair(begin(), function),
+                make_map_pair(end(), function)
         );
     }
 

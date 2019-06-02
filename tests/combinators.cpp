@@ -27,7 +27,7 @@ TEST_CASE("Zipping pointers")
     make_sequence(data0)
             .as_ptr()
             .zip(make_sequence(data1))
-            .map2([](int *const a, const int b) {
+            .map_pair([](int *const a, const int b) {
                 *a += b;
                 return 0;
             })
@@ -86,7 +86,7 @@ TEST_CASE("Zipping raw pointer iterators")
 
     auto s = make_sequence(data1)
             .zip(make_sequence(data2))
-            .map2([](int a, int b) { return a + b; });
+            .map_pair([](int a, int b) { return a + b; });
 
     REQUIRE(s.next() == 18);
     REQUIRE(s.next() == 21);
@@ -243,7 +243,7 @@ TEST_CASE("Pair mapping")
 
     auto numbers = evenNumberSequence
             .zip(oddNumberSequence)
-            .map2([](int even, int odd) {
+            .map_pair([](int even, int odd) {
                 return odd - even;
             })
             .take(20);

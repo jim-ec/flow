@@ -40,10 +40,10 @@ Currently, the following combinator operations are available and can be chained 
 - `.filter(T → Bool)`: Take only elements for which a predicate function returns true.
 - `.on_each(T → Void)`: Runs a function on each element, without returning new elements. Useful for printing values.
 - `.zip({T})`: Zips two sequences of possibly different types together to sequence of pairs.
-- `.map2((T, E) → R)`: Similar to mapping, but the function takes two arguments.
+- `.map_pair((T, E) → R)`: Similar to mapping, but the function takes two arguments.
   Works for sequences of pairs, like the ones created by zipping.
   You could use the normal map, but the function would have to accept pairs, and first defining
-  local references to the first and second entry, so map2 simply saves boilerplate code.
+  local references to the first and second entry, so map_pair simply saves boilerplate code.
 - `.chain({T})`: Chains a sequence, so that the resulting sequence covers both sequences' elements.
 - `.skip(n)`: Skips the first n elements.
 - `.skipped(n)`: Like skip, but returns a new sequence instead of modifying the original one.
