@@ -12,7 +12,7 @@ using namespace sequences;
 TEST_CASE("As pointer")
 {
     int data[] = {1, 2, 3};
-    auto s = make_sequence(data).as_pointer();
+    auto s = make_sequence(data).as_ptr();
     REQUIRE(&data[0] == s.next());
     REQUIRE(&data[1] == s.next());
     REQUIRE(&data[2] == s.next());
@@ -25,7 +25,7 @@ TEST_CASE("Zipping pointers")
     int data1[] = {5, 6, 7};
 
     make_sequence(data0)
-            .as_pointer()
+            .as_ptr()
             .zip(make_sequence(data1))
             .map2([](int *const a, const int b) {
                 *a += b;

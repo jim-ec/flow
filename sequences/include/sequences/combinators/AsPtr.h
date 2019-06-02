@@ -9,7 +9,7 @@
 namespace sequences
 {
 template<class Iter>
-class AsPointer
+class AsPtr
 {
 public:
     using cache_value_type = iter_value_type_t<Iter>;
@@ -21,17 +21,17 @@ private:
 
 public:
 
-    AsPointer() = default;
+    AsPtr() = default;
 
-    AsPointer(const AsPointer &rhs) = default;
+    AsPtr(const AsPtr &rhs) = default;
 
-    AsPointer(AsPointer &&rhs) noexcept = default;
+    AsPtr(AsPtr &&rhs) noexcept = default;
 
-    AsPointer &operator=(const AsPointer &rhs) = default;
+    AsPtr &operator=(const AsPtr &rhs) = default;
 
-    AsPointer &operator=(AsPointer &&rhs) noexcept = default;
+    AsPtr &operator=(AsPtr &&rhs) noexcept = default;
 
-    explicit AsPointer(const Iter &iter) :
+    explicit AsPtr(const Iter &iter) :
             m_iter{iter}
     {}
 
@@ -47,15 +47,15 @@ public:
         return m_cache;
     }
 
-    AsPointer &operator++()
+    AsPtr &operator++()
     {
         ++m_iter;
         return *this;
     }
 
-    AsPointer operator+(const size_t offset) const
+    AsPtr operator+(const size_t offset) const
     {
-        AsPointer result{m_iter};
+        AsPtr result{m_iter};
         for (size_t i = 0; i < offset; i++)
         {
             ++result.m_iter;
@@ -63,21 +63,21 @@ public:
         return result;
     }
 
-    bool operator==(const AsPointer &rhs) const
+    bool operator==(const AsPtr &rhs) const
     {
         return m_iter == rhs.m_iter;
     }
 
-    bool operator!=(const AsPointer &rhs) const
+    bool operator!=(const AsPtr &rhs) const
     {
         return m_iter != rhs.m_iter;
     }
 };
 
 template<class Iter>
-AsPointer<Iter> make_as_pointer(const Iter &iter)
+AsPtr<Iter> make_as_ptr(const Iter &iter)
 {
-    return AsPointer<Iter>{iter};
+    return AsPtr<Iter>{iter};
 }
 
 }
