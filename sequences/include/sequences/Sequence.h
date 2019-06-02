@@ -299,9 +299,11 @@ public:
         }
     }
 
+    /// Enumerates all elements by mapping them to a pair, where the first entry
+    /// is the index and the second entry the actual element.
     template<class Idx = size_t>
     Sequence<Zip<Mutation<Idx, impl::LinearMutation<Idx>>, Iter>>
-    index() const
+    enumerate() const
     {
         return make_mutation_linear<Idx>().zip(*this);
     }

@@ -46,7 +46,7 @@ TEST_CASE("Indexing")
 {
     char data[] = {'a', 'b', 'c'};
 
-    auto s = make_sequence(data).index();
+    auto s = make_sequence(data).enumerate();
 
     REQUIRE(make_pair(0, 'a') == s.next());
     REQUIRE(make_pair(1, 'b') == s.next());
