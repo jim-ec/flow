@@ -1,6 +1,6 @@
 # Sequences
 
-This library allows for iterating chaining, similar to **Rust's iterators** or **Java's Streams API**.
+This library allows for iterating chaining with C++14, similar to **Rust's iterators** or **Java's Streams API**.
 
 ```c++
 std::vector<int> v{0, 1, 2, 3, 4, 5, 6, 7, 8,
