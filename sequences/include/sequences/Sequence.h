@@ -67,7 +67,8 @@ public:
     {}
 
     /// Creates an iterator that skips the first n elements.
-    Sequence skip(const size_t offset) const
+    Sequence
+    skip(const size_t offset) const
     {
         auto iter = begin();
 
@@ -83,7 +84,9 @@ public:
         return make_sequence(iter, end());
     }
 
-    Sequence<Take<Iter>> take(const size_t count) const
+    /// Creates an iterator that yields its first n elements.
+    Sequence<Take<Iter>>
+    take(const size_t count) const
     {
         return make_sequence(
                 make_take(m_begin, 0),
@@ -104,7 +107,8 @@ public:
         return count;
     }
 
-    Sequence &close()
+    Sequence &
+    close()
     {
         while (m_begin != end())
         {
