@@ -56,12 +56,12 @@ TEST_CASE("Indexing")
 
 TEST_CASE("Folding")
 {
-    const char *data[] = {"a", "bc", "d"};
+    const char *data[] = {"h", "e", "ll", "o"};
 
-    std::string string = make_sequence(data).fold<std::string>([](const std::string &acc, const char *str) {
+    auto string = make_sequence(data).fold<std::string>([](const std::string &acc, const char *str) {
         return concat(acc, std::string{str});
     });
-    REQUIRE(string == "abcd");
+    REQUIRE(string == "hello");
 
     REQUIRE(make_mutation_linear(1).take(4).sum() == 10);
     REQUIRE(make_mutation_linear(1).take(4).product() == 24);
