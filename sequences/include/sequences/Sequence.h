@@ -10,8 +10,8 @@
 #include "sequences/combinators/Zip.h"
 #include "sequences/combinators/Take.h"
 #include "sequences/combinators/Chain.h"
-#include "sequences/combinators/OnEach.h"
-#include "sequences/combinators/OnEachPair.h"
+#include "sequences/combinators/Inspect.h"
+#include "sequences/combinators/InspectPair.h"
 #include "sequences/combinators/Flatten.h"
 #include "sequences/combinators/ByPtr.h"
 
@@ -204,22 +204,22 @@ public:
     }
 
     template<class Fn>
-    Sequence<OnEach<Iter, Fn>>
-    on_each(Fn fn) const
+    Sequence<Inspect<Iter, Fn>>
+    inspect(Fn fn) const
     {
         return make_sequence(
-                make_on_each(m_begin, fn),
-                make_on_each(m_end, fn)
+                make_inspect(m_begin, fn),
+                make_inspect(m_end, fn)
         );
     }
 
     template<class Fn>
-    Sequence<OnEachPair<Iter, Fn>>
-    on_each_pair(Fn fn) const
+    Sequence<InspectPair<Iter, Fn>>
+    inspect_pair(Fn fn) const
     {
         return make_sequence(
-                make_on_each_pair(m_begin, fn),
-                make_on_each_pair(m_end, fn)
+                make_inspect_pair(m_begin, fn),
+                make_inspect_pair(m_end, fn)
         );
     }
 

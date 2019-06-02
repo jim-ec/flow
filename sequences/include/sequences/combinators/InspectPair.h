@@ -9,7 +9,7 @@
 namespace sequences
 {
 template<class Iter, class Fn>
-class OnEachPair
+class InspectPair
 {
 public:
     using value_type = iter_value_type_t<Iter>;
@@ -20,14 +20,14 @@ private:
 
 public:
 
-    OnEachPair() = default;
-    OnEachPair(const OnEachPair &rhs) = default;
-    OnEachPair(OnEachPair &&rhs) noexcept = default;
+    InspectPair() = default;
+    InspectPair(const InspectPair &rhs) = default;
+    InspectPair(InspectPair &&rhs) noexcept = default;
 
-    OnEachPair &operator=(const OnEachPair &rhs) = default;
-    OnEachPair &operator=(OnEachPair &&rhs) noexcept = default;
+    InspectPair &operator=(const InspectPair &rhs) = default;
+    InspectPair &operator=(InspectPair &&rhs) noexcept = default;
 
-    OnEachPair(
+    InspectPair(
             const Iter &iter,
             Fn fn
     ) :
@@ -50,15 +50,15 @@ public:
         return n;
     }
 
-    OnEachPair &operator++()
+    InspectPair &operator++()
     {
         ++m_iter;
         return *this;
     }
 
-    OnEachPair operator+(const size_t offset) const
+    InspectPair operator+(const size_t offset) const
     {
-        OnEachPair result{m_iter, m_fn};
+        InspectPair result{m_iter, m_fn};
         for (size_t i = 0; i < offset; i++)
         {
             ++result.m_iter;
@@ -66,24 +66,24 @@ public:
         return result;
     }
 
-    bool operator==(const OnEachPair &rhs) const
+    bool operator==(const InspectPair &rhs) const
     {
         return m_iter == rhs.m_iter;
     }
 
-    bool operator!=(const OnEachPair &rhs) const
+    bool operator!=(const InspectPair &rhs) const
     {
         return m_iter != rhs.m_iter;
     }
 };
 
 template<class Iter, class Fn>
-OnEachPair<Iter, Fn> make_on_each_pair(
+InspectPair<Iter, Fn> make_inspect_pair(
         const Iter &iter,
         Fn fn
 )
 {
-    return OnEachPair<Iter, Fn>{iter, fn};
+    return InspectPair<Iter, Fn>{iter, fn};
 }
 
 }

@@ -9,7 +9,7 @@
 namespace sequences
 {
 template<class Iter, class Fn>
-class OnEach
+class Inspect
 {
 public:
     using value_type = iter_value_type_t<Iter>;
@@ -20,14 +20,14 @@ private:
 
 public:
 
-    OnEach() = default;
-    OnEach(const OnEach &rhs) = default;
-    OnEach(OnEach &&rhs) noexcept = default;
+    Inspect() = default;
+    Inspect(const Inspect &rhs) = default;
+    Inspect(Inspect &&rhs) noexcept = default;
 
-    OnEach &operator=(const OnEach &rhs) = default;
-    OnEach &operator=(OnEach &&rhs) noexcept = default;
+    Inspect &operator=(const Inspect &rhs) = default;
+    Inspect &operator=(Inspect &&rhs) noexcept = default;
 
-    OnEach(
+    Inspect(
             const Iter &iter,
             Fn fn
     ) :
@@ -50,15 +50,15 @@ public:
         return n;
     }
 
-    OnEach &operator++()
+    Inspect &operator++()
     {
         ++m_iter;
         return *this;
     }
 
-    OnEach operator+(const size_t offset) const
+    Inspect operator+(const size_t offset) const
     {
-        OnEach result{m_iter, m_fn};
+        Inspect result{m_iter, m_fn};
         for (size_t i = 0; i < offset; i++)
         {
             ++result.m_iter;
@@ -66,24 +66,24 @@ public:
         return result;
     }
 
-    bool operator==(const OnEach &rhs) const
+    bool operator==(const Inspect &rhs) const
     {
         return m_iter == rhs.m_iter;
     }
 
-    bool operator!=(const OnEach &rhs) const
+    bool operator!=(const Inspect &rhs) const
     {
         return m_iter != rhs.m_iter;
     }
 };
 
 template<class Iter, class Fn>
-OnEach<Iter, Fn> make_on_each(
+Inspect<Iter, Fn> make_inspect(
         const Iter &iter,
         Fn fn
 )
 {
-    return OnEach<Iter, Fn>{iter, fn};
+    return Inspect<Iter, Fn>{iter, fn};
 }
 
 }

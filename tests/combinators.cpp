@@ -27,7 +27,7 @@ TEST_CASE("Zipping pointers")
     make_sequence(data0)
             .by_ptr()
             .zip(make_sequence(data1))
-            .on_each_pair([](int *const a, const int b) {
+            .inspect_pair([](int *const a, const int b) {
                 *a += b;
             })
             .close();
@@ -183,7 +183,7 @@ TEST_CASE("On each")
     std::vector<char> v{'a', 'b', 'c'};
     char buf[4] = {};
     int i = 0;
-    make_sequence(v).on_each([&buf, &i](char &c) {
+    make_sequence(v).inspect([&buf, &i](char &c) {
         buf[i++] = c;
         ++c;
     }).close();
@@ -200,10 +200,10 @@ TEST_CASE("On each pair")
     std::string result;
 
     make_sequence(v)
-        .enumerate()
-        .on_each_pair([&result] (const int &i, const std::string &s) {
-            result += concat(s, i) + ", ";
-        })
+            .enumerate()
+            .inspect_pair([&result](const int &i, const std::string &s) {
+                result += concat(s, i) + ", ";
+            })
         .close();
 
     REQUIRE(result == "a0, b1, c2, ");
@@ -274,7 +274,7 @@ TEST_CASE("Sequence of write-through pointers")
 
     std::vector<int *> pointers{&a, &b};
 
-    auto sequence = make_sequence(pointers).on_each([](int *n) {
+    auto sequence = make_sequence(pointers).inspect([](int *n) {
         *n = 10;
     });
 
@@ -322,7 +322,7 @@ TEST_CASE("Mutating underlying elements")
 {
     std::vector<int> v{1, 2, 3};
     auto s = make_sequence(v)
-            .on_each([](int &n) { n += 10; });
+            .inspect([](int &n) { n += 10; });
 
     REQUIRE(v[0] == 1);
     REQUIRE(v[1] == 2);
