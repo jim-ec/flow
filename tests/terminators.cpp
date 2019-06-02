@@ -3,12 +3,43 @@
 #include <list>
 #include <vector>
 #include <functional>
+#include <map>
 
 #include "sequences/Sequence.h"
 
 #include "tools.h"
 
 using namespace sequences;
+
+TEST_CASE("Collecting")
+{
+    SECTION("Base case")
+    {
+        auto v = make_mutation_linear()
+                .take(4)
+                .collect<std::vector<int>>();
+
+        REQUIRE(v.size() == 4);
+        REQUIRE(v[0] == 0);
+        REQUIRE(v[1] == 1);
+        REQUIRE(v[2] == 2);
+        REQUIRE(v[3] == 3);
+    }
+
+    SECTION("To hash map")
+    {
+        auto v = make_mutation_linear()
+                .take(4)
+                .map([] (int n) { return std::make_pair('A' + char(n), n + 1); })
+                .collect<std::map<char, int>>();
+
+        REQUIRE(v.size() == 4);
+        REQUIRE(v['A'] == 1);
+        REQUIRE(v['B'] == 2);
+        REQUIRE(v['C'] == 3);
+        REQUIRE(v['D'] == 4);
+    }
+}
 
 TEST_CASE("Counting")
 {

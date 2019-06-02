@@ -324,6 +324,27 @@ public:
         return result;
     }
 
+    /// Collects all elements into a collection of the given type.
+    /// The collection's value type must match the sequence's value type.
+    /// The collection must be default constructable and must provide
+    /// an `end()` and `insert()` method.
+    /// The insert method takes two parameters, an iterator from the collection
+    /// and the element to insert.
+    /// Hint: The `std::map`'s insert method accepts a key-value pair, so
+    /// collecting a sequence zipped to another one will result in a hash map
+    /// with key from the first sequence mapped to values from the second sequence.
+    template<class Collection>
+    Collection
+    collect()
+    {
+        Collection collection;
+        for(; m_begin != m_end; ++m_begin)
+        {
+            collection.insert(collection.end(), *m_begin);
+        }
+        return collection;
+    }
+
     /// Calls a function on each element, consuming the iterator.
     template<class Fn>
     void for_each(Fn fn)
