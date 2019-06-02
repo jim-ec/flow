@@ -532,15 +532,6 @@ public:
         return begin() == end();
     }
 
-    template<class C>
-    void push_back_to(C &c)
-    {
-        for (const value_type &el : *this)
-        {
-            c.push_back(el);
-        }
-    }
-
 };
 
 template<class Iter>
