@@ -32,51 +32,6 @@ struct iter_value_type<T *>
 template<class T>
 using iter_value_type_t = typename iter_value_type<T>::type;
 
-template<class T, class U>
-struct Pair
-{
-    T m_first;
-    U m_second;
-
-    Pair() = default;
-
-    Pair(const Pair &) = default;
-
-    Pair(Pair &&) noexcept = default;
-
-    Pair(const T &first, const U &second) :
-            m_first{first},
-            m_second{second}
-    {}
-
-    Pair(T &&first, U &&second) :
-            m_first{std::move(first)},
-            m_second{std::move(second)}
-    {}
-
-    Pair &operator=(const Pair &rhs) = default;
-
-    Pair &operator=(Pair &&rhs) noexcept = default;
-
-    bool operator==(const Pair &rhs) const
-    {
-        return m_first == rhs.m_first && m_second == rhs.m_second;
-    }
-
-    template<class A, class B>
-    bool operator==(const Pair<A, B> &rhs) const
-    {
-        return m_first == rhs.m_first && m_second == rhs.m_second;
-    }
-
-};
-
-template<class T, class U>
-Pair<T, U> make_pair(T a, U b)
-{
-    return Pair<T, U>{a, b};
-}
-
 namespace impl
 {
 

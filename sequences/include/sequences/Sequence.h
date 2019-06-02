@@ -269,21 +269,21 @@ public:
     ///
     /// Sample usage: `auto v = seq.partition<std::vector<int>, std::list<int>>([] (int n) { return n % 2 == 0; });`
     template<class CollectionTrue, class CollectionFalse = CollectionTrue, class Fn>
-    Pair<CollectionTrue, CollectionFalse>
+    std::pair<CollectionTrue, CollectionFalse>
     partition(Fn fn)
     {
-        Pair<CollectionTrue, CollectionFalse> result;
+        std::pair<CollectionTrue, CollectionFalse> result;
 
         for (; m_begin != m_end; ++m_begin)
         {
             value_type &el = *m_begin;
             if (fn(el))
             {
-                result.m_first.push_back(el);
+                result.first.push_back(el);
             }
             else
             {
-                result.m_second.push_back(el);
+                result.second.push_back(el);
             }
         }
 

@@ -39,14 +39,14 @@ public:
     const value_type &operator*() const
     {
         const value_type &n = *m_iter;
-        m_fn(n.m_first, n.m_second);
+        m_fn(n.first, n.second);
         return n;
     }
 
     const value_type &operator*()
     {
         value_type &n = *m_iter;
-        m_fn(n.m_first, n.m_second);
+        m_fn(n.first, n.second);
         return n;
     }
 

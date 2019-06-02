@@ -47,9 +47,9 @@ TEST_CASE("Indexing")
 
     auto s = make_sequence(data).enumerate();
 
-    REQUIRE(make_pair(0, 'a') == s.next());
-    REQUIRE(make_pair(1, 'b') == s.next());
-    REQUIRE(make_pair(2, 'c') == s.next());
+    REQUIRE(std::make_pair(size_t{0}, 'a') == s.next());
+    REQUIRE(std::make_pair(size_t{1}, 'b') == s.next());
+    REQUIRE(std::make_pair(size_t{2}, 'c') == s.next());
     REQUIRE(s.empty());
 }
 
@@ -171,10 +171,10 @@ TEST_CASE("Zipping")
 
     auto sequence = make_sequence(v).zip(make_sequence(w));
 
-    REQUIRE(make_pair(1, 'a') == sequence.next());
-    REQUIRE(make_pair(2, 'b') == sequence.next());
-    REQUIRE(make_pair(3, 'c') == sequence.next());
-    REQUIRE(make_pair(4, 'd') == sequence.next());
+    REQUIRE(std::make_pair(1, 'a') == sequence.next());
+    REQUIRE(std::make_pair(2, 'b') == sequence.next());
+    REQUIRE(std::make_pair(3, 'c') == sequence.next());
+    REQUIRE(std::make_pair(4, 'd') == sequence.next());
     REQUIRE(sequence.empty());
 }
 

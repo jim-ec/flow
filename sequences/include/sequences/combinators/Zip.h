@@ -14,7 +14,7 @@ class Zip
 public:
     using value_type_left = iter_value_type_t<IterLeft>;
     using value_type_right = iter_value_type_t<IterRight>;
-    using value_type = Pair<value_type_left, value_type_right>;
+    using value_type = std::pair<value_type_left, value_type_right>;
 
 private:
     IterLeft m_left;
@@ -42,13 +42,13 @@ public:
 
     const value_type &operator*() const
     {
-        m_cache = sequences::make_pair(*m_left, *m_right);
+        m_cache = std::make_pair(*m_left, *m_right);
         return m_cache;
     }
 
     value_type &operator*()
     {
-        m_cache = sequences::make_pair(*m_left, *m_right);
+        m_cache = std::make_pair(*m_left, *m_right);
         return m_cache;
     }
 
