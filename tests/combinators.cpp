@@ -27,9 +27,8 @@ TEST_CASE("Zipping pointers")
     make_sequence(data0)
             .by_ptr()
             .zip(make_sequence(data1))
-            .map_pair([](int *const a, const int b) {
+            .on_each_pair([](int *const a, const int b) {
                 *a += b;
-                return 0;
             })
             .close();
 
@@ -193,6 +192,21 @@ TEST_CASE("On each")
     REQUIRE(v[2] == 'd');
     REQUIRE(i == 3);
     REQUIRE(strcmp("abc", buf) == 0);
+}
+
+TEST_CASE("On each pair")
+{
+    std::vector<std::string> v{"a", "b", "c"};
+    std::string result;
+
+    make_sequence(v)
+        .enumerate()
+        .on_each_pair([&result] (const int &i, const std::string &s) {
+            result += concat(s, i) + ", ";
+        })
+        .close();
+
+    REQUIRE(result == "a0, b1, c2, ");
 }
 
 TEST_CASE("For each")

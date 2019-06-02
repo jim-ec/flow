@@ -42,13 +42,13 @@ public:
 
     const value_type &operator*() const
     {
-        m_cache = make_pair(*m_left, *m_right);
+        m_cache = sequences::make_pair(*m_left, *m_right);
         return m_cache;
     }
 
     value_type &operator*()
     {
-        m_cache = make_pair(*m_left, *m_right);
+        m_cache = sequences::make_pair(*m_left, *m_right);
         return m_cache;
     }
 

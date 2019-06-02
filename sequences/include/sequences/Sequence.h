@@ -11,6 +11,7 @@
 #include "sequences/combinators/Take.h"
 #include "sequences/combinators/Chain.h"
 #include "sequences/combinators/OnEach.h"
+#include "sequences/combinators/OnEachPair.h"
 #include "sequences/combinators/Flatten.h"
 #include "sequences/combinators/ByPtr.h"
 
@@ -209,6 +210,16 @@ public:
         return make_sequence(
                 make_on_each(m_begin, fn),
                 make_on_each(m_end, fn)
+        );
+    }
+
+    template<class Fn>
+    Sequence<OnEachPair<Iter, Fn>>
+    on_each_pair(Fn fn) const
+    {
+        return make_sequence(
+                make_on_each_pair(m_begin, fn),
+                make_on_each_pair(m_end, fn)
         );
     }
 
