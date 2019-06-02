@@ -30,7 +30,7 @@ TEST_CASE("Zipping pointers")
             .inspect_pair([](int *const a, const int b) {
                 *a += b;
             })
-            .for_each([] (auto) {});
+            .for_each([](auto) {});
 
     REQUIRE(data0[0] == 7);
     REQUIRE(data0[1] == 9);
@@ -136,6 +136,7 @@ TEST_CASE("Sub-sequences")
     REQUIRE(sequence.take(3).count() == 3);
     REQUIRE(sequence.skip(1).take(3).count() == 3);
     REQUIRE(sequence.take(3).skip(1).count() == 2);
+    REQUIRE(sequence.skip_while([](int n) { return n < 5; }).count() == 2);
 }
 
 TEST_CASE("Mapping")
@@ -186,7 +187,7 @@ TEST_CASE("On each")
     make_sequence(v).inspect([&buf, &i](char &c) {
         buf[i++] = c;
         ++c;
-    }).for_each([] (auto) {});
+    }).for_each([](auto) {});
     REQUIRE(v[0] == 'b');
     REQUIRE(v[1] == 'c');
     REQUIRE(v[2] == 'd');
@@ -204,7 +205,7 @@ TEST_CASE("On each pair")
             .inspect_pair([&result](const int &i, const std::string &s) {
                 result += concat(s, i) + ", ";
             })
-        .for_each([] (auto) {});
+            .for_each([](auto) {});
 
     REQUIRE(result == "a0, b1, c2, ");
 }
@@ -327,7 +328,7 @@ TEST_CASE("Mutating underlying elements")
     REQUIRE(v[0] == 1);
     REQUIRE(v[1] == 2);
     REQUIRE(v[2] == 3);
-    s.for_each([] (auto) {});
+    s.for_each([](auto) {});
     REQUIRE(v[0] == 11);
     REQUIRE(v[1] == 12);
     REQUIRE(v[2] == 13);

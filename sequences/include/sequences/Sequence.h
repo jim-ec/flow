@@ -85,6 +85,26 @@ public:
         return make_sequence(iter, end());
     }
 
+    /// Creates a new sequence skipping the first elements as long as the given
+    /// predicate returns `true`.
+    /// If the sequence gets empty while skipping, an empty sequence is returned.
+    template<class Fn>
+    Sequence
+    skip_while(Fn fn) const
+    {
+        auto iter = begin();
+
+        for (; iter != m_end; ++iter)
+        {
+            if(!fn(*iter))
+            {
+                break;
+            }
+        }
+
+        return make_sequence(iter, end());
+    }
+
     /// Creates an iterator that yields its first n elements.
     ///
     /// Note: Sequence combinators are usually not commutative which may sometimes lead to
