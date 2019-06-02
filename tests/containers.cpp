@@ -12,8 +12,8 @@ TEST_CASE("Copy to other sequence")
 {
     std::vector<int> v;
     auto sequence = make_mutation_linear().range(3);
-    sequence.emplace_to(v);
-    sequence.emplace_to(v);
+    sequence.push_back_to(v);
+    sequence.push_back_to(v);
 
     REQUIRE(v[0] == 0);
     REQUIRE(v[1] == 1);

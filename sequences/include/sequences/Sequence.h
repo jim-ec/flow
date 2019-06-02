@@ -267,7 +267,7 @@ public:
     /// The first collection contains all elements where the predicate function
     /// return true, the second collection contains the rest.
     /// Different types for both collections are possible, but each type must be default-constructable and have
-    /// an `emplace_back()` method.
+    /// an `push_back()` method. The value type of both collections must be the same as the sequence's value type.
     ///
     /// Sample usage: `auto v = seq.partition<std::vector<int>, std::list<int>>([] (int n) { return n % 2 == 0; });`
     template<class CollectionTrue, class CollectionFalse = CollectionTrue, class Fn>
@@ -281,39 +281,15 @@ public:
             value_type &el = *m_begin;
             if (fn(el))
             {
-                result.m_first.emplace_back(el);
+                result.m_first.push_back(el);
             }
             else
             {
-                result.m_second.emplace_back(el);
+                result.m_second.push_back(el);
             }
         }
 
         return result;
-    }
-
-    /// Partitions the sequence into two collections.
-    /// Requires a collection template type as its template argument, e.g. `std::vector`.
-    /// The collection value type is automatically the sequence's value type.
-    ///
-    /// The collection template is expected to take two type parameters, the value type
-    /// and the allocator type. The allocator type defaults to the STL allocator for the sequence's value type.
-    /// Note that the allocator header is not included here, so you have to include either directly or indirectly
-    /// by including <vector>, <list> etc.
-    ///
-    /// The second collection type used for the elements where the predicate returned false defaults
-    /// to the first collection type.
-    ///
-    /// Sample usage: `std::vector<int> v = seq.partition<std::vector>([] (int n) { return n % 2 == 0; });`
-    template<template<class, class> class CollectionTrue,
-            template<class, class> class CollectionFalse = CollectionTrue,
-            class AllocatorTrue = std::allocator<value_type>,
-            class AllocatorFalse = std::allocator<value_type>,
-            class Fn>
-    Pair<CollectionTrue<value_type, AllocatorTrue>, CollectionFalse<value_type, AllocatorFalse>>
-    partition(Fn fn)
-    {
-        return partition<CollectionTrue<value_type, AllocatorTrue>, CollectionFalse<value_type, AllocatorFalse>>(fn);
     }
 
     template<class F>
@@ -437,11 +413,11 @@ public:
     }
 
     template<class C>
-    void emplace_to(C &c)
+    void push_back_to(C &c)
     {
         for (const value_type &el : *this)
         {
-            c.emplace_back(el);
+            c.push_back(el);
         }
     }
 

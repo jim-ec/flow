@@ -66,7 +66,7 @@ Furthermore, the following operations are available.
 - `.close()`: Dereferences and increments the begin iterator as long as the sequence is not empty.
 - `.contains(T):` Checks if the sequence contains an element equal to the given one.
 - `.last_element():` Returns the last element of the sequence.
-- `.emplace_to()`: Call the `emplace_back()` function on the given container for each element in the sequence.
+- `.push_back_to()`: Call the `push_back()` function on the given container for each element in the sequence.
 
 The range-based for loop can be used with any sequence to iterate over all elements.
 
