@@ -132,11 +132,11 @@ TEST_CASE("Sub-sequences")
     std::vector<int> v{1, 2, 3, 4, 5, 6};
     auto sequence = make_sequence(v.begin(), v.end());
 
-    REQUIRE(sequence.skipped(0).count() == 6);
-    REQUIRE(sequence.skipped(2).count() == 4);
+    REQUIRE(sequence.skip(0).count() == 6);
+    REQUIRE(sequence.skip(2).count() == 4);
     REQUIRE(sequence.take(3).count() == 3);
-    REQUIRE(sequence.skipped(1).take(3).count() == 3);
-    REQUIRE(sequence.take(3).skipped(1).count() == 2);
+    REQUIRE(sequence.skip(1).take(3).count() == 3);
+    REQUIRE(sequence.take(3).skip(1).count() == 2);
 }
 
 TEST_CASE("Mapping")
@@ -233,7 +233,6 @@ TEST_CASE("Combine mapping and filtering")
 
     // Skip 12^2 and 14^2 and move to next element.
     REQUIRE(sequence.skip(2).next() == "Number: 256");
-    REQUIRE(sequence.empty());
 }
 
 TEST_CASE("Pair mapping")

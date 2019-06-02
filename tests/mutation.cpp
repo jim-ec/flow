@@ -18,7 +18,7 @@ TEST_CASE("Mutation sequence")
     REQUIRE(sequence.next() == 2);
     REQUIRE(sequence.next() == 4);
     REQUIRE(*sequence == 16);
-    REQUIRE(*sequence.skipped(2) == 1u << 16u);
+    REQUIRE(*sequence.skip(2) == 1u << 16u);
     REQUIRE(counter == 4);
 }
 

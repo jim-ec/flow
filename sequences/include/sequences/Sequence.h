@@ -65,20 +65,8 @@ public:
             m_end{end}
     {}
 
-    Sequence &skip(const size_t offset)
-    {
-        for (size_t i = 0; i < offset; ++i)
-        {
-            ++m_begin;
-            if (m_begin == end())
-            {
-                break;
-            }
-        }
-        return *this;
-    }
-
-    Sequence skipped(const size_t offset) const
+    /// Creates an iterator that skips the first n elements.
+    Sequence skip(const size_t offset) const
     {
         auto iter = begin();
 
