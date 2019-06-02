@@ -14,7 +14,7 @@
 #include "sequences/combinators/InspectPair.h"
 #include "sequences/combinators/Flatten.h"
 #include "sequences/combinators/ByPtr.h"
-#include "sequences/combinators/Stride.h"
+#include "sequences/combinators/StepBy.h"
 
 #include "Mutation.h"
 
@@ -286,12 +286,12 @@ public:
         return map(fn).flatten();
     }
 
-    Sequence<Stride<Iter>>
-    stride(const size_t stride) const
+    Sequence<StepBy<Iter>>
+    step_by(const size_t step) const
     {
         return make_sequence(
-                make_stride(m_begin, m_end, stride),
-                make_stride(m_end, m_end, stride)
+                make_step_by(m_begin, m_end, step),
+                make_step_by(m_end, m_end, step)
         );
     }
 

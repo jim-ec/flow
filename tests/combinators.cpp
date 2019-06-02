@@ -336,7 +336,7 @@ TEST_CASE("Mutating underlying elements")
 
 TEST_CASE("Striding")
 {
-    auto s = make_mutation_linear().take(10).stride(3);
+    auto s = make_mutation_linear().take(10).step_by(3);
 
     REQUIRE(s.next() == 0);
     REQUIRE(s.next() == 3);

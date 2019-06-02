@@ -9,7 +9,7 @@
 namespace sequences
 {
 template<class Iter>
-class Stride
+class StepBy
 {
 public:
     using value_type = iter_value_type_t<Iter>;
@@ -17,24 +17,24 @@ public:
 private:
     Iter m_iter;
     Iter m_end;
-    size_t m_stride{};
+    size_t m_step{};
 
 public:
 
-    Stride() = default;
+    StepBy() = default;
 
-    Stride(const Stride &rhs) = default;
+    StepBy(const StepBy &rhs) = default;
 
-    Stride(Stride &&rhs) noexcept = default;
+    StepBy(StepBy &&rhs) noexcept = default;
 
-    Stride &operator=(const Stride &rhs) = default;
+    StepBy &operator=(const StepBy &rhs) = default;
 
-    Stride &operator=(Stride &&rhs) noexcept = default;
+    StepBy &operator=(StepBy &&rhs) noexcept = default;
 
-    Stride(const Iter &iter, const Iter &end, const size_t stride) :
+    StepBy(const Iter &iter, const Iter &end, const size_t step) :
             m_iter{iter},
             m_end{end},
-            m_stride{stride}
+            m_step{step}
     {
     }
 
@@ -50,10 +50,10 @@ public:
         return *m_iter;
     }
 
-    Stride &
+    StepBy &
     operator++()
     {
-        for (int i = 0; i < m_stride; ++i)
+        for (int i = 0; i < m_step; ++i)
         {
             ++m_iter;
             if (m_iter == m_end)
@@ -64,10 +64,10 @@ public:
         return *this;
     }
 
-    Stride
+    StepBy
     operator+(const size_t offset) const
     {
-        Stride result{m_iter, m_stride};
+        StepBy result{m_iter, m_step};
         for (size_t i = 0; i < offset; i++)
         {
             ++result;
@@ -76,23 +76,23 @@ public:
     }
 
     bool
-    operator==(const Stride &rhs) const
+    operator==(const StepBy &rhs) const
     {
         return m_iter == rhs.m_iter;
     }
 
     bool
-    operator!=(const Stride &rhs) const
+    operator!=(const StepBy &rhs) const
     {
         return m_iter != rhs.m_iter;
     }
 };
 
 template<class Iter>
-Stride<Iter>
-make_stride(const Iter &begin, const Iter &end, const size_t stride)
+StepBy<Iter>
+make_step_by(const Iter &begin, const Iter &end, const size_t step)
 {
-    return Stride<Iter>{begin, end, stride};
+    return StepBy<Iter>{begin, end, step};
 }
 
 }
