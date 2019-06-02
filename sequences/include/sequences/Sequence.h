@@ -290,12 +290,13 @@ public:
         return result;
     }
 
+    /// Calls a function on each element, consuming the iterator.
     template<class Fn>
-    void for_each(Fn fn) const
+    void for_each(Fn fn)
     {
-        for (const auto &el : *this)
+        for (; m_begin != m_end; ++m_begin)
         {
-            fn(el);
+            fn(*m_begin);
         }
     }
 
