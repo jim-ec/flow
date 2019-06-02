@@ -75,7 +75,7 @@ TEST_CASE("Get value")
 
         int fallback = 6;
         REQUIRE(s.value_or(fallback) == 6);
-        
+
         REQUIRE(cs.value_or(6) == 6);
     }
 }

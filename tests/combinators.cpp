@@ -332,3 +332,14 @@ TEST_CASE("Mutating underlying elements")
     REQUIRE(v[1] == 12);
     REQUIRE(v[2] == 13);
 }
+
+TEST_CASE("Striding")
+{
+    auto s = make_mutation_linear().take(10).stride(3);
+
+    REQUIRE(s.next() == 0);
+    REQUIRE(s.next() == 3);
+    REQUIRE(s.next() == 6);
+    REQUIRE(s.next() == 9);
+    REQUIRE(s.empty());
+}

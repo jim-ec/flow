@@ -14,6 +14,7 @@
 #include "sequences/combinators/InspectPair.h"
 #include "sequences/combinators/Flatten.h"
 #include "sequences/combinators/ByPtr.h"
+#include "sequences/combinators/Stride.h"
 
 #include "Mutation.h"
 
@@ -254,6 +255,15 @@ public:
         return map(fn).flatten();
     }
 
+    Sequence<Stride<Iter>>
+    stride(const size_t stride) const
+    {
+        return make_sequence(
+                make_stride(m_begin, m_end, stride),
+                make_stride(m_end, m_end, stride)
+        );
+    }
+
     /// Partitions the sequence into two collections.
     /// The first collection contains all elements where the predicate function
     /// return true, the second collection contains the rest.
@@ -415,7 +425,7 @@ public:
     value_type &
     value_or(value_type &fallback)
     {
-        if(m_begin != m_end)
+        if (m_begin != m_end)
         {
             return *begin();
         }
@@ -430,7 +440,7 @@ public:
     const value_type &
     value_or(const value_type &fallback) const
     {
-        if(m_begin != m_end)
+        if (m_begin != m_end)
         {
             return *begin();
         }
