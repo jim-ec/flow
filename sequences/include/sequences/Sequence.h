@@ -86,6 +86,17 @@ public:
     }
 
     /// Creates an iterator that yields its first n elements.
+    ///
+    /// Note: Sequence combinators are usually not commutative which may sometimes lead to
+    /// surprising results especially when using `take()` in conjunction with a combinator
+    /// altering the sequence's number of elements.
+    ///
+    /// ```
+    /// auto is_even = [] (int n) { return n % 2 == 0; };
+    ///
+    /// make_mutation_linear().take(5).filter(is_even); // { 0 2 4 }, take the even numbers out of the first five numbers.
+    /// make_mutation_linear().filter(is_even).take(5); // { 0 2 4 6 8 }, take the first five even numbers.
+    /// ```
     Sequence<Take<Iter>>
     take(const size_t count) const
     {
