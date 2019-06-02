@@ -344,3 +344,18 @@ TEST_CASE("Striding")
     REQUIRE(s.next() == 9);
     REQUIRE(s.empty());
 }
+
+TEST_CASE("Moving sequences")
+{
+    std::vector<S> v;
+    v.emplace_back(5);
+
+    printf("======\n");
+
+    auto v_moved = make_sequence(v)
+        .move()
+        .map([](S s) { return S{2 * s.id}; })
+        .collect<std::vector<S>>();
+
+    printf("\n");
+}

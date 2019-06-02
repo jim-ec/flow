@@ -15,6 +15,7 @@
 #include "sequences/combinators/Flatten.h"
 #include "sequences/combinators/ByPtr.h"
 #include "sequences/combinators/StepBy.h"
+#include "sequences/combinators/Move.h"
 
 #include "Mutation.h"
 
@@ -96,7 +97,7 @@ public:
 
         for (; iter != m_end; ++iter)
         {
-            if(!fn(*iter))
+            if (!fn(*iter))
             {
                 break;
             }
@@ -292,6 +293,15 @@ public:
         return make_sequence(
                 make_step_by(m_begin, m_end, step),
                 make_step_by(m_end, m_end, step)
+        );
+    }
+
+    Sequence<Move<Iter>>
+    move() const
+    {
+        return make_sequence(
+                make_move(m_begin),
+                make_move(m_end)
         );
     }
 
