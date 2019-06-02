@@ -8,7 +8,7 @@
 
 namespace sequences
 {
-template<class Iter, class F>
+template<class Iter, class Fn>
 class OnEach
 {
 public:
@@ -16,7 +16,7 @@ public:
 
 private:
     Iter m_iter;
-    F m_function;
+    Fn m_fn;
 
 public:
 
@@ -29,24 +29,24 @@ public:
 
     OnEach(
             const Iter &iter,
-            F function
+            Fn fn
     ) :
             m_iter{iter},
-            m_function{function}
+            m_fn{fn}
     {
     }
 
     const value_type &operator*() const
     {
         const value_type &n = *m_iter;
-        m_function(n);
+        m_fn(n);
         return n;
     }
 
     const value_type &operator*()
     {
         value_type &n = *m_iter;
-        m_function(n);
+        m_fn(n);
         return n;
     }
 
@@ -58,7 +58,7 @@ public:
 
     OnEach operator+(const size_t offset) const
     {
-        OnEach result{m_iter, m_function};
+        OnEach result{m_iter, m_fn};
         for (size_t i = 0; i < offset; i++)
         {
             ++result.m_iter;
@@ -77,13 +77,13 @@ public:
     }
 };
 
-template<class Iter, class F>
-OnEach<Iter, F> make_on_each(
+template<class Iter, class Fn>
+OnEach<Iter, Fn> make_on_each(
         const Iter &iter,
-        F f
+        Fn fn
 )
 {
-    return OnEach<Iter, F>{iter, f};
+    return OnEach<Iter, Fn>{iter, fn};
 }
 
 }

@@ -9,19 +9,19 @@
 namespace sequences
 {
 // Can only work on iterators which's values are a pair-like type.
-template<class Iter, class F>
+template<class Iter, class Fn>
 class MapPair
 {
 public:
     using pair_type = typename Iter::value_type;
-    using value_type = decltype(std::declval<F>()(
+    using value_type = decltype(std::declval<Fn>()(
             std::declval<typename Iter::value_type_left>(),
             std::declval<typename Iter::value_type_right>()
     ));
 
 private:
     Iter m_iter;
-    F m_function;
+    Fn m_fn;
     mutable value_type m_cache{};
 
 public:
@@ -35,24 +35,24 @@ public:
 
     MapPair(
             const Iter &iter,
-            F function
+            Fn fn
     ) :
             m_iter{iter},
-            m_function{function}
+            m_fn{fn}
     {
     }
 
     value_type &operator*()
     {
         const pair_type &pair = *m_iter;
-        m_cache = m_function(pair.m_first, pair.m_second);
+        m_cache = m_fn(pair.m_first, pair.m_second);
         return m_cache;
     }
 
     const value_type &operator*() const
     {
         pair_type &pair = *m_iter;
-        m_cache = m_function(pair.m_first, pair.m_second);
+        m_cache = m_fn(pair.m_first, pair.m_second);
         return m_cache;
     }
 
@@ -64,7 +64,7 @@ public:
 
     MapPair operator+(const size_t offset) const
     {
-        MapPair result{m_iter, m_function};
+        MapPair result{m_iter, m_fn};
         for (size_t i = 0; i < offset; i++)
         {
             ++result.m_iter;
@@ -83,13 +83,13 @@ public:
     }
 };
 
-template<class Iter, class F>
-MapPair<Iter, F> make_map_pair(
+template<class Iter, class Fn>
+MapPair<Iter, Fn> make_map_pair(
         const Iter &iter,
-        F f
+        Fn fn
 )
 {
-    return MapPair<Iter, F>{iter, f};
+    return MapPair<Iter, Fn>{iter, fn};
 }
 
 }

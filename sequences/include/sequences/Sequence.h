@@ -26,8 +26,8 @@ class Sequence;
 template<class C>
 Sequence<typename C::iterator> make_sequence(C &c);
 
-template<class T, class F>
-Sequence<Mutation<T, F>> make_mutation(const T &init, F f);
+template<class T, class Fn>
+Sequence<Mutation<T, Fn>> make_mutation(const T &init, Fn fn);
 
 template<class T = int>
 Sequence<Mutation<T, impl::LinearMutation<T>>> make_mutation_linear(const T &init = T{0}, const T &step = T{1});
@@ -184,9 +184,8 @@ public:
     }
 
     template<class IterRhs>
-    Sequence<Zip<Iter, IterRhs>> zip(
-            const Sequence<IterRhs> &rhs
-    ) const
+    Sequence<Zip<Iter, IterRhs>>
+    zip(const Sequence<IterRhs> &rhs) const
     {
         return make_sequence(
                 make_zip(begin(), rhs.begin()),
@@ -194,41 +193,39 @@ public:
         );
     }
 
-    template<class F>
-    Sequence<Map<Iter, F>> map(
-            F function
-    ) const
+    template<class Fn>
+    Sequence<Map<Iter, Fn>>
+    map(Fn fn) const
     {
         return make_sequence(
-                make_map(m_begin, function),
-                make_map(m_end, function)
+                make_map(m_begin, fn),
+                make_map(m_end, fn)
         );
     }
 
-    template<class F>
-    Sequence<MapPair<Iter, F>> map_pair(
-            F function
-    ) const
+    template<class Fn>
+    Sequence<MapPair<Iter, Fn>>
+    map_pair(Fn fn) const
     {
         return make_sequence(
-                make_map_pair(begin(), function),
-                make_map_pair(end(), function)
+                make_map_pair(begin(), fn),
+                make_map_pair(end(), fn)
         );
     }
 
-    template<class F>
-    Sequence<OnEach<Iter, F>> on_each(F function) const
+    template<class Fn>
+    Sequence<OnEach<Iter, Fn>>
+    on_each(Fn fn) const
     {
         return make_sequence(
-                make_on_each(m_begin, function),
-                make_on_each(m_end, function)
+                make_on_each(m_begin, fn),
+                make_on_each(m_end, fn)
         );
     }
 
     template<class IterRhs>
-    Sequence<Chain<Iter, IterRhs>> chain(
-            Sequence<IterRhs> &rhs
-    )
+    Sequence<Chain<Iter, IterRhs>>
+    chain(Sequence<IterRhs> &rhs)
     {
         return make_sequence(
                 make_chain(begin(), end(), rhs.begin(), rhs.begin()),
@@ -236,19 +233,19 @@ public:
         );
     }
 
-    template<class F>
-    Sequence<Filter<Iter, F>> filter(
-            F function
-    ) const
+    template<class Fn>
+    Sequence<Filter<Iter, Fn>>
+    filter(Fn fn) const
     {
         return make_sequence(
-                make_filter(m_begin, m_end, function),
-                make_filter(m_end, m_end, function)
+                make_filter(m_begin, m_end, fn),
+                make_filter(m_end, m_end, fn)
         );
     }
 
     // The current Iter's value_type must be an iterator itself.
-    Sequence<Flatten<Iter>> flatten() const
+    Sequence<Flatten<Iter>>
+    flatten() const
     {
         using ChildIter = const typename Flatten<Iter>::child_iter_type;
         return make_sequence(
@@ -257,10 +254,11 @@ public:
         );
     }
 
-    template<class F>
-    Sequence<Flatten<Map<Iter, F>>> flat_map(F function) const
+    template<class Fn>
+    Sequence<Flatten<Map<Iter, Fn>>>
+    flat_map(Fn fn) const
     {
-        return map(function).flatten();
+        return map(fn).flatten();
     }
 
     /// Partitions the sequence into two collections.
@@ -292,12 +290,12 @@ public:
         return result;
     }
 
-    template<class F>
-    void for_each(F function) const
+    template<class Fn>
+    void for_each(Fn fn) const
     {
         for (const auto &el : *this)
         {
-            function(el);
+            fn(el);
         }
     }
 
@@ -310,13 +308,13 @@ public:
 
     /// Folds the sequence, using a accumulator function.
     /// The function should be of the type: (R, T) -> R.
-    template<class R = value_type, class F>
-    R fold(F f, const R &init = R{}) const
+    template<class R = value_type, class Fn>
+    R fold(Fn fn, const R &init = R{}) const
     {
         R acc = init;
         for (const auto &el : *this)
         {
-            acc = f(acc, el);
+            acc = fn(acc, el);
         }
         return acc;
     }
@@ -424,35 +422,37 @@ public:
 };
 
 template<class Iter>
-const Sequence<Iter> make_sequence(
-        const Iter &begin,
-        const Iter &end
-)
+const Sequence<Iter>
+make_sequence(const Iter &begin, const Iter &end)
 {
     return Sequence<Iter>{begin, end};
 }
 
 template<class C>
-Sequence<typename C::iterator> make_sequence(C &c)
+Sequence<typename C::iterator>
+make_sequence(C &c)
 {
     return make_sequence(c.begin(), c.end());
 }
 
 template<class T, size_t size>
-Sequence<T *> make_sequence(T(&array)[size])
+Sequence<T *>
+make_sequence(T(&array)[size])
 {
     return make_sequence(&array[0], &array[size]);
 }
 
-template<class T, class F>
-Sequence<Mutation<T, F>> make_mutation(const T &init, F f)
+template<class T, class Fn>
+Sequence<Mutation<T, Fn>>
+make_mutation(const T &init, Fn fn)
 {
-    Mutation<T, F> mutation{init, f};
+    Mutation<T, Fn> mutation{init, fn};
     return make_sequence(mutation, mutation);
 }
 
 template<class T>
-Sequence<Mutation<T, impl::LinearMutation<T>>> make_mutation_linear(const T &init, const T &step)
+Sequence<Mutation<T, impl::LinearMutation<T>>>
+make_mutation_linear(const T &init, const T &step)
 {
     return make_mutation(init, impl::LinearMutation<T>{step});
 }

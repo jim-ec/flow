@@ -9,17 +9,17 @@
 namespace sequences
 {
 // The function's return type must be default constructable and assignable.
-template<class Iter, class F>
+template<class Iter, class Fn>
 class Map
 {
 public:
-    using value_type = decltype(std::declval<F>()(
+    using value_type = decltype(std::declval<Fn>()(
             std::declval<iter_value_type_t<Iter>>()
     ));
 
 private:
     Iter m_iter;
-    F m_function;
+    Fn m_fn;
     mutable value_type m_cache{};
 
 public:
@@ -36,22 +36,22 @@ public:
 
     Map(
             const Iter &iter,
-            F function
+            Fn fn
     ) :
             m_iter{iter},
-            m_function{function}
+            m_fn{fn}
     {
     }
 
     value_type &operator*()
     {
-        m_cache = m_function(*m_iter);
+        m_cache = m_fn(*m_iter);
         return m_cache;
     }
 
     const value_type &operator*() const
     {
-        m_cache = m_function(*m_iter);
+        m_cache = m_fn(*m_iter);
         return m_cache;
     }
 
@@ -63,7 +63,7 @@ public:
 
     Map operator+(const size_t offset) const
     {
-        Map result{m_iter, m_function};
+        Map result{m_iter, m_fn};
         for (size_t i = 0; i < offset; i++)
         {
             ++result.m_iter;
@@ -82,13 +82,13 @@ public:
     }
 };
 
-template<class Iter, class F>
-Map<Iter, F> make_map(
+template<class Iter, class Fn>
+Map<Iter, Fn> make_map(
         const Iter &iter,
-        F f
+        Fn fn
 )
 {
-    return Map<Iter, F>{iter, f};
+    return Map<Iter, Fn>{iter, fn};
 }
 
 }

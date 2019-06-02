@@ -8,7 +8,7 @@
 
 namespace sequences
 {
-template<class Iter, class F>
+template<class Iter, class Fn>
 class Filter
 {
 public:
@@ -17,7 +17,7 @@ public:
 private:
     Iter m_iter;
     Iter m_end;
-    F m_function;
+    Fn m_fn;
     value_type m_cache{};
 
 public:
@@ -32,17 +32,17 @@ public:
     Filter(
             const Iter &iter,
             const Iter &end,
-            F function
+            Fn fn
     ) :
             m_iter{iter},
             m_end{end},
-            m_function{function},
+            m_fn{fn},
             m_cache{}
     {
         if (m_iter != m_end)
         {
             m_cache = *m_iter;
-            while (!m_function(m_cache))
+            while (!m_fn(m_cache))
             {
                 ++m_iter;
 
@@ -78,14 +78,14 @@ public:
             }
 
             m_cache = *m_iter;
-        } while (!m_function(m_cache));
+        } while (!m_fn(m_cache));
 
         return *this;
     }
 
     Filter operator+(const size_t offset) const
     {
-        Filter result{m_iter, m_function};
+        Filter result{m_iter, m_fn};
         for (size_t i = 0; i < offset; i++)
         {
             ++result;
@@ -104,14 +104,14 @@ public:
     }
 };
 
-template<class Iter, class F>
-Filter<Iter, F> make_filter(
+template<class Iter, class Fn>
+Filter<Iter, Fn> make_filter(
         const Iter &begin,
         const Iter &end,
-        F f
+        Fn fn
 )
 {
-    return Filter<Iter, F>{begin, end, f};
+    return Filter<Iter, Fn>{begin, end, fn};
 }
 
 }

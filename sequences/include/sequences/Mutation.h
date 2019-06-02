@@ -15,14 +15,14 @@ namespace sequences
 /// A mutation is unequal to everything, and equal to nothing.
 /// This allows endless iteration using the traditional *while iter != end_iter*
 /// construct.
-template<class T, class F>
+template<class T, class Fn>
 class Mutation
 {
 public:
     using value_type = T;
     using iterator = Mutation;
 
-    F m_function;
+    Fn m_fn;
     value_type m_carry;
 
     Mutation() = default;
@@ -34,9 +34,9 @@ public:
 
     explicit Mutation(
             const T &init,
-            F f
+            Fn fn
     ) :
-            m_function{f},
+            m_fn{fn},
             m_carry{init}
     {
     }
@@ -73,13 +73,13 @@ public:
 
     Mutation &operator++()
     {
-        m_carry = m_function(m_carry);
+        m_carry = m_fn(m_carry);
         return *this;
     }
 
     Mutation operator+(const size_t offset) const
     {
-        Mutation generator{value_type{m_carry}, m_function};
+        Mutation generator{value_type{m_carry}, m_fn};
         for (size_t i = 0; i < offset; i++)
         {
             ++generator;
