@@ -266,7 +266,8 @@ public:
     /// Partitions the sequence into two collections.
     /// The first collection contains all elements where the predicate function
     /// return true, the second collection contains the rest.
-    /// Different types for both collections are possible.
+    /// Different types for both collections are possible, but each type must be default-constructable and have
+    /// an `emplace_back()` method.
     ///
     /// Sample usage: `auto v = seq.partition<std::vector<int>, std::list<int>>([] (int n) { return n % 2 == 0; });`
     template<class CollectionTrue, class CollectionFalse = CollectionTrue, class Fn>
