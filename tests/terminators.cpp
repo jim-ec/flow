@@ -2,6 +2,7 @@
 
 #include <list>
 #include <vector>
+#include <functional>
 
 #include "sequences/Sequence.h"
 
@@ -53,5 +54,29 @@ TEST_CASE("Partitioning")
         REQUIRE(*iter == 1);
         REQUIRE(*(++iter) == 3);
         REQUIRE(*(++iter) == 5);
+    }
+}
+
+TEST_CASE("Inner product")
+{
+    int data1[] = {3, 4, 5};
+    int data2[] = {1, 2, 3};
+
+    // 3 + 4 * 2 + 5 * 3 = 26
+
+    SECTION("Explicit functions")
+    {
+        int ip = make_sequence(data1).inner_product(
+                make_sequence(data2),
+                [](int a, int b) { return a * b; },
+                [](int a, int b) { return a + b; }
+        );
+        REQUIRE(ip == 26);
+    }
+
+    SECTION("Defaulted functions")
+    {
+        int ip = make_sequence(data1).inner_product(make_sequence(data2));
+        REQUIRE(ip == 26);
     }
 }

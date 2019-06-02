@@ -362,6 +362,30 @@ public:
         return acc;
     }
 
+    template<class Mul = value_type, class Sum = Mul, class IterRhs, class FnMul, class FnSum>
+    Sum
+    inner_product(
+            const Sequence<IterRhs> &rhs,
+            FnMul fnMul,
+            FnSum fnSum,
+            Mul init = Mul{}
+    )
+    {
+        return zip(rhs)
+                .map_pair(fnMul)
+                .template fold<Sum>(fnSum, init);
+    }
+
+    template<class Mul = value_type, class Sum = Mul, class IterRhs>
+    Sum
+    inner_product(
+            const Sequence<IterRhs> &rhs,
+            Mul init = Mul{}
+    )
+    {
+        return inner_product(rhs, [](int a, int b) { return a * b; }, [](int a, int b) { return a + b; }, init);
+    }
+
     /// Two sequences are considered equal if they contain the same elements
     /// in the same order, where two elements are equal if there is a defined
     /// == operator of this value type over the other value type, and this
