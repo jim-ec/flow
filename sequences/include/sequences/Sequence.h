@@ -12,7 +12,7 @@
 #include "sequences/combinators/Chain.h"
 #include "sequences/combinators/OnEach.h"
 #include "sequences/combinators/Flatten.h"
-#include "sequences/combinators/AsPtr.h"
+#include "sequences/combinators/ByPtr.h"
 
 #include "Mutation.h"
 
@@ -163,12 +163,12 @@ public:
         return *iter;
     }
 
-    Sequence<AsPtr<Iter>>
-    as_ptr() const
+    Sequence<ByPtr<Iter>>
+    by_ptr() const
     {
         return make_sequence(
-                make_as_ptr(begin()),
-                make_as_ptr(end())
+                make_by_ptr(begin()),
+                make_by_ptr(end())
         );
     }
 

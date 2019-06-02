@@ -9,7 +9,7 @@
 namespace sequences
 {
 template<class Iter>
-class AsPtr
+class ByPtr
 {
 public:
     using cache_value_type = iter_value_type_t<Iter>;
@@ -21,17 +21,17 @@ private:
 
 public:
 
-    AsPtr() = default;
+    ByPtr() = default;
 
-    AsPtr(const AsPtr &rhs) = default;
+    ByPtr(const ByPtr &rhs) = default;
 
-    AsPtr(AsPtr &&rhs) noexcept = default;
+    ByPtr(ByPtr &&rhs) noexcept = default;
 
-    AsPtr &operator=(const AsPtr &rhs) = default;
+    ByPtr &operator=(const ByPtr &rhs) = default;
 
-    AsPtr &operator=(AsPtr &&rhs) noexcept = default;
+    ByPtr &operator=(ByPtr &&rhs) noexcept = default;
 
-    explicit AsPtr(const Iter &iter) :
+    explicit ByPtr(const Iter &iter) :
             m_iter{iter}
     {}
 
@@ -47,15 +47,15 @@ public:
         return m_cache;
     }
 
-    AsPtr &operator++()
+    ByPtr &operator++()
     {
         ++m_iter;
         return *this;
     }
 
-    AsPtr operator+(const size_t offset) const
+    ByPtr operator+(const size_t offset) const
     {
-        AsPtr result{m_iter};
+        ByPtr result{m_iter};
         for (size_t i = 0; i < offset; i++)
         {
             ++result.m_iter;
@@ -63,21 +63,21 @@ public:
         return result;
     }
 
-    bool operator==(const AsPtr &rhs) const
+    bool operator==(const ByPtr &rhs) const
     {
         return m_iter == rhs.m_iter;
     }
 
-    bool operator!=(const AsPtr &rhs) const
+    bool operator!=(const ByPtr &rhs) const
     {
         return m_iter != rhs.m_iter;
     }
 };
 
 template<class Iter>
-AsPtr<Iter> make_as_ptr(const Iter &iter)
+ByPtr<Iter> make_by_ptr(const Iter &iter)
 {
-    return AsPtr<Iter>{iter};
+    return ByPtr<Iter>{iter};
 }
 
 }
