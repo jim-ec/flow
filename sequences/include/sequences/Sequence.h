@@ -107,17 +107,6 @@ public:
         return count;
     }
 
-    Sequence &
-    close()
-    {
-        while (m_begin != end())
-        {
-            *m_begin;
-            ++m_begin;
-        }
-        return *this;
-    }
-
     const value_type &operator[](const size_t index) const
     {
         return *(m_begin + index);
