@@ -63,9 +63,9 @@ TEST_CASE("Folding")
     });
     REQUIRE(string == "abcd");
 
-    REQUIRE(make_mutation_linear(1).range(4).sum() == 10);
-    REQUIRE(make_mutation_linear(1).range(4).product() == 24);
-    REQUIRE(make_mutation_linear().range(4).product<float>() == 0.0);
+    REQUIRE(make_mutation_linear(1).take(4).sum() == 10);
+    REQUIRE(make_mutation_linear(1).take(4).product() == 24);
+    REQUIRE(make_mutation_linear().take(4).product<float>() == 0.0);
 }
 
 TEST_CASE("Sequence over array, iterator can be raw pointer")
@@ -99,7 +99,7 @@ TEST_CASE("Flattening")
     std::vector<int> v{10, 100, 1000};
 
     auto s = make_sequence(v) // {10, 100, 1000}
-            .map([](int n) { return make_mutation_linear(n).range(2); }) // {{10, 11}, {100, 101}, {1000, 1001}}
+            .map([](int n) { return make_mutation_linear(n).take(2); }) // {{10, 11}, {100, 101}, {1000, 1001}}
             .flatten(); // {10, 11, 100, 101, 1000, 1001}
 
     REQUIRE(s.next() == 10);
@@ -116,7 +116,7 @@ TEST_CASE("Flat mapping")
     std::vector<int> v{10, 100, 1000};
 
     auto s = make_sequence(v) // {10, 100, 1000}
-            .flat_map([](int n) { return make_mutation_linear(n).range(2); }); // {10, 11, 100, 101, 1000, 1001}
+            .flat_map([](int n) { return make_mutation_linear(n).take(2); }); // {10, 11, 100, 101, 1000, 1001}
 
     REQUIRE(s.next() == 10);
     REQUIRE(s.next() == 11);
@@ -134,9 +134,9 @@ TEST_CASE("Sub-sequences")
 
     REQUIRE(sequence.count() == 6);
     REQUIRE(sequence.skipped(2).count() == 4);
-    REQUIRE(sequence.range(3).count() == 3);
-    REQUIRE(sequence.skipped(1).range(3).count() == 3);
-    REQUIRE(sequence.range(3).skipped(1).count() == 2);
+    REQUIRE(sequence.take(3).count() == 3);
+    REQUIRE(sequence.skipped(1).take(3).count() == 3);
+    REQUIRE(sequence.take(3).skipped(1).count() == 2);
 }
 
 TEST_CASE("Mapping")
@@ -246,7 +246,7 @@ TEST_CASE("Pair mapping")
             .map2([](int even, int odd) {
                 return odd - even;
             })
-            .range(20);
+            .take(20);
 
     for (int n : numbers)
     {
@@ -289,8 +289,8 @@ TEST_CASE("Index access")
 
 TEST_CASE("Chaining")
 {
-    auto s1 = make_mutation_linear().range(3);
-    auto s2 = make_mutation_linear().range(3).map([](int n) {
+    auto s1 = make_mutation_linear().take(3);
+    auto s2 = make_mutation_linear().take(3).map([](int n) {
         return n + 3;
     });
 

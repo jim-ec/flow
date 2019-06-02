@@ -24,7 +24,7 @@ TEST_CASE("Iteration")
 TEST_CASE("Empty sequences")
 {
     std::vector<int> v{1, 2, 3, 4, 5, 6};
-    auto sequence = make_sequence(v).range(0);
+    auto sequence = make_sequence(v).take(0);
 
     REQUIRE(sequence.count() == 0);
     REQUIRE(sequence.empty());
@@ -51,6 +51,6 @@ TEST_CASE("Skipping over end")
 {
     auto sequence = make_mutation(1, [](int n) {
         return 2 * n;
-    }).range(1).skip(10);
+    }).take(1).skip(10);
     REQUIRE(sequence.empty());
 }

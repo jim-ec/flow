@@ -26,7 +26,7 @@ TEST_CASE("Finite mutation")
 {
     auto sequence = make_mutation(1, [](int n) {
         return 2 * n;
-    }).range(4);
+    }).take(4);
     REQUIRE(sequence.next() == 1);
     REQUIRE(sequence.next() == 2);
     REQUIRE(sequence.next() == 4);

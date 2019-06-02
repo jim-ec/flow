@@ -11,7 +11,7 @@ using namespace sequences;
 TEST_CASE("Copy to other sequence")
 {
     std::vector<int> v;
-    auto sequence = make_mutation_linear().range(3);
+    auto sequence = make_mutation_linear().take(3);
     sequence.push_back_to(v);
     sequence.push_back_to(v);
 

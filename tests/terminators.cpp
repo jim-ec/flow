@@ -18,7 +18,7 @@ TEST_CASE("Counting")
 
 TEST_CASE("Partitioning")
 {
-    auto s = make_mutation_linear().range(6); // { 0 1 2 3 4 5 }
+    auto s = make_mutation_linear().take(6); // { 0 1 2 3 4 5 }
 
     SECTION("Base case")
     {

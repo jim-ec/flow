@@ -9,7 +9,7 @@
 namespace sequences
 {
 template<class Iter>
-class Range
+class Take
 {
     Iter m_iter;
     size_t m_index{};
@@ -18,14 +18,14 @@ public:
 
     using value_type = iter_value_type_t<Iter>;
 
-    Range() = default;
-    Range(const Range &rhs) = default;
-    Range(Range &&rhs) noexcept = default;
+    Take() = default;
+    Take(const Take &rhs) = default;
+    Take(Take &&rhs) noexcept = default;
 
-    Range &operator=(const Range &rhs) = default;
-    Range &operator=(Range &&rhs) noexcept = default;
+    Take &operator=(const Take &rhs) = default;
+    Take &operator=(Take &&rhs) noexcept = default;
 
-    Range(
+    Take(
             const Iter &iter,
             const size_t index
     ) :
@@ -44,16 +44,16 @@ public:
         return *m_iter;
     }
 
-    Range &operator++()
+    Take &operator++()
     {
         ++m_iter;
         ++m_index;
         return *this;
     }
 
-    Range operator+(const size_t offset) const
+    Take operator+(const size_t offset) const
     {
-        Range result{m_iter, m_index};
+        Take result{m_iter, m_index};
         for (size_t i = 0; i < offset; i++)
         {
             ++result;
@@ -61,23 +61,23 @@ public:
         return result;
     }
 
-    bool operator==(const Range &rhs) const
+    bool operator==(const Take &rhs) const
     {
         return m_index == rhs.m_index || m_iter == rhs.m_iter;
     }
 
-    bool operator!=(const Range &rhs) const
+    bool operator!=(const Take &rhs) const
     {
         return m_index != rhs.m_index && m_iter != rhs.m_iter;
     }
 };
 
 template<class Iter>
-Range<Iter> make_range(
+Take<Iter> make_take(
         const Iter &iter,
         const size_t index
 )
 {
-    return Range<Iter>{iter, index};
+    return Take<Iter>{iter, index};
 }
 }

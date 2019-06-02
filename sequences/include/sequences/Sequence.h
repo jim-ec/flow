@@ -8,7 +8,7 @@
 #include "sequences/combinators/Map2.h"
 #include "sequences/combinators/Filter.h"
 #include "sequences/combinators/Zip.h"
-#include "sequences/combinators/Range.h"
+#include "sequences/combinators/Take.h"
 #include "sequences/combinators/Chain.h"
 #include "sequences/combinators/OnEach.h"
 #include "sequences/combinators/Flatten.h"
@@ -94,11 +94,11 @@ public:
         return make_sequence(iter, end());
     }
 
-    Sequence<Range<Iter>> range(const size_t count) const
+    Sequence<Take<Iter>> take(const size_t count) const
     {
         return make_sequence(
-                make_range(m_begin, 0),
-                make_range(m_end, count)
+                make_take(m_begin, 0),
+                make_take(m_end, count)
         );
     }
 

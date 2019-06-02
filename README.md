@@ -47,7 +47,7 @@ Currently, the following combinator operations are available and can be chained 
 - `.chain({T})`: Chains a sequence, so that the resulting sequence covers both sequences' elements.
 - `.skip(n)`: Skips the first n elements.
 - `.skipped(n)`: Like skip, but returns a new sequence instead of modifying the original one.
-- `.range(n)`: Creates a new sequence over the first n elements.
+- `.take(n)`: Creates a new sequence over the first n elements.
 
 Where:
 1) `T`, `E` and `R` are arbitrary type parameters.
@@ -68,7 +68,7 @@ Furthermore, the following operations are available.
 - `.last_element():` Returns the last element of the sequence.
 - `.push_back_to()`: Call the `push_back()` function on the given container for each element in the sequence.
 
-The range-based for loop can be used with any sequence to iterate over all elements.
+The take-based for loop can be used with any sequence to iterate over all elements.
 
 There is one additional, interesting iterator type, `Mutation`.
 This is an iterator designed for infinite sequences of values.
@@ -77,7 +77,7 @@ The predefined linear mutation generates values of a linear function.
 For example, this sequence yields all numbers from 0 to 999, without actually putting 1000 values into memory:
 
 ```c++
-auto s = make_mutation_linear().range(1000); // 0, 1, 2, ..., 999
+auto s = make_mutation_linear().take(1000); // 0, 1, 2, ..., 999
 ```
 
 Of course, the attempt to iterate over all elements of a mutation leads inherently to an infinite loop:
