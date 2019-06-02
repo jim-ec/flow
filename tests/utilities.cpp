@@ -54,3 +54,28 @@ TEST_CASE("Skipping over end")
     }).take(1).skip(10);
     REQUIRE(sequence.empty());
 }
+
+TEST_CASE("Get value")
+{
+    SECTION("Not empty")
+    {
+        int data[] = {3};
+        auto s = make_sequence(data);
+        const auto& cs = s;
+
+        REQUIRE(s.value() == 3);
+        REQUIRE(cs.value() == 3);
+    }
+
+    SECTION("Empty")
+    {
+        std::vector<int> data;
+        auto s = make_sequence(data);
+        const auto& cs = s;
+
+        int fallback = 6;
+        REQUIRE(s.value_or(fallback) == 6);
+        
+        REQUIRE(cs.value_or(6) == 6);
+    }
+}

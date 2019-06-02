@@ -384,10 +384,10 @@ public:
         }
     }
 
-    /// Returns the current first iteration of the sequence.
-    /// Shrinks the sequence to right.
+    /// Shrinks the sequence from left by one element, which is returned.
     /// This must not be called on an empty sequence.
-    value_type next()
+    value_type
+    next()
     {
         auto iter{begin()};
         ++m_begin;
@@ -396,11 +396,51 @@ public:
 
     /// Returns the value of the first sequence element.
     /// This should never be called if the sequence is empty.
-    value_type operator*()
+    value_type &
+    value()
     {
         return *begin();
     }
 
+    /// Returns the value of the first sequence element.
+    /// This should never be called if the sequence is empty.
+    const value_type &
+    value() const
+    {
+        return *begin();
+    }
+
+    /// Returns the value of the first sequence element or [fallback]
+    /// if the sequence is empty.
+    value_type &
+    value_or(value_type &fallback)
+    {
+        if(m_begin != m_end)
+        {
+            return *begin();
+        }
+        else
+        {
+            return fallback;
+        }
+    }
+
+    /// Returns the value of the first sequence element or [fallback]
+    /// if the sequence is empty.
+    const value_type &
+    value_or(const value_type &fallback) const
+    {
+        if(m_begin != m_end)
+        {
+            return *begin();
+        }
+        else
+        {
+            return fallback;
+        }
+    }
+
+    /// Returns true if the sequence is empty.
     bool empty()
     {
         return begin() == end();
