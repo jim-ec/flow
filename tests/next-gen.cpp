@@ -37,7 +37,7 @@ TEST_CASE("NextGen")
 
     auto &seq = d;
 
-    for(int n : IteratorRange{seq})
+    for(int n : Over{seq})
     {
         printf("%d\n", n);
     }

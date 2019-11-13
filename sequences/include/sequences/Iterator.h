@@ -9,18 +9,18 @@
 namespace sequences
 {
     template<class Seq>
-    class Iterator
+    class YieldIterator
     {
     public:
 
         using value_type = typename Seq::output_type;
 
-        explicit Iterator(Seq &seq, bool initialize) :
+        explicit YieldIterator(Seq &seq, bool initialize) :
             seq{seq},
             element{initialize ? seq.next() : std::optional<value_type>{}}
         {}
 
-        Iterator &operator++()
+        YieldIterator &operator++()
         {
             element = seq.next();
             return *this;
@@ -31,7 +31,7 @@ namespace sequences
             return *element;
         }
 
-        bool operator!=(const Iterator &)
+        bool operator!=(const YieldIterator &)
         {
             return element.has_value();
         }
@@ -46,24 +46,24 @@ namespace sequences
     /// The main purpose of this class is that the actual sequences do not need to implement the
     /// impractical iterator interface, such as comparing to check whether a sequence is still valid.
     template<class Seq>
-    class IteratorRange
+    class Over
     {
     public:
 
         using value_type = typename Seq::output_type;
 
-        explicit IteratorRange(Seq &seq) :
+        explicit Over(Seq &seq) :
         seq{seq}
         {}
 
-        Iterator<Seq> begin()
+        YieldIterator<Seq> begin()
         {
-            return Iterator<Seq>{seq, true};
+            return YieldIterator<Seq>{seq, true};
         }
 
-        Iterator<Seq> end()
+        YieldIterator<Seq> end()
         {
-            return Iterator<Seq>{seq, false};
+            return YieldIterator<Seq>{seq, false};
         }
 
     private:

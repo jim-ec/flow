@@ -33,25 +33,22 @@ namespace sequences
     };
 
     /// Successors based on some initial value.
+    template<class T>
     class Successors
     {
-        int n;
+        T n;
     public:
         using output_type = int;
 
         Successors() :
-            n{0}
+            n{}
         {}
 
-        std::optional<int> next()
+        std::optional<T> next()
         {
-            if (n >= 10)
-            {
-                return {};
-            }
-            int state = n;
+            T state = n;
             ++n;
-            return state;
+            return std::move(state);
         }
     };
 
@@ -74,7 +71,7 @@ namespace sequences
             fn{fn}
         {}
 
-        std::optional<int> next()
+        std::optional<output_type> next()
         {
             auto k = base.next();
             if (k)
@@ -85,9 +82,6 @@ namespace sequences
         }
     };
 
-//    template<class F>
-//    Map(Sequence<int> &, F) -> Map<F>;
-
     /// Yields only elements of the base sequence where the test function returns `true`.
     template<class Seq, class Fn>
     class Filter
@@ -97,7 +91,7 @@ namespace sequences
 
     public:
 
-        using output_type = int;
+        using output_type = typename Seq::output_type;
 
         Filter(
             Seq &base,
@@ -107,7 +101,7 @@ namespace sequences
             fn{fn}
         {}
 
-        std::optional<int> next()
+        std::optional<output_type> next()
         {
             for (;;)
             {
@@ -134,7 +128,7 @@ namespace sequences
 
     public:
 
-        using output_type = int;
+        using output_type = typename Seq::output_type;
 
         Take(
             Seq &base,
@@ -145,7 +139,7 @@ namespace sequences
             n{n}
         {}
 
-        std::optional<int> next()
+        std::optional<output_type> next()
         {
             if (k < n)
             {
@@ -168,14 +162,14 @@ namespace sequences
         using sub_sequence_type = typename Seq::output_type;
         using output_type = typename sub_sequence_type::output_type;
 
-        Flatten(
+        explicit Flatten(
             Seq &base
         ) :
             base{base},
             current_sub_sequence{base.next()}
         {}
 
-        std::optional<int> next()
+        std::optional<output_type> next()
         {
             // Try to get another element to return until there are no more elements.
             for (;;)
@@ -191,8 +185,6 @@ namespace sequences
                     else
                     {
                         // Current sub sequence is exhausted, go to next.
-//                        current_sub_sequence->~sub_sequence_type();
-//                        new (&*current_sub_sequence) sub_sequence_type{base.next()};
                         std::optional<sub_sequence_type> next = base.next();
                         if (next)
                         {
