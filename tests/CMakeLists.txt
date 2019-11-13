@@ -1,4 +1,4 @@
-add_executable(tests main.cpp combinators.cpp terminators.cpp utilities.cpp mutation.cpp tools.cpp tools.h)
+add_executable(tests main.cpp combinators.cpp terminators.cpp utilities.cpp mutation.cpp tools.cpp tools.h next-gen.cpp)
 target_link_libraries(tests sequences)
 enable_testing()
 add_test(tests tests)
