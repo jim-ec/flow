@@ -14,7 +14,13 @@ class Map
 {
 public:
     using value_type = decltype(std::declval<Fn>()(
-            std::declval<iter_value_type_t<Iter>>()
+        // This statically calls the function type with the iterator's
+        // value type, to get the functions return type since
+        // no `std::function` but raw template types are used.
+        // This means that the iterator's value type must be convertible
+        // to the function's argument type, like:
+        // `T -> T` or `T -> const T&`, but not `T -> T&`.
+        std::declval<iter_value_type_t<Iter>>()
     ));
 
 private:
