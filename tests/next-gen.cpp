@@ -10,6 +10,9 @@
 #include "sequences/sequences/Flatten.h"
 #include "sequences/sequences/Filter.h"
 #include "sequences/sequences/Map.h"
+#include "sequences/sequences/Chain.h"
+#include "sequences/sequences/Successors.h"
+#include "sequences/sequences/Take.h"
 
 #include "tools.h"
 
@@ -39,7 +42,12 @@ TEST_CASE("NextGen")
     Filter c{b, &is_even};
     Map d{c, &inc};
 
-    auto &seq = d;
+    Successors<float> a2{0u};
+    Take b2{a2, 10};
+
+    Chain a3{d, b2};
+
+    auto &seq = a3;
 
     for(int n : Over{seq})
     {

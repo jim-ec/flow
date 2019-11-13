@@ -12,10 +12,14 @@ namespace sequences
     {
         T n;
     public:
-        using output_type = int;
+        using output_type = T;
 
         Successors() :
             n{}
+        {}
+
+        explicit Successors(const T &n) :
+            n{n}
         {}
 
         std::optional<T> next()
