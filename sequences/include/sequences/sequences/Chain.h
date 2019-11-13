@@ -14,8 +14,8 @@ namespace sequences
     template<class DrainSeq, class ContSeq>
     class Chain
     {
-
     public:
+
         using output_type = typename DrainSeq::output_type;
 
         explicit Chain(

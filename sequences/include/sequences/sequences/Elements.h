@@ -10,8 +10,6 @@ namespace sequences
     template<class O>
     class Elements
     {
-        std::vector<O> const &xs;
-        int k;
     public:
         using output_type = O;
 
@@ -30,5 +28,9 @@ namespace sequences
             ++k;
             return std::move(state);
         }
+
+    private:
+        std::vector<O> const &xs;
+        size_t k;
     };
 }

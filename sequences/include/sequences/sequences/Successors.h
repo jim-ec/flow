@@ -10,8 +10,8 @@ namespace sequences
     template<class T>
     class Successors
     {
-        T n;
     public:
+
         using output_type = T;
 
         Successors() :
@@ -28,5 +28,8 @@ namespace sequences
             ++n;
             return std::move(state);
         }
+
+    private:
+        T n;
     };
 }

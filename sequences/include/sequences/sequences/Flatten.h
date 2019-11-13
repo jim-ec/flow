@@ -10,8 +10,8 @@ namespace sequences
     template<class Seq>
     class Flatten
     {
-
     public:
+
         using sub_sequence_type = typename Seq::output_type;
         using output_type = typename sub_sequence_type::output_type;
 
@@ -30,8 +30,8 @@ namespace sequences
                 if (current_sub_sequence)
                 {
                     // Try to get the next value out of the current sub sequence.
-                    auto el = current_sub_sequence->next();
-                    if (el)
+                    std::optional<output_type> el = current_sub_sequence->next();
+                    if (el.has_value())
                     {
                         return std::move(el);
                     }
@@ -39,7 +39,7 @@ namespace sequences
                     {
                         // Current sub sequence is exhausted, go to next.
                         std::optional<sub_sequence_type> next = base.next();
-                        if (next)
+                        if (next.has_value())
                         {
                             current_sub_sequence.emplace(std::move(*next));
                         }

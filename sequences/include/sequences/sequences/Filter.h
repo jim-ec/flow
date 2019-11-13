@@ -10,9 +10,6 @@ namespace sequences
     template<class Seq, class Fn>
     class Filter
     {
-        Seq &base;
-        Fn fn;
-
     public:
 
         using output_type = typename Seq::output_type;
@@ -29,8 +26,8 @@ namespace sequences
         {
             for (;;)
             {
-                auto k = base.next();
-                if (!k)
+                std::optional<output_type> k = base.next();
+                if (!k.has_value())
                 {
                     return {};
                 }
@@ -40,5 +37,9 @@ namespace sequences
                 }
             }
         }
+
+    private:
+        Seq &base;
+        Fn fn;
     };
 }

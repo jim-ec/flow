@@ -10,10 +10,6 @@ namespace sequences
     template<class Seq>
     class Take
     {
-        Seq &base;
-        size_t k;
-        size_t n;
-
     public:
 
         using output_type = typename Seq::output_type;
@@ -39,5 +35,10 @@ namespace sequences
                 return {};
             }
         }
+
+    private:
+        Seq &base;
+        size_t k;
+        size_t n;
     };
 }

@@ -31,8 +31,8 @@ namespace sequences
 
         std::optional<output_type> next()
         {
-            auto k = base.next();
-            if (k)
+            std::optional<typename Seq::output_type> k = base.next();
+            if (k.has_value())
             {
                 return fn(std::move(*k));
             }

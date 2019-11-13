@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <type_traits>
+
 namespace sequences
 {
     template<class Fn, class ArgumentType>
