@@ -25,19 +25,20 @@ is_even(int n)
 
 TEST_CASE("NextGen")
 {
-    std::vector<int> x{1, 2, 3, 4};
-    std::vector<int> y{10, 20, 30, 40};
-    Elements xs{x};
-    Elements ys{y};
-    std::vector<Elements<int>> a{xs, ys};
-    Elements as{a};
-    Flatten bs{as};
+    std::vector<int> xs{1, 2, 3, 4};
+    std::vector<int> ys{10, 20, 30, 40};
+    Elements x{xs};
+    Elements y{ys};
+    std::vector<Elements<int>> as{x, y};
+    Elements a{as};
+    Flatten b{a};
+    Filter c{b, &is_even};
+    Map d{c, &inc};
 
-    auto &seq = bs;
+    auto &seq = d;
 
-    for (auto x = seq.next(); x; x = seq.next())
+    for(int n : IteratorRange{seq})
     {
-        auto n = *x;
         printf("%d\n", n);
     }
 
