@@ -14,15 +14,12 @@ namespace sequences
     template<class Seq, class Fn>
     class Map
     {
-        Seq &base;
-        Fn fn;
-
     public:
 
         using output_type = function_return_type<Fn, typename Seq::output_type>;
 
         Map(
-            Seq &base,
+            Seq const &base,
             Fn fn
         ) :
             base{base},
@@ -38,5 +35,9 @@ namespace sequences
             }
             return {};
         }
+
+    private:
+        Seq base;
+        Fn fn;
     };
 }

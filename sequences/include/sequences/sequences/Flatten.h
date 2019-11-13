@@ -16,10 +16,10 @@ namespace sequences
         using output_type = typename sub_sequence_type::output_type;
 
         explicit Flatten(
-            Seq &base
+            Seq const &base
         ) :
             base{base},
-            current_sub_sequence{base.next()}
+            current_sub_sequence{this->base.next()}
         {}
 
         std::optional<output_type> next()
@@ -60,7 +60,7 @@ namespace sequences
         }
 
     private:
-        Seq &base;
+        Seq base;
         std::optional<sub_sequence_type> current_sub_sequence;
     };
 

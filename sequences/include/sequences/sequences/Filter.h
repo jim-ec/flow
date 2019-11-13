@@ -15,7 +15,7 @@ namespace sequences
         using output_type = typename Seq::output_type;
 
         Filter(
-            Seq &base,
+            Seq const &base,
             Fn fn
         ) :
             base{base},
@@ -39,7 +39,7 @@ namespace sequences
         }
 
     private:
-        Seq &base;
+        Seq base;
         Fn fn;
     };
 }

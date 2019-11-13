@@ -15,7 +15,7 @@ namespace sequences
         using output_type = typename Seq::output_type;
 
         Take(
-            Seq &base,
+            Seq const &base,
             size_t const n
         ) :
             base{base},
@@ -37,7 +37,7 @@ namespace sequences
         }
 
     private:
-        Seq &base;
+        Seq base;
         size_t k;
         size_t n;
     };

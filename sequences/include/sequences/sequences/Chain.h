@@ -19,8 +19,8 @@ namespace sequences
         using output_type = typename DrainSeq::output_type;
 
         explicit Chain(
-            DrainSeq &drain_seq,
-            ContSeq &cont_seq
+            DrainSeq const &drain_seq,
+            ContSeq const &cont_seq
         ) :
             drain_seq{drain_seq},
             cont_seq{cont_seq},
@@ -46,8 +46,8 @@ namespace sequences
         }
 
     private:
-        DrainSeq &drain_seq;
-        ContSeq &cont_seq;
+        DrainSeq drain_seq;
+        ContSeq cont_seq;
         bool draining;
     };
 
