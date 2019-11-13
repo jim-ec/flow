@@ -3,6 +3,8 @@
 //
 #pragma once
 
+#include <sstream>
+
 std::string concat(const std::string &a, const std::string &b);
 
 std::string concat(const std::string &a, int n);
@@ -17,9 +19,39 @@ struct S
     bool copy_assigned{};
     bool move_assigned{};
 
+    std::string display_flags() const
+    {
+        std::stringstream ss;
+        if (default_constructed) {
+            ss << "default constructed, ";
+        }
+        if (argument_constructed) {
+            ss << "argument constructed, ";
+        }
+        if (copy_constructed) {
+            ss << "copy constructed, ";
+        }
+        if (move_constructed) {
+            ss << "move constructed, ";
+        }
+        if (copy_assigned) {
+            ss << "copy assigned, ";
+        }
+        if (move_assigned) {
+            ss << "move assigned, ";
+        }
+
+        std::string s = ss.str();
+        if (!s.empty()) {
+            s.pop_back();
+            s.pop_back();
+        }
+        return s;
+    }
+
     S() : id{-1}, default_constructed{true}
     {
-        printf("S(): %d\n", id);
+        printf("S()\n");
     }
 
     explicit S(int id) :
@@ -34,6 +66,7 @@ struct S
             copy_constructed{true}
     {
         printf("S(const S&): %d\n", id);
+        printf(">  rhs: %s\n", rhs.display_flags().data());
     }
 
     S(S &&rhs) noexcept :
@@ -41,6 +74,7 @@ struct S
             move_constructed{true}
     {
         printf("S(S&&): %d\n", id);
+        printf(">  rhs: %s\n", rhs.display_flags().data());
     }
 
     S &operator=(const S &rhs)
@@ -48,6 +82,8 @@ struct S
         copy_assigned = true;
         id = rhs.id;
         printf("S::operator=(const S &): %d\n", id);
+        printf(">  this: %s\n", display_flags().data());
+        printf(">  rhs:  %s\n", rhs.display_flags().data());
         return *this;
     }
 
@@ -56,6 +92,8 @@ struct S
         move_assigned = true;
         id = rhs.id;
         printf("S::operator=(S&&): %d\n", id);
+        printf(">  this: %s\n", display_flags().data());
+        printf(">  rhs:  %s\n", rhs.display_flags().data());
         return *this;
     }
 };
