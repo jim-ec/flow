@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.8.0 FATAL_ERROR)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+SET(CMAKE_C_COMPILER clang)
+SET(CMAKE_CXX_COMPILER clang++)
 
 project(sequences)
 
