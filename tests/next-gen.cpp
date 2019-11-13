@@ -6,6 +6,10 @@
 #include <map>
 
 #include "sequences/Iterator.h"
+#include "sequences/sequences/Elements.h"
+#include "sequences/sequences/Flatten.h"
+#include "sequences/sequences/Filter.h"
+#include "sequences/sequences/Map.h"
 
 #include "tools.h"
 

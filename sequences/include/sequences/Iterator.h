@@ -4,8 +4,6 @@
 
 #pragma once
 
-#include "sequences/Sequence.h"
-
 namespace sequences
 {
     template<class Seq>
