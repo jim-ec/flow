@@ -13,9 +13,12 @@ namespace sequences
 
         using value_type = typename Seq::output_type;
 
-        explicit YieldIterator(Seq &seq, bool initialize) :
+        explicit YieldIterator(
+            Seq const &seq,
+            bool initialize
+        ) :
             seq{seq},
-            element{initialize ? seq.next() : std::optional<value_type>{}}
+            element{initialize ? this->seq.next() : std::optional<value_type>{}}
         {}
 
         YieldIterator &operator++()
@@ -24,18 +27,23 @@ namespace sequences
             return *this;
         }
 
-        value_type operator*()
+        value_type &operator*()
         {
             return *element;
         }
 
-        bool operator!=(const YieldIterator &)
+        value_type const &operator*() const
+        {
+            return *element;
+        }
+
+        bool operator!=(YieldIterator const&)
         {
             return element.has_value();
         }
 
     private:
-        Seq &seq;
+        Seq seq;
         std::optional<value_type> element;
     };
 
@@ -50,8 +58,8 @@ namespace sequences
 
         using value_type = typename Seq::output_type;
 
-        explicit Over(Seq &seq) :
-        seq{seq}
+        explicit Over(Seq const &seq) :
+            seq{seq}
         {}
 
         YieldIterator<Seq> begin()
@@ -65,6 +73,6 @@ namespace sequences
         }
 
     private:
-        Seq &seq;
+        Seq seq;
     };
 }

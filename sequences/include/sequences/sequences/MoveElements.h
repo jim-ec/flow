@@ -6,14 +6,15 @@
 
 namespace sequences
 {
-    /// Yields all elements of the given container.
+    /// Yields all elements of the given container by move.
+    /// This destroys the elements hold the underlying container.
     template<class O>
-    class Elements
+    class MoveElements
     {
     public:
         using output_type = O;
 
-        explicit Elements(std::vector<O> const &xs) :
+        explicit MoveElements(std::vector<O> &&xs) :
             xs{xs},
             k{0}
         {}
@@ -24,13 +25,13 @@ namespace sequences
             {
                 return {};
             }
-            O state{xs[k]};
+            O state{std::move(xs[k])};
             ++k;
             return std::move(state);
         }
 
     private:
-        std::vector<O> const &xs;
+        std::vector<O> &xs;
         size_t k;
     };
 }

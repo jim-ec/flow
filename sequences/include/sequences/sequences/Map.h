@@ -16,7 +16,11 @@ namespace sequences
     {
     public:
 
-        using output_type = function_return_type<Fn, typename Seq::output_type>;
+        using domain_type = typename Seq::output_type;
+        using output_type = function_return_type<Fn, domain_type>;
+
+        static_assert(!std::is_lvalue_reference_v<output_type>, "The mapped type must be owned.");
+        static_assert(!std::is_rvalue_reference_v<output_type>, "The mapped type must be owned.");
 
         Map(
             Seq const &base,
