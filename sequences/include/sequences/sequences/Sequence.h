@@ -6,55 +6,44 @@
 
 namespace sequences
 {
-
-    /// Interface for all sequences.
+    /// Yields all elements of the given container.
     template<class O>
-    class Sequence
+    class Elements
     {
+        std::vector<O> const &xs;
+        int k;
     public:
         using output_type = O;
 
-        virtual std::optional<O> next() = 0;
-    };
-
-    /// Yields all elements of the given container.
-    template<class T>
-    class Elements :
-        public Sequence<T>
-    {
-        std::vector<T> const &xs;
-        int k;
-    public:
-
-        explicit Elements(std::vector<T> const &xs) :
+        explicit Elements(std::vector<O> const &xs) :
             xs{xs},
             k{0}
         {}
 
-        std::optional<T> next() override
+        std::optional<O> next()
         {
             if (k >= xs.size())
             {
                 return {};
             }
-            T state = xs[k];
+            O state = xs[k];
             ++k;
             return state;
         }
     };
 
     /// Successors based on some initial value.
-    class Successors :
-        public Sequence<int>
+    class Successors
     {
         int n;
     public:
+        using output_type = int;
 
         Successors() :
             n{0}
         {}
 
-        std::optional<int> next() override
+        std::optional<int> next()
         {
             if (n >= 10)
             {
@@ -67,24 +56,25 @@ namespace sequences
     };
 
     /// Maps each sequence element through a function.
-    template<class Fn>
-    class Map :
-        public Sequence<int>
+    template<class Seq, class Fn>
+    class Map
     {
-        Sequence<int> &base;
+        Seq &base;
         Fn fn;
 
     public:
 
+        using output_type = typename Seq::output_type;
+
         Map(
-            Sequence<int> &base,
+            Seq &base,
             Fn fn
         ) :
             base{base},
             fn{fn}
         {}
 
-        std::optional<int> next() override
+        std::optional<int> next()
         {
             auto k = base.next();
             if (k)
@@ -99,24 +89,25 @@ namespace sequences
 //    Map(Sequence<int> &, F) -> Map<F>;
 
     /// Yields only elements of the base sequence where the test function returns `true`.
-    template<class Fn>
-    class Filter :
-        public Sequence<int>
+    template<class Seq, class Fn>
+    class Filter
     {
-        Sequence<int> &base;
+        Seq &base;
         Fn fn;
 
     public:
 
+        using output_type = int;
+
         Filter(
-            Sequence<int> &base,
+            Seq &base,
             Fn fn
         ) :
             base{base},
             fn{fn}
         {}
 
-        std::optional<int> next() override
+        std::optional<int> next()
         {
             for (;;)
             {
@@ -134,17 +125,19 @@ namespace sequences
     };
 
     /// Yields up to a fixed amount of elements out of a base sequence.
-    class Take :
-        public Sequence<int>
+    template<class Seq>
+    class Take
     {
-        Sequence<int> &base;
+        Seq &base;
         size_t k;
         size_t n;
 
     public:
 
+        using output_type = int;
+
         Take(
-            Sequence<int> &base,
+            Seq &base,
             size_t const n
         ) :
             base{base},
@@ -152,7 +145,7 @@ namespace sequences
             n{n}
         {}
 
-        std::optional<int> next() override
+        std::optional<int> next()
         {
             if (k < n)
             {
@@ -167,22 +160,22 @@ namespace sequences
     };
 
     /// Reduces the sequence order by one.
-    class Flatten :
-        public Sequence<int>
+    template<class Seq>
+    class Flatten
     {
-        Sequence<Sequence<int>*> &base;
-        std::optional<Sequence<int>*> current_sub_sequence;
 
     public:
+        using sub_sequence_type = typename Seq::output_type;
+        using output_type = typename sub_sequence_type::output_type;
 
         Flatten(
-            Sequence<Sequence<int>*> &base
+            Seq &base
         ) :
             base{base},
             current_sub_sequence{base.next()}
         {}
 
-        std::optional<int> next() override
+        std::optional<int> next()
         {
             // Try to get another element to return until there are no more elements.
             for (;;)
@@ -190,7 +183,7 @@ namespace sequences
                 if (current_sub_sequence)
                 {
                     // Try to get the next value out of the current sub sequence.
-                    auto el = (*current_sub_sequence)->next();
+                    auto el = current_sub_sequence->next();
                     if (el)
                     {
                         return std::move(el);
@@ -198,7 +191,17 @@ namespace sequences
                     else
                     {
                         // Current sub sequence is exhausted, go to next.
-                        current_sub_sequence = base.next();
+//                        current_sub_sequence->~sub_sequence_type();
+//                        new (&*current_sub_sequence) sub_sequence_type{base.next()};
+                        std::optional<sub_sequence_type> next = base.next();
+                        if (next)
+                        {
+                            current_sub_sequence.emplace(std::move(*next));
+                        }
+                        else
+                        {
+                            current_sub_sequence.reset();
+                        }
                     }
                 }
                 else
@@ -210,6 +213,10 @@ namespace sequences
             }
 
         }
+
+    private:
+        Seq &base;
+        std::optional<sub_sequence_type> current_sub_sequence;
     };
 
 }

@@ -29,7 +29,7 @@ TEST_CASE("NextGen")
     std::vector<int> y{10, 20, 30, 40};
     Elements xs{x};
     Elements ys{y};
-    std::vector<Sequence<int> *> a{&xs, &ys};
+    std::vector<Elements<int>> a{xs, ys};
     Elements as{a};
     Flatten bs{as};
 
