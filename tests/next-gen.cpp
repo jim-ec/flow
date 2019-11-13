@@ -48,7 +48,8 @@ f(S const &s)
 TEST_CASE("NextGen")
 {
     std::vector<S> xs;
-    xs.emplace_back(1);
+    xs.emplace_back(5);
+    xs.emplace_back(6);
 
     MoveElements a{std::move(xs)};
     Map b{a, &f};

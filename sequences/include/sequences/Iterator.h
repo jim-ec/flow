@@ -23,7 +23,11 @@ namespace sequences
 
         YieldIterator &operator++()
         {
-            element = seq.next();
+            element.reset();
+            std::optional<value_type> el = seq.next();
+            if (el.has_value()) {
+                element.emplace(*el);
+            }
             return *this;
         }
 
