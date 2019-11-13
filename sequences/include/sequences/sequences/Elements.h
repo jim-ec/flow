@@ -28,7 +28,7 @@ namespace sequences
             }
             O state = xs[k];
             ++k;
-            return state;
+            return std::move(state);
         }
     };
 }

@@ -2,7 +2,11 @@
 // Created by jim on 11/13/19.
 //
 
+#pragma once
+
 #include <optional>
+
+#include "TypeTraits.h"
 
 namespace sequences
 {
@@ -15,7 +19,7 @@ namespace sequences
 
     public:
 
-        using output_type = typename Seq::output_type;
+        using output_type = function_return_type<Fn, typename Seq::output_type>;
 
         Map(
             Seq &base,
