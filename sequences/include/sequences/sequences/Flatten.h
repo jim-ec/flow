@@ -2,6 +2,8 @@
 // Created by jim on 11/13/19.
 //
 
+#pragma once
+
 #include <optional>
 
 namespace sequences
