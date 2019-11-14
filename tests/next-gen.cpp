@@ -11,9 +11,12 @@
 #include "sequences/sequences/Flatten.h"
 #include "sequences/sequences/Filter.h"
 #include "sequences/sequences/Map.h"
+#include "sequences/sequences/Merge.h"
 #include "sequences/sequences/Chain.h"
 #include "sequences/sequences/Successors.h"
 #include "sequences/sequences/Take.h"
+#include "sequences/sequences/Stride.h"
+#include "sequences/sequences/Merge.h"
 
 #include "tools.h"
 
@@ -47,39 +50,24 @@ f(S const &s)
 
 TEST_CASE("NextGen")
 {
-    std::vector<S> xs;
-    xs.emplace_back(5);
-    xs.emplace_back(6);
+    Successors<int> a{0};
+    Successors<int> b{1};
+    Successors<int> c{2};
 
-    MoveElements a{std::move(xs)};
-    Map b{a, &f};
+    Stride aa{a, 2};
+    Map bb{b, &display};
+    Map cc{c, [](int n) { return 1 << n; }};
 
-    auto &seq = b;
+    Take aaa{aa, 5};
 
-    printf("New:\n");
-    for(const S& n : Over{seq})
+    Merge m{std::tuple{aaa, bb, cc}};
+    Take mm{m, 10};
+
+    for(auto [a, b, c] : Over{mm})
     {
-        printf("|  \"%d\": %s\n", n.id, n.display_flags().data());
+        printf("%d, %s, %d\n", a, b.data(), c);
     }
 
-//    printf("Old:\n");
-//    for(const S& n : xs)
-//    {
-//        printf("|  \"%d\"\n", n.id);
-//    }
-
-//    std::vector<int> xs{1, 2, 3, 4};
-//
-//    Elements a{xs};
-//    Map b{a, &display};
-//
-//    auto &seq = b;
-//
-//    for(std::string n : Over{seq})
-//    {
-//        printf("%s\n", n.data());
-//    }
-//
 //    std::vector<int> xs{1, 2, 3, 4};
 //    std::vector<int> ys{10, 20, 30, 40};
 //    Elements x{xs};
@@ -89,15 +77,14 @@ TEST_CASE("NextGen")
 //    Flatten b{a};
 //    Filter c{b, &is_even};
 //    Map d{c, &inc};
+
+//    Successors<float> a{0u};
+//    Take b{a, 10};
+//    Stride c{b, 3};
 //
-//    Successors<float> a2{0u};
-//    Take b2{a2, 10};
+//    auto &seq = c;
 //
-//    Chain a3{d, b2};
-//
-//    auto &seq = a3;
-//
-//    for(int n : Over{seq})
+//    for (int n : Over{seq})
 //    {
 //        printf("%d\n", n);
 //    }
