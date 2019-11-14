@@ -17,6 +17,7 @@
 #include "sequences/sequences/Take.h"
 #include "sequences/sequences/Stride.h"
 #include "sequences/sequences/Merge.h"
+#include "sequences/sequences/Fuse.h"
 
 #include "tools.h"
 
@@ -50,23 +51,33 @@ f(S const &s)
 
 TEST_CASE("NextGen")
 {
-    Successors<int> a{0};
-    Successors<int> b{1};
-    Successors<int> c{2};
-
+    Successors a{0};
     Stride aa{a, 2};
-    Map bb{b, &display};
-    Map cc{c, [](int n) { return 1 << n; }};
-
     Take aaa{aa, 5};
 
-    Merge m{std::tuple{aaa, bb, cc}};
-    Take mm{m, 10};
-
-    for(auto [a, b, c] : Over{mm})
+    for(int const &n : Over{aaa})
     {
-        printf("%d, %s, %d\n", a, b.data(), c);
+        printf("%d\n", n);
     }
+
+
+//    Successors<int> a{0};
+//    Successors<int> b{1};
+//    Successors<int> c{2};
+//
+//    Stride aa{a, 2};
+//    Map bb{b, &display};
+//    Map cc{c, [](int n) { return 1 << n; }};
+//
+//    Take aaa{aa, 5};
+//
+//    Merge m{std::tuple{aaa, bb, cc}};
+//    Take mm{m, 10};
+//
+//    for(auto [a, b, c] : Over{mm})
+//    {
+//        printf("%d, %s, %d\n", a, b.data(), c);
+//    }
 
 //    std::vector<int> xs{1, 2, 3, 4};
 //    std::vector<int> ys{10, 20, 30, 40};

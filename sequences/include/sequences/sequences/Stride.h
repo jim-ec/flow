@@ -4,6 +4,8 @@
 
 #include <optional>
 
+#include "Fuse.h"
+
 namespace sequences
 {
     /// Before yielding the next element, skip `n - 1` elements.
@@ -18,29 +20,29 @@ namespace sequences
             Seq const &base,
             size_t const n
         ) :
-            base{base},
+            base{Fuse{base}},
             n{n}
         {}
 
         std::optional<output_type> next()
         {
-            for(size_t k = 0; k < n; ++k) {
-                std::optional<output_type> el = base.next();
+            std::optional<output_type> state{base.next()};
 
-                if (!el.has_value())
-                {
-                    // The base sequence is exhausted.
-                    return {};
+            if (state.has_value())
+            {
+                // Skip `n - 1` elements.
+                // Because base is fused, it guarantees that consecutive calls to
+                // `next()` return `None`.
+                for(size_t k = 0; k < n - 1; ++k) {
+                    base.next();
                 }
-
-                // Drop and forget about the element.
             }
 
-            return base.next();
+            return state;
         }
 
     private:
-        Seq base;
+        Fuse<Seq> base;
         size_t n;
     };
 }
