@@ -19,6 +19,7 @@
 #include "sequences/sequences/Merge.h"
 #include "sequences/sequences/Fuse.h"
 #include "sequences/sequences/Enumerate.h"
+#include "sequences/sequences/Fold.h"
 
 #include "tools.h"
 
@@ -52,15 +53,29 @@ f(S const &s)
 
 TEST_CASE("NextGen")
 {
-    Successors a{0};
-    Stride aa{a, 2};
-    Take aaa{aa, 5};
-    Enumerate aaaa{aaa};
+    Successors a{1};
+    Take aa{a, 4};
+    Fold aaa{aa, [](int c, int a) {
+//        std::stringstream ss;
+//        ss << n << ", " << a;
+//        return ss.str();
+        return c * a;
+    }};
 
-    for(auto const &[i, n] : Exhaust{aaaa})
-    {
-        printf("%zu: %d\n", i, n);
-    }
+//    std::string sum = aaa.reduce("");
+    int sum = *aaa.reduce_maybe();
+
+    printf("%d\n", sum);
+
+//    Successors a{0};
+//    Stride aa{a, 2};
+//    Take aaa{aa, 5};
+//    Enumerate aaaa{aaa};
+//
+//    for(auto const &[i, n] : Exhaust{aaaa})
+//    {
+//        printf("%zu: %d\n", i, n);
+//    }
 
 
 //    Successors<int> a{0};
