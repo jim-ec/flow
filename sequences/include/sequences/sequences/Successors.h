@@ -14,6 +14,7 @@ namespace sequences
     {
     public:
 
+        static inline bool constexpr finite = false;
         using output_type = T;
 
         Successors() :

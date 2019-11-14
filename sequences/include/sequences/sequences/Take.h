@@ -14,6 +14,7 @@ namespace sequences
     {
     public:
 
+        static inline bool constexpr finite = true;
         using output_type = typename Seq::output_type;
 
         Take(

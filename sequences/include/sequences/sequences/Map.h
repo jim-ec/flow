@@ -16,6 +16,7 @@ namespace sequences
     {
     public:
 
+        static inline bool constexpr finite = Seq::finite;
         using domain_type = typename Seq::output_type;
         using output_type = function_return_type<Fn, domain_type>;
 

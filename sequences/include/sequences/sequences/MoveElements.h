@@ -14,6 +14,7 @@ namespace sequences
     class MoveElements
     {
     public:
+        static inline bool const finite = true;
         using output_type = O;
 
         explicit MoveElements(std::vector<O> &&xs) :

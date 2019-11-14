@@ -56,13 +56,14 @@ namespace sequences
     /// The main purpose of this class is that the actual sequences do not need to implement the
     /// impractical iterator interface, such as comparing to check whether a sequence is still valid.
     template<class Seq>
-    class Over
+    class Exhaust
     {
     public:
 
+        static_assert(Seq::finite, "Cannot exhaust an infinite sequence.");
         using value_type = typename Seq::output_type;
 
-        explicit Over(Seq const &seq) :
+        explicit Exhaust(Seq const &seq) :
             seq{seq}
         {}
 

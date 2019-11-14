@@ -55,7 +55,7 @@ TEST_CASE("NextGen")
     Stride aa{a, 2};
     Take aaa{aa, 5};
 
-    for(int const &n : Over{aaa})
+    for(int const &n : Exhaust{aa})
     {
         printf("%d\n", n);
     }
@@ -74,7 +74,7 @@ TEST_CASE("NextGen")
 //    Merge m{std::tuple{aaa, bb, cc}};
 //    Take mm{m, 10};
 //
-//    for(auto [a, b, c] : Over{mm})
+//    for(auto [a, b, c] : Exhaust{mm})
 //    {
 //        printf("%d, %s, %d\n", a, b.data(), c);
 //    }
@@ -95,7 +95,7 @@ TEST_CASE("NextGen")
 //
 //    auto &seq = c;
 //
-//    for (int n : Over{seq})
+//    for (int n : Exhaust{seq})
 //    {
 //        printf("%d\n", n);
 //    }

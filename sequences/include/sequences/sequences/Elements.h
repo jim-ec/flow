@@ -13,6 +13,7 @@ namespace sequences
     class Elements
     {
     public:
+        static inline bool constexpr finite = true;
         using output_type = O;
 
         explicit Elements(std::vector<O> const &xs) :

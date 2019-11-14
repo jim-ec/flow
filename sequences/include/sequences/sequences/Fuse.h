@@ -15,6 +15,8 @@ namespace sequences
     {
     public:
 
+        // TODO: Optimized implementation for infinite sequences?
+        static inline bool constexpr finite = Seq::finite;
         using output_type = typename Seq::output_type;
 
         explicit Fuse(Seq const &base) :

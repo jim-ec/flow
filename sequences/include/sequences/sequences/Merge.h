@@ -30,7 +30,24 @@ namespace sequences
         /// A tuple of optionals for each sequence, containing their output type.
         using seqs_output_tuple_type = tuple_type_map<to_seq_output_tuple_type, seqs_tuple_type>;
 
+        template<size_t N = 0>
+        constexpr static bool
+        any_finite()
+        {
+            return std::tuple_element<N, seqs_tuple_type>::finite ||
+                   any_finite<N + 1>();
+        }
+
+        template<>
+        constexpr static bool
+        any_finite<std::tuple_size_v<seqs_tuple_type>>()
+        {
+            return false;
+        }
+
     public:
+
+        static inline bool constexpr finite = any_finite();
 
         /// A tuple of the output type for each sequence.
         using output_type = tuple_type_map<to_output_type, seqs_tuple_type>;

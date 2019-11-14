@@ -17,7 +17,8 @@ namespace sequences
     class Chain
     {
     public:
-
+        static_assert(DrainSeq::finite, "Cannot chain sequence to an infinite sequence.");
+        static inline bool constexpr finite = ContSeq::finite;
         using output_type = typename DrainSeq::output_type;
 
         explicit Chain(
