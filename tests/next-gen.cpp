@@ -18,6 +18,7 @@
 #include "sequences/sequences/Stride.h"
 #include "sequences/sequences/Merge.h"
 #include "sequences/sequences/Fuse.h"
+#include "sequences/sequences/Enumerate.h"
 
 #include "tools.h"
 
@@ -54,10 +55,11 @@ TEST_CASE("NextGen")
     Successors a{0};
     Stride aa{a, 2};
     Take aaa{aa, 5};
+    Enumerate aaaa{aaa};
 
-    for(int const &n : Exhaust{aa})
+    for(auto const &[i, n] : Exhaust{aaaa})
     {
-        printf("%d\n", n);
+        printf("%zu: %d\n", i, n);
     }
 
 
