@@ -22,6 +22,7 @@
 #include "sequences/sequences/Fold.h"
 #include "sequences/sequences/Deref.h"
 #include "sequences/sequences/Inspect.h"
+#include "sequences/sequences/Cofold.h"
 
 #include "tools.h"
 
@@ -53,25 +54,46 @@ f(S const &s)
     return S{s.id * 2};
 }
 
+static std::optional<std::pair<int, int>>
+cofold_descending(int n)
+{
+    if (n == 0)
+    {
+        return {};
+    }
+    else
+    {
+        return std::pair{n, n - 1};
+    }
+}
+
 TEST_CASE("NextGen")
 {
-    std::vector<int> numbers{3, 1, 4, 2};
-    std::vector<int const *> pointers{
-        &numbers[1],
-        &numbers[3],
-        &numbers[0],
-        &numbers[2]
-    };
+    Cofold a{&cofold_descending, 10};
 
-    Elements a{pointers};
-    Deref aa{a};
-    Inspect aaa{aa, [](int const &n) {
-        printf("Inspector: %d\n", n);
-    }};
-
-    for (int n : Exhaust{aaa}) {
+    for (int n : Exhaust{a}) {
         printf("%d\n", n);
     }
+
+//
+//
+//    std::vector<int> numbers{3, 1, 4, 2};
+//    std::vector<int const *> pointers{
+//        &numbers[1],
+//        &numbers[3],
+//        &numbers[0],
+//        &numbers[2]
+//    };
+//
+//    Elements a{pointers};
+//    Deref aa{a};
+//    Inspect aaa{aa, [](int const &n) {
+//        printf("Inspector: %d\n", n);
+//    }};
+//
+//    for (int n : Exhaust{aaa}) {
+//        printf("%d\n", n);
+//    }
 
 //    Successors a{1};
 //    Take aa{a, 4};
