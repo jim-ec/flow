@@ -21,6 +21,7 @@
 #include "sequences/sequences/Enumerate.h"
 #include "sequences/sequences/Fold.h"
 #include "sequences/sequences/Deref.h"
+#include "sequences/sequences/Inspect.h"
 
 #include "tools.h"
 
@@ -64,8 +65,11 @@ TEST_CASE("NextGen")
 
     Elements a{pointers};
     Deref aa{a};
+    Inspect aaa{aa, [](int const &n) {
+        printf("Inspector: %d\n", n);
+    }};
 
-    for (int n : Exhaust{aa}) {
+    for (int n : Exhaust{aaa}) {
         printf("%d\n", n);
     }
 
