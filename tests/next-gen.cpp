@@ -20,6 +20,7 @@
 #include "sequences/sequences/Fuse.h"
 #include "sequences/sequences/Enumerate.h"
 #include "sequences/sequences/Fold.h"
+#include "sequences/sequences/Deref.h"
 
 #include "tools.h"
 
@@ -53,19 +54,34 @@ f(S const &s)
 
 TEST_CASE("NextGen")
 {
-    Successors a{1};
-    Take aa{a, 4};
-    Fold aaa{aa, [](int c, int a) {
-//        std::stringstream ss;
-//        ss << n << ", " << a;
-//        return ss.str();
-        return c * a;
-    }};
+    std::vector<int> numbers{3, 1, 4, 2};
+    std::vector<int const *> pointers{
+        &numbers[1],
+        &numbers[3],
+        &numbers[0],
+        &numbers[2]
+    };
 
-//    std::string sum = aaa.reduce("");
-    int sum = *aaa.reduce_maybe();
+    Elements a{pointers};
+    Deref aa{a};
 
-    printf("%d\n", sum);
+    for (int n : Exhaust{aa}) {
+        printf("%d\n", n);
+    }
+
+//    Successors a{1};
+//    Take aa{a, 4};
+//    Fold aaa{aa, [](int c, int a) {
+////        std::stringstream ss;
+////        ss << n << ", " << a;
+////        return ss.str();
+//        return c * a;
+//    }};
+//
+////    std::string sum = aaa.reduce("");
+//    int sum = *aaa.reduce_maybe();
+//
+//    printf("%d\n", sum);
 
 //    Successors a{0};
 //    Stride aa{a, 2};
