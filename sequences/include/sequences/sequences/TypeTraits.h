@@ -8,10 +8,6 @@
 
 namespace sequences
 {
-    /// Tests if `TT<Ts...>` is the same type as `T`.
-    template<class T, template<class...> class TT, class... Ts>
-    inline constexpr bool is_type_instance_of = std::is_same_v<T, TT<Ts...>>;
-
     template<class Fn, class... As>
     using function_return_type = decltype(std::declval<Fn>()(
         // This statically calls the function type with the iterator's
