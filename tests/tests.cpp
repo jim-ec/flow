@@ -99,6 +99,16 @@ TEST_CASE("Deref") {
     }
 }
 
+TEST_CASE("Chain") {
+    auto flow = Flow(Elements{1, 2})
+                | chain(Flow(Elements{3, 4}));
+
+    REQUIRE(flow.next() == std::optional(1));
+    REQUIRE(flow.next() == std::optional(2));
+    REQUIRE(flow.next() == std::optional(3));
+    REQUIRE(flow.next() == std::optional(4));
+    REQUIRE(!flow.next().has_value());
+}
 TEST_CASE("NextGen") {
 //    Cofold a{&cofold_descending, 10};
 //

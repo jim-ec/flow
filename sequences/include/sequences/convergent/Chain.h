@@ -55,4 +55,11 @@ namespace sequences
         bool draining;
     };
 
+    template<class ContSeq>
+    auto chain(ContSeq const &cont_seq) {
+        return [=](auto const &drain_seq) {
+            return Chain(drain_seq, cont_seq);
+        };
+    }
+
 }
