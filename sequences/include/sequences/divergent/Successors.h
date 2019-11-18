@@ -6,12 +6,20 @@
 
 #include <optional>
 
+#include <sequences/core/ISequence.h>
+
 namespace sequences
 {
+    struct X{
+        void operator++() {}
+
+        double d;
+    };
+
     /// Successors based on some initial value.
 	/// Arity: 0 -> 1
     template<class T>
-    class Successors
+    class Successors : public ISequence<Successors<X>> // TODO
     {
     public:
 

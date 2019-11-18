@@ -7,13 +7,14 @@
 #include <optional>
 
 #include <sequences/core/TypeTraits.h>
+#include <sequences/core/ISequence.h>
 
 namespace sequences
 {
     /// Maps each sequence element through a function.
 	/// Arity: 1 -> 1
     template<class Seq, class Fn>
-    class Map
+    class Map : public ISequence<Map<Seq, Fn>>
     {
     public:
 

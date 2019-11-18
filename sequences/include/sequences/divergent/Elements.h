@@ -7,11 +7,16 @@
 #include <optional>
 #include <initializer_list>
 
+#include <sequences/core/ISequence.h>
+
 namespace sequences {
     /// Yields all elements of the given container.
     /// Arity: 0 -> 1
     template<class C>
-    class Elements {
+    class Elements : public ISequence<Elements<C>> {
+
+        Elements() = default;
+
     public:
         static inline bool constexpr finite = true;
         using output_type = typename C::value_type;

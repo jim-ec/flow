@@ -7,13 +7,14 @@
 #include <optional>
 
 #include <sequences/functional/Fuse.h>
+#include <sequences/core/ISequence.h>
 
 namespace sequences
 {
     /// Before yielding the next element, skip `n - 1` elements.
 	/// Arity: 1 -> 1
     template<class Seq>
-    class Stride
+    class Stride : public ISequence<Stride<Seq>>
     {
     public:
 

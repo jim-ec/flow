@@ -6,12 +6,14 @@
 
 #include <optional>
 
+#include <sequences/core/ISequence.h>
+
 namespace sequences
 {
     /// Yields up to a fixed amount of elements out of a base sequence.
 	/// Arity: 1 -> 1
     template<class Seq>
-    class Take
+    class Take : public ISequence<Take<Seq>>
     {
     public:
 
