@@ -11,6 +11,7 @@
 namespace sequences
 {
     /// Calls a function on sequence elements, but passes the elements unchanged otherwise.
+	/// Arity: 1 -> 1
     template<class Seq, class Fn>
     class Inspect
     {

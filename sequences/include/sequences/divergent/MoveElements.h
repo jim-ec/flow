@@ -10,6 +10,7 @@ namespace sequences
 {
     /// Yields all elements of the given container by move.
     /// This destroys the elements hold the underlying container.
+	/// Arity: 0 -> 1
     template<class O>
     class MoveElements
     {

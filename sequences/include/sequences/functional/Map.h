@@ -11,6 +11,7 @@
 namespace sequences
 {
     /// Maps each sequence element through a function.
+	/// Arity: 1 -> 1
     template<class Seq, class Fn>
     class Map
     {

@@ -10,6 +10,7 @@ namespace sequences
 {
     /// Ensures the further calls to `next()` on a sequence return `None`s
     /// after it has been returned once from the base sequence.
+	/// Arity: 1 -> 1
     template<class Seq>
     class Fuse
     {

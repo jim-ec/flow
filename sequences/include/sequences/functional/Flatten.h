@@ -8,7 +8,8 @@
 
 namespace sequences
 {
-    /// Reduces the sequence order by one.
+    /// Reduces the sequence depth by one.
+	/// Arity: 1 -> 1
     template<class Seq>
     class Flatten
     {

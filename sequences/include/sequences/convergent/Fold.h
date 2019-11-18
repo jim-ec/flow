@@ -14,6 +14,7 @@ namespace sequences
     /// The reduction function is a binary function.
     /// Since sequences do not know direction, there is no distinction between
     /// left and right fold.
+	/// Arity: 1 -> 0
     template<class Seq, class Fn>
     class Fold
     {

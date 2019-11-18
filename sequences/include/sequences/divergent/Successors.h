@@ -9,6 +9,7 @@
 namespace sequences
 {
     /// Successors based on some initial value.
+	/// Arity: 0 -> 1
     template<class T>
     class Successors
     {

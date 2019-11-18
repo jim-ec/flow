@@ -12,6 +12,7 @@ namespace sequences
     /// This function returns a maybe type, containing both the next element
     /// and the state passing to the next function invocation.
     /// `Fn: T -> Optional<(Output, T)>`
+	/// Arity: 0 -> 1
     ///
     /// Concept:
     /// `Fn` must map to a type, which has a member type called `value_type`.

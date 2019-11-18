@@ -11,6 +11,7 @@
 namespace sequences
 {
     /// Dereferences the values behind element pointers.
+	/// Arity: 1 -> 1
     template<class Seq>
     class Deref
     {

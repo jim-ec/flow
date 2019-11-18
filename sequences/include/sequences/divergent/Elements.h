@@ -9,6 +9,7 @@
 namespace sequences
 {
     /// Yields all elements of the given container.
+	/// Arity: 0 -> 1
     template<class O>
     class Elements
     {

@@ -13,6 +13,7 @@ namespace sequences
     /// The first sequences should be finite.
     /// Elements from the continuation sequences must be convertible to the output
     /// type of the drain sequence.
+    /// Arity: 2 -> 1
     template<class DrainSeq, class ContSeq>
     class Chain
     {

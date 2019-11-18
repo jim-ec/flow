@@ -11,6 +11,7 @@
 namespace sequences
 {
     /// (a{n}) = (n, b{n})
+	/// Arity: 1 -> 1
     template<class Seq>
     class Enumerate
     {

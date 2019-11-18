@@ -11,6 +11,7 @@
 namespace sequences
 {
     /// Before yielding the next element, skip `n - 1` elements.
+	/// Arity: 1 -> 1
     template<class Seq>
     class Stride
     {

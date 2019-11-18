@@ -12,6 +12,7 @@ namespace sequences
 {
 
     /// Zips `n` sequences into one sequences of `n`-tuples.
+	/// Arity: n -> 1
     template<class... Seqs>
     class Merge
     {

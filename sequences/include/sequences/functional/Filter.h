@@ -9,6 +9,7 @@
 namespace sequences
 {
     /// Yields only elements of the base sequence where the test function returns `true`.
+	/// Arity: 1 -> 1
     template<class Seq, class Fn>
     class Filter
     {
