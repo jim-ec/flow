@@ -86,6 +86,19 @@ TEST_CASE("Merge") {
     }
 }
 
+TEST_CASE("Deref") {
+    std::vector<int> numbers{3, 1, 4, 2};
+
+    Flow a(Elements{numbers});
+    Flow b = Flow(Elements{&numbers[1], &numbers[3], &numbers[0], &numbers[2]})
+             | deref()
+             | inspect([](int const &n) { printf("Inspector: %d\n", n); });
+
+    for (int n : ForEach(b)) {
+        printf("%d\n", n);
+    }
+}
+
 TEST_CASE("NextGen") {
 //    Cofold a{&cofold_descending, 10};
 //
@@ -95,23 +108,7 @@ TEST_CASE("NextGen") {
 
 //
 //
-//    std::vector<int> numbers{3, 1, 4, 2};
-//    std::vector<int const *> pointers{
-//        &numbers[1],
-//        &numbers[3],
-//        &numbers[0],
-//        &numbers[2]
-//    };
-//
-//    Elements a{pointers};
-//    Deref aa{a};
-//    Inspect aaa{aa, [](int const &n) {
-//        printf("Inspector: %d\n", n);
-//    }};
-//
-//    for (int n : Exhaust{aaa}) {
-//        printf("%d\n", n);
-//    }
+
 
 //    Successors a{1};
 //    Take aa{a, 4};

@@ -42,4 +42,11 @@ namespace sequences
         Seq base;
         Fn fn;
     };
+
+    template<class Fn>
+    auto inspect(Fn fn) {
+        return [fn](auto const &seq) {
+            return Inspect{seq, fn};
+        };
+    }
 }

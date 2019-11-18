@@ -4,44 +4,16 @@
 
 #pragma once
 
-#include <optional>
+#include <tuple>
+
+#include <sequences/functional/Map.h>
 
 namespace sequences
 {
     /// (a{n}) = (n, b{n})
 	/// Arity: 1 -> 1
-    template<class Seq>
-    class Enumerate
-    {
-    public:
-
-        static inline bool constexpr finite = Seq::finite;
-        using output_type = std::tuple<size_t, typename Seq::output_type>;
-
-        explicit Enumerate(Seq const &base) :
-            base(base),
-            k(0)
-        {}
-
-        std::optional<output_type> next()
-        {
-            std::optional<typename Seq::output_type> state(base.next());
-            if (state.has_value())
-            {
-                return std::tuple(k++, std::move(*state));
-            }
-            return {};
-        }
-
-    private:
-        Seq base;
-        size_t k;
-    };
-
-    auto enumerate()
-    {
-        return [](auto const &seq) {
-            return Enumerate(seq);
-        };
+    auto enumerate() {
+        size_t k = 0;
+        return map([=] (auto const &el) mutable { return std::tuple(k++, el); });
     }
 }
