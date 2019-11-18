@@ -71,7 +71,7 @@ TEST_CASE("NextGen")
 {
     Cofold a{&cofold_descending, 10};
 
-    for (int n : Exhaust{a}) {
+    for (int n : ForEach{a}) {
         printf("%d\n", n);
     }
 

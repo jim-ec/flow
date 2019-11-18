@@ -6,22 +6,31 @@
 
 namespace sequences
 {
+	class SequenceEndIterator {
+	};
+
+	/// A forward iterator, yielding elements from a sequence.
+	/// Unless the sequence is fused, the iterator should not be incremented
+	/// after the contained element is `None`.
     template<class Seq>
-    class YieldIterator
+    class SequenceIterator
     {
     public:
 
+    	/// The type of elements yielded by this iterator is simply the type of elements yielded by the
+    	/// underlying sequence.
         using value_type = typename Seq::output_type;
 
-        explicit YieldIterator(
-            Seq const &seq,
-            bool initialize
-        ) :
+    	/// Constructs an iterator yielding elements from the given sequence.
+        explicit SequenceIterator(Seq const &seq) :
             seq{seq},
-            element{initialize ? this->seq.next() : std::optional<value_type>{}}
+            element{this->seq.next()}
         {}
 
-        YieldIterator &operator++()
+        /// Yields the next element from the sequence.
+        /// Unless the sequence is fused, this should not be called anymore as soon as the element is `None`,
+        /// which can be queried by using the comparision function.
+        SequenceIterator &operator++()
         {
             element.reset();
             std::optional<value_type> el = seq.next();
@@ -31,17 +40,26 @@ namespace sequences
             return *this;
         }
 
+        /// Returns a mutable reference to the hold element.
+        /// This must not be called if the element is `None`.
         value_type &operator*()
         {
             return *element;
         }
 
+		/// Returns a immutable reference to the hold element.
+		/// This must not be called if the element is `None`.
         value_type const &operator*() const
         {
             return *element;
         }
 
-        bool operator!=(YieldIterator const&)
+        /// Compares against the end iterator sentinel.
+        /// The result of the comparision does not depend on the actual given end-iterator but only whether the
+        /// element owned by this iterator is not `None`.
+        /// The interface is only implemented to make the range-based for-each loop construct working and to comply
+        /// with C++'s convention of iterating over iterators.
+        bool operator!=(SequenceEndIterator const&)
         {
             return element.has_value();
         }
@@ -51,30 +69,31 @@ namespace sequences
         std::optional<value_type> element;
     };
 
-    /// A forward iterator wrapping a sequence.
-    /// Unlike a sequence, this can be used in the range-based for loop language construct.
-    /// The main purpose of this class is that the actual sequences do not need to implement the
-    /// impractical iterator interface, such as comparing to check whether a sequence is still valid.
+    /// A container interface to a sequence.
+    /// It allows to iterate over the elements of a sequence in a range-based for-loop construct,
+    /// which is not possible with sequences directly, as they have a simpler interface.
+    /// The main purpose of this class is that the actual sequences do not need to implement the impractical iterator
+    /// interface, such as comparing to another iterator to check whether a sequence is still valid.
     template<class Seq>
-    class Exhaust
+    class ForEach
     {
     public:
 
         static_assert(Seq::finite, "Cannot exhaust an infinite sequence.");
         using value_type = typename Seq::output_type;
 
-        explicit Exhaust(Seq const &seq) :
+        explicit ForEach(Seq const &seq) :
             seq{seq}
         {}
 
-        YieldIterator<Seq> begin()
+        SequenceIterator<Seq> begin()
         {
-            return YieldIterator<Seq>{seq, true};
+            return SequenceIterator<Seq>{seq};
         }
 
-        YieldIterator<Seq> end()
+		SequenceEndIterator end()
         {
-            return YieldIterator<Seq>{seq, false};
+            return SequenceEndIterator{};
         }
 
     private:
