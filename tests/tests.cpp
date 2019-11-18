@@ -109,6 +109,13 @@ TEST_CASE("Chain") {
     REQUIRE(flow.next() == std::optional(4));
     REQUIRE(!flow.next().has_value());
 }
+
+TEST_CASE("Fold") {
+    auto flow = Flow(Successors(1)) | take(4);
+    auto sum = fold(flow, 0, [] (int a, int b) { return a + b; });
+    REQUIRE(sum == 10);
+}
+
 TEST_CASE("NextGen") {
 //    Cofold a{&cofold_descending, 10};
 //

@@ -8,81 +8,53 @@
 
 namespace sequences
 {
-    /// This is not a sequence but a series with a custom reduction function.
-    /// The reduction function is a binary function.
-    /// Since sequences do not know direction, there is no distinction between
-    /// left and right fold.
-	/// Arity: 1 -> 0
-    template<class Seq, class Fn>
-    class Fold
-    {
-    public:
+    template<class Seq, class Fn, class T>
+    T fold(Seq seq, T const &init, Fn fn) {
+        using output_type = typename Seq::output_type;
 
-        static_assert(Seq::finite, "Sequence to be fold must be finite.");
-        using seq_output_type = typename Seq::output_type;
+        T acc(init);
 
-        Fold(
-            Seq const &base,
-            Fn fn
-        ) :
-            seq(base),
-            fn(fn)
-        {}
+        for(;;) {
+            std::optional<output_type> state(seq.next());
 
-        /// Reduce the fold using a initial accumulator.
-        /// The reduction type may differ from the sequence element type.
-        template<class ReductionType = typename Seq::output_type>
-        function_return_type<Fn, ReductionType, seq_output_type>
-        reduce(ReductionType const &init)
-        {
-            ReductionType acc(init);
-
-            for(;;) {
-                std::optional<seq_output_type> state(seq.next());
-
-                if (!state.has_value())
-                {
-                    // Underlying sequence is exhausted.
-                    return acc;
-                }
-
-                // Next reduction step.
-                ReductionType next_reduction(fn(std::move(acc), *state));
-                acc.~ReductionType();
-                new (&acc) ReductionType(std::move(next_reduction));
-            }
-        }
-
-        /// Try to reduce the fold without an initial accumulator.
-        /// The reduction type must be the same as the sequence element type.
-        std::optional<function_return_type<Fn, seq_output_type, seq_output_type>>
-        reduce_maybe()
-        {
-            // Initial try to populate the accumulator.
-            std::optional<seq_output_type> acc = seq.next();
-            if (!acc.has_value())
+            if (!state.has_value())
             {
-                return {};
+                // Underlying sequence is exhausted.
+                return acc;
             }
 
-            for(;;) {
-                std::optional<seq_output_type> state(seq.next());
+            // Next reduction step.
+            T next_reduction(fn(std::move(acc), *state));
+            acc.~T();
+            new (&acc) T(std::move(next_reduction));
+        }
+    }
 
-                if (!state.has_value())
-                {
-                    // Underlying sequence is exhausted.
-                    return acc;
-                }
+    template<class Seq, class Fn>
+    std::optional<typename Seq::output_type>
+    fold_maybe(Seq seq, Fn fn) {
+        using output_type = typename Seq::output_type;
 
-                // Next reduction step.
-                seq_output_type next_reduction(fn(std::move(*acc), *state));
-                acc.reset();
-                acc.emplace(std::move(next_reduction));
-            }
+        // Initial attempt to populate the accumulator.
+        std::optional<output_type> acc(seq.next());
+        if (!acc.has_value())
+        {
+            return {};
         }
 
-    private:
-        Seq seq;
-        Fn fn;
-    };
+        for(;;) {
+            std::optional<output_type> state(seq.next());
+
+            if (!state.has_value())
+            {
+                // Underlying sequence is exhausted.
+                return acc;
+            }
+
+            // Next reduction step.
+            output_type next_reduction(fn(std::move(*acc), *state));
+            acc.reset();
+            acc.emplace(std::move(next_reduction));
+        }
+    }
 }
