@@ -24,7 +24,7 @@
 #include "sequences/sequences/Inspect.h"
 #include "sequences/sequences/Cofold.h"
 
-#include "tools.h"
+#include "common.h"
 
 using namespace sequences;
 
