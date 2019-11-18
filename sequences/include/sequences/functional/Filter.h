@@ -46,4 +46,11 @@ namespace sequences
         Seq base;
         Fn fn;
     };
+
+    template<class Fn>
+    auto filter(Fn fn) {
+        return [=](auto const &seq) {
+            return Filter{seq, fn};
+        };
+    }
 }

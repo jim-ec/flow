@@ -130,6 +130,15 @@ TEST_CASE("Move elements") {
     REQUIRE(elements[0].moved_away);
 }
 
+TEST_CASE("Filter") {
+    auto flow = Flow(Elements{1, 2, 3, 4})
+            | filter([] (int n) { return n % 2 == 0; });
+
+    REQUIRE(flow.next() == std::optional(2));
+    REQUIRE(flow.next() == std::optional(4));
+    REQUIRE(!flow.next().has_value());
+}
+
 TEST_CASE("NextGen") {
 //    Cofold a{&cofold_descending, 10};
 //
