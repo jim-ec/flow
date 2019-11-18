@@ -49,4 +49,11 @@ namespace sequences
         Fuse<Seq> base;
         size_t n;
     };
+
+    auto stride(size_t const n)
+    {
+        return [=](auto seq) {
+            return Stride{seq, n};
+        };
+    }
 }

@@ -23,57 +23,64 @@
 #include "sequences/functional/Deref.h"
 #include "sequences/functional/Inspect.h"
 #include "sequences/divergent/Cofold.h"
+#include "sequences/Sequence.h"
 
 #include "common.h"
 
 using namespace sequences;
 
 static int
-inc(int n)
-{
+inc(int n) {
     return n + 1;
 }
 
 static bool
-is_even(int n)
-{
+is_even(int n) {
     return n % 2 == 0;
 }
 
 static std::string
-display(int n)
-{
+display(int n) {
     std::stringstream ss;
     ss << n;
     return ss.str();
 }
 
 static S
-f(S const &s)
-{
+f(S const &s) {
     return S{s.id * 2};
 }
 
 static std::optional<std::pair<int, int>>
-cofold_descending(int n)
-{
-    if (n == 0)
-    {
+cofold_descending(int n) {
+    if (n == 0) {
         return {};
     }
-    else
-    {
+    else {
         return std::pair{n, n - 1};
     }
 }
 
-TEST_CASE("NextGen")
-{
-    Cofold a{&cofold_descending, 10};
+TEST_CASE("Sequence") {
+    Sequence s = Sequence{Successors{0}}
+            | stride(3)
+            | map([] (int n) {
+                return Sequence{Successors{n}} | take(2);
+            })
+            | take(5)
+            | flatten();
 
-    for (int n : ForEach{a}) {
+    for (int n : ForEach{s}) {
         printf("%d\n", n);
     }
+}
+
+TEST_CASE("NextGen") {
+//    Cofold a{&cofold_descending, 10};
+//
+//    for (int n : ForEach{a}) {
+//        printf("%d\n", n);
+//    }
 
 //
 //
@@ -133,7 +140,7 @@ TEST_CASE("NextGen")
 //    Merge m{std::tuple{aaa, bb, cc}};
 //    Take mm{m, 10};
 //
-//    for(auto [a, b, c] : Exhaust{mm})
+//    for(auto [a, b, c] : ForEach{mm})
 //    {
 //        printf("%d, %s, %d\n", a, b.data(), c);
 //    }

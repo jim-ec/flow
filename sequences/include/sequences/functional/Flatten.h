@@ -68,4 +68,10 @@ namespace sequences
         std::optional<sub_sequence_type> current_sub_sequence;
     };
 
+    auto flatten() {
+        return [](auto seq) {
+            return Flatten{seq};
+        };
+    }
+
 }

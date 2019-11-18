@@ -46,4 +46,12 @@ namespace sequences
         Seq base;
         Fn fn;
     };
+
+    template<class Fn>
+    auto map(Fn fn)
+    {
+        return [=](auto seq) {
+            return Map{seq, fn};
+        };
+    }
 }

@@ -45,4 +45,10 @@ namespace sequences
         size_t k;
         size_t n;
     };
+
+    auto take(size_t const n) {
+        return [=] (auto seq) {
+            return Take{seq, n};
+        };
+    }
 }
