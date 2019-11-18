@@ -61,29 +61,15 @@ cofold_descending(int n) {
     }
 }
 
-TEST_CASE("Flow") {
-    Flow s = Flow(Successors(0))
-             | stride(3)
-             | map([](int n) {
-        return Flow(Successors(n)) | take(2);
-    })
-             | take(5)
-             | flatten();
-
-    for (int n : ForEach(s)) {
-        printf("%d\n", n);
-    }
-}
-
 TEST_CASE("Merge") {
     auto a = Flow(Elements{1, 2, 3});
     auto b = Flow(Elements{'a', 'b', 'c'});
     auto c = a | merge(b, a) | enumerate();
 
-    for (auto const[i, x] : ForEach(c)) {
-        auto const[n, c, n2] = x;
-        printf("#%zu: %d, %c, %d\n", i, n, c, n2);
-    }
+    REQUIRE(c.next() == std::optional(std::tuple(0, std::tuple(1, 'a', 1))));
+    REQUIRE(c.next() == std::optional(std::tuple(1, std::tuple(2, 'b', 2))));
+    REQUIRE(c.next() == std::optional(std::tuple(2, std::tuple(3, 'c', 3))));
+    REQUIRE(!c.next().has_value());
 }
 
 TEST_CASE("Deref") {
@@ -91,12 +77,13 @@ TEST_CASE("Deref") {
 
     Flow a(Elements{numbers});
     Flow b = Flow(Elements{&numbers[1], &numbers[3], &numbers[0], &numbers[2]})
-             | deref()
-             | inspect([](int const &n) { printf("Inspector: %d\n", n); });
+             | deref();
 
-    for (int n : ForEach(b)) {
-        printf("%d\n", n);
-    }
+    REQUIRE(b.next() == std::optional(1));
+    REQUIRE(b.next() == std::optional(2));
+    REQUIRE(b.next() == std::optional(3));
+    REQUIRE(b.next() == std::optional(4));
+    REQUIRE(!b.next().has_value());
 }
 
 TEST_CASE("Chain") {
