@@ -112,6 +112,24 @@ TEST_CASE("Cofold") {
     REQUIRE(!flow.next().has_value());
 }
 
+TEST_CASE("Copy elements") {
+    std::vector<S> elements;
+    elements.emplace_back();
+
+    exhaust(Elements{elements});
+
+    REQUIRE(!elements[0].moved_away);
+}
+
+TEST_CASE("Move elements") {
+    std::vector<S> elements;
+    elements.emplace_back();
+
+    exhaust(MoveElements(std::move(elements)));
+
+    REQUIRE(elements[0].moved_away);
+}
+
 TEST_CASE("NextGen") {
 //    Cofold a{&cofold_descending, 10};
 //

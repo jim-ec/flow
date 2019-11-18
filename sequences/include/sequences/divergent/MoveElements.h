@@ -6,37 +6,37 @@
 
 #include <optional>
 
-namespace sequences
-{
+namespace sequences {
+
     /// Yields all elements of the given container by move.
     /// This destroys the elements hold the underlying container.
-	/// Arity: 0 -> 1
-	// TODO: template over container instead of element
-    template<class O>
-    class MoveElements
-    {
+    /// Arity: 0 -> 1
+    template<class C>
+    class MoveElements {
     public:
-        static inline bool const finite = true;
-        using output_type = O;
+        static inline bool constexpr finite = true;
+        using output_type = typename C::value_type;
+        using iterator_type = typename C::iterator;
 
-        explicit MoveElements(std::vector<O> &&xs) :
-            xs(xs),
-            k(0)
-        {}
+        explicit MoveElements(C &&xs) :
+                xs(std::move(xs)),
+                iterator(xs.begin()),
+                end(xs.end()) {}
 
-        std::optional<O> next()
-        {
-            if (k >= xs.size())
-            {
+        std::optional<output_type> next() {
+            if (iterator != end) {
+                output_type el(std::move(*iterator));
+                ++iterator;
+                return el;
+            }
+            else {
                 return {};
             }
-            O state(std::move(xs[k]));
-            ++k;
-            return state;
         }
 
     private:
-        std::vector<O> &xs;
-        size_t k;
+        C const &xs;
+        iterator_type iterator;
+        iterator_type end;
     };
 }

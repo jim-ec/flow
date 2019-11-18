@@ -99,4 +99,11 @@ namespace sequences
     private:
         Seq seq;
     };
+
+    template<class Seq>
+    void exhaust(Seq const &seq) {
+        for(auto const &el : ForEach{seq}) {
+            static_cast<void>(el);
+        }
+    }
 }

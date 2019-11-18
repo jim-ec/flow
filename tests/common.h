@@ -18,6 +18,7 @@ struct S
     bool move_constructed{};
     bool copy_assigned{};
     bool move_assigned{};
+    bool moved_away{};
 
     std::string display_flags() const
     {
@@ -51,40 +52,40 @@ struct S
 
     S() : id{-1}, default_constructed{true}
     {
-        printf("S()\n");
+//        printf("S()\n");
     }
 
     explicit S(int id) :
             id{id},
             argument_constructed{true}
     {
-        printf("S(int): %d\n", id);
+//        printf("S(int): %d\n", id);
     }
 
     S(const S &rhs) :
             id{rhs.id},
             copy_constructed{true}
     {
-        printf("S(const S&): %d\n", id);
-        printf(">  rhs: %s\n", rhs.display_flags().data());
+//        printf("S(const S&): %d\n", id);
+//        printf(">  rhs: %s\n", rhs.display_flags().data());
     }
 
     S(S &&rhs) noexcept :
             id{rhs.id},
             move_constructed{true}
     {
-        printf("S(S&&): %d\n", id);
-        printf(">  rhs: %s\n", rhs.display_flags().data());
-        rhs.id = -2;
+//        printf("S(S&&): %d\n", id);
+//        printf(">  rhs: %s\n", rhs.display_flags().data());
+        rhs.moved_away = true;
     }
 
     S &operator=(const S &rhs)
     {
         copy_assigned = true;
         id = rhs.id;
-        printf("S::operator=(const S &): %d\n", id);
-        printf(">  this: %s\n", display_flags().data());
-        printf(">  rhs:  %s\n", rhs.display_flags().data());
+//        printf("S::operator=(const S &): %d\n", id);
+//        printf(">  this: %s\n", display_flags().data());
+//        printf(">  rhs:  %s\n", rhs.display_flags().data());
         return *this;
     }
 
@@ -92,10 +93,10 @@ struct S
     {
         move_assigned = true;
         id = rhs.id;
-        printf("S::operator=(S&&): %d\n", id);
-        printf(">  this: %s\n", display_flags().data());
-        printf(">  rhs:  %s\n", rhs.display_flags().data());
-        rhs.id = -2;
+//        printf("S::operator=(S&&): %d\n", id);
+//        printf(">  this: %s\n", display_flags().data());
+//        printf(">  rhs:  %s\n", rhs.display_flags().data());
+        rhs.moved_away = true;
         return *this;
     }
 };
