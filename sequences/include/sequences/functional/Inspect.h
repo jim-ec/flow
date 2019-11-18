@@ -6,8 +6,6 @@
 
 #include <optional>
 
-#include <sequences/core/TypeTraits.h>
-
 namespace sequences
 {
     /// Calls a function on sequence elements, but passes the elements unchanged otherwise.
@@ -24,13 +22,13 @@ namespace sequences
             Seq const &base,
             Fn fn
         ) :
-            base{base},
-            fn{fn}
+            base(base),
+            fn(fn)
         {}
 
         std::optional<output_type> next()
         {
-            std::optional<output_type> state = base.next();
+            std::optional<output_type> state(base.next());
             if (state.has_value())
             {
                 // Call inspection functional on contained element,

@@ -21,8 +21,8 @@ namespace sequences
         using output_type = typename Seq::output_type;
 
         explicit Fuse(Seq const &base) :
-            base{base},
-            exhausted{false}
+            base(base),
+            exhausted(false)
         {}
 
         std::optional<output_type> next()
@@ -34,7 +34,7 @@ namespace sequences
                 return {};
             }
 
-            std::optional<output_type> state{base.next()};
+            std::optional<output_type> state(base.next());
             if (!state.has_value()) {
                 // The base sequence has been exhausted.
                 exhausted = true;

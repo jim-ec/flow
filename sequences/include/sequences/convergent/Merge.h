@@ -77,6 +77,7 @@ namespace sequences {
                 seqs_output_tuple_type &outputs,
                 seqs_tuple_type &seqs
         ) {
+            // TODO: Use in-place dtor/ctor instead of assignment
             std::get<N>(outputs) = std::get<N>(seqs).next();
             init_tuple<N + 1>(outputs, seqs);
         }
@@ -134,8 +135,8 @@ namespace sequences {
 
     template<class... Seqs>
     auto merge(Seqs... seqs) {
-        return [=](auto seq) {
-            return Merge{std::make_tuple(seq, seqs...)};
+        return [=](auto const &seq) {
+            return Merge(std::make_tuple(seq, seqs...));
         };
     }
 }

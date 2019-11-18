@@ -18,19 +18,17 @@ namespace sequences
         static inline bool constexpr finite = false;
         using output_type = T;
 
-        Successors() :
-            n{}
-        {}
+        Successors() = default;
 
         explicit Successors(const T &n) :
-            n{n}
+            n(n)
         {}
 
         std::optional<T> next()
         {
-            T state = n;
+            T state(n);
             ++n;
-            return std::move(state);
+            return state;
         }
 
     private:

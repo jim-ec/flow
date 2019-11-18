@@ -18,9 +18,9 @@ namespace sequences {
         using iterator_type = typename C::iterator;
 
         explicit Elements(C const &xs) :
-                xs{xs},
-                iterator{xs.begin()},
-                end{xs.end()} {}
+                xs(xs),
+                iterator(xs.begin()),
+                end(xs.end()) {}
 
         template<class T>
         Elements(std::initializer_list<T> const &xs) :

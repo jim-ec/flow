@@ -22,8 +22,8 @@ namespace sequences
         explicit Flatten(
             Seq const &base
         ) :
-            base{base},
-            current_sub_sequence{this->base.next()}
+            base(base),
+            current_sub_sequence(this->base.next())
         {}
 
         std::optional<output_type> next()
@@ -34,18 +34,18 @@ namespace sequences
                 if (current_sub_sequence)
                 {
                     // Try to get the next value out of the current sub sequence.
-                    std::optional<output_type> el = current_sub_sequence->next();
-                    if (el.has_value())
+                    std::optional<output_type> state(current_sub_sequence->next());
+                    if (state.has_value())
                     {
-                        return std::move(el);
+                        return state;
                     }
                     else
                     {
                         // Current sub sequence is exhausted, go to next.
-                        std::optional<sub_sequence_type> next = base.next();
-                        if (next.has_value())
+                        std::optional<sub_sequence_type> next_sub_sequence(base.next());
+                        if (next_sub_sequence.has_value())
                         {
-                            current_sub_sequence.emplace(std::move(*next));
+                            current_sub_sequence.emplace(std::move(*next_sub_sequence));
                         }
                         else
                         {
@@ -70,7 +70,7 @@ namespace sequences
 
     auto flatten() {
         return [](auto seq) {
-            return Flatten{seq};
+            return Flatten(seq);
         };
     }
 

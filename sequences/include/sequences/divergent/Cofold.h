@@ -38,14 +38,13 @@ namespace sequences
             "The functional's second return value must have the same type as it's argument.");
 
         explicit Cofold(Fn fn, seed_type const &init) :
-            fn{fn},
-            state{init}
+            fn(fn),
+            state(init)
         {}
 
         std::optional<output_type> next()
         {
-            fn_domain_type result =
-                fn(std::move(state));
+            fn_domain_type result(fn(std::move(state)));
 
             if (result.has_value())
             {
@@ -54,7 +53,7 @@ namespace sequences
 
                 // Re-initialize new state.
                 state.~seed_type();
-                new (&state) seed_type{std::move(result_value.second)};
+                new (&state) seed_type(std::move(result_value.second));
 
                 // Yield the actual compute element.
                 return std::move(result_value.first);

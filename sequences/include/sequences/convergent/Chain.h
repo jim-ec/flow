@@ -26,9 +26,9 @@ namespace sequences
             DrainSeq const &drain_seq,
             ContSeq const &cont_seq
         ) :
-            drain_seq{drain_seq},
-            cont_seq{cont_seq},
-            draining{true}
+            drain_seq(drain_seq),
+            cont_seq(cont_seq),
+            draining(true)
         {}
 
         std::optional<output_type> next()

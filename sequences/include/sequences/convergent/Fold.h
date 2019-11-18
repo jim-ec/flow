@@ -6,8 +6,6 @@
 
 #include <optional>
 
-#include <sequences/core/TypeTraits.h>
-
 namespace sequences
 {
     /// This is not a sequence but a series with a custom reduction function.
@@ -27,8 +25,8 @@ namespace sequences
             Seq const &base,
             Fn fn
         ) :
-            seq{base},
-            fn{fn}
+            seq(base),
+            fn(fn)
         {}
 
         /// Reduce the fold using a initial accumulator.
@@ -37,10 +35,10 @@ namespace sequences
         function_return_type<Fn, ReductionType, seq_output_type>
         reduce(ReductionType const &init)
         {
-            ReductionType acc{init};
+            ReductionType acc(init);
 
             for(;;) {
-                std::optional<seq_output_type> state{seq.next()};
+                std::optional<seq_output_type> state(seq.next());
 
                 if (!state.has_value())
                 {
@@ -49,7 +47,7 @@ namespace sequences
                 }
 
                 // Next reduction step.
-                ReductionType next_reduction = fn(std::move(acc), *state);
+                ReductionType next_reduction(fn(std::move(acc), *state));
                 acc.~ReductionType();
                 new (&acc) ReductionType(std::move(next_reduction));
             }
@@ -68,7 +66,7 @@ namespace sequences
             }
 
             for(;;) {
-                std::optional<seq_output_type> state{seq.next()};
+                std::optional<seq_output_type> state(seq.next());
 
                 if (!state.has_value())
                 {
@@ -77,7 +75,7 @@ namespace sequences
                 }
 
                 // Next reduction step.
-                seq_output_type next_reduction = fn(std::move(*acc), *state);
+                seq_output_type next_reduction(fn(std::move(*acc), *state));
                 acc.reset();
                 acc.emplace(std::move(next_reduction));
             }

@@ -6,8 +6,6 @@
 
 #include <optional>
 
-#include <sequences/core/TypeTraits.h>
-
 namespace sequences
 {
     /// Dereferences the values behind element pointers.
@@ -23,15 +21,15 @@ namespace sequences
         using output_type = std::remove_pointer_t<typename Seq::output_type>;
 
         explicit Deref(Seq const &base) :
-            base{base}
+            base(base)
         {}
 
         std::optional<output_type> next()
         {
-            std::optional<typename Seq::output_type> state = base.next();
+            std::optional<typename Seq::output_type> state(base.next());
             if (state.has_value())
             {
-                return {*state.value()};
+                return *state.value();
             }
             else
             {

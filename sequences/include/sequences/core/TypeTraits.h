@@ -35,7 +35,7 @@ namespace sequences
         tuple_type_map()
         {
             return tuple_type_map_<TypeMap, Tuple>(
-                std::make_index_sequence<std::tuple_size<Tuple>::value>{}
+                std::make_index_sequence<std::tuple_size<Tuple>::value>()
             );
         }
     }

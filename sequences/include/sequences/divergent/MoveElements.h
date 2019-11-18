@@ -11,6 +11,7 @@ namespace sequences
     /// Yields all elements of the given container by move.
     /// This destroys the elements hold the underlying container.
 	/// Arity: 0 -> 1
+	// TODO: template over container instead of element
     template<class O>
     class MoveElements
     {
@@ -19,8 +20,8 @@ namespace sequences
         using output_type = O;
 
         explicit MoveElements(std::vector<O> &&xs) :
-            xs{xs},
-            k{0}
+            xs(xs),
+            k(0)
         {}
 
         std::optional<O> next()
@@ -29,9 +30,9 @@ namespace sequences
             {
                 return {};
             }
-            O state{std::move(xs[k])};
+            O state(std::move(xs[k]));
             ++k;
-            return std::move(state);
+            return state;
         }
 
     private:

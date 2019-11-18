@@ -23,20 +23,20 @@ namespace sequences {
             return seq.next();
         }
 
-        explicit Flow(Seq const &seq) : seq{seq} {}
+        explicit Flow(Seq const &seq) : seq(seq) {}
 
         /// The sequence composition.
         /// Takes a sequence constructor, i.e. a function which expects this sequence and returns a new sequence
         /// based on it. The resulting sequence is returned.
         template<class Ctor>
         auto operator|(Ctor ctor) const &{
-            using SeqType = Flow<function_return_type < Ctor, Seq>>;
+            using SeqType = Flow<function_return_type<Ctor, Seq>>;
             return SeqType(ctor(seq));
         }
 
         template<class Ctor>
         auto operator|(Ctor ctor) &&{
-            using SeqType = Flow<function_return_type < Ctor, Seq>>;
+            using SeqType = Flow<function_return_type<Ctor, Seq>>;
             return SeqType(ctor(std::move(seq)));
         }
 

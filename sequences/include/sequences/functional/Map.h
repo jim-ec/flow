@@ -28,13 +28,13 @@ namespace sequences
             Seq const &base,
             Fn fn
         ) :
-            base{base},
-            fn{fn}
+            base(base),
+            fn(fn)
         {}
 
         std::optional<output_type> next()
         {
-            std::optional<typename Seq::output_type> k = base.next();
+            std::optional<typename Seq::output_type> k(base.next());
             if (k.has_value())
             {
                 return fn(std::move(*k));
@@ -51,7 +51,7 @@ namespace sequences
     auto map(Fn fn)
     {
         return [=](auto seq) {
-            return Map{seq, fn};
+            return Map(seq, fn);
         };
     }
 }

@@ -6,8 +6,6 @@
 
 #include <optional>
 
-#include <sequences/core/TypeTraits.h>
-
 namespace sequences
 {
     /// (a{n}) = (n, b{n})
@@ -21,16 +19,16 @@ namespace sequences
         using output_type = std::tuple<size_t, typename Seq::output_type>;
 
         explicit Enumerate(Seq const &base) :
-            base{base},
-            k{0}
+            base(base),
+            k(0)
         {}
 
         std::optional<output_type> next()
         {
-            std::optional<typename Seq::output_type> state = base.next();
+            std::optional<typename Seq::output_type> state(base.next());
             if (state.has_value())
             {
-                return std::tuple{k++, std::move(*state)};
+                return std::tuple(k++, std::move(*state));
             }
             return {};
         }
@@ -43,7 +41,7 @@ namespace sequences
     auto enumerate()
     {
         return [](auto const &seq) {
-            return Enumerate{seq};
+            return Enumerate(seq);
         };
     }
 }
