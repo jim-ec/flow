@@ -37,7 +37,7 @@ namespace sequences
         static_assert(std::is_same_v<seed_type, typename fn_domain_inner_type::second_type>,
             "The functional's second return value must have the same type as it's argument.");
 
-        explicit Cofold(Fn fn, seed_type const &init) :
+        explicit Cofold(seed_type const &init, Fn fn) :
             fn(fn),
             state(init)
         {}

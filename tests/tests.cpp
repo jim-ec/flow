@@ -51,16 +51,6 @@ f(S const &s) {
     return S(s.id * 2);
 }
 
-static std::optional<std::pair<int, int>>
-cofold_descending(int n) {
-    if (n == 0) {
-        return {};
-    }
-    else {
-        return std::pair(n, n - 1);
-    }
-}
-
 TEST_CASE("Merge") {
     auto a = Flow(Elements{1, 2, 3});
     auto b = Flow(Elements{'a', 'b', 'c'});
@@ -99,8 +89,27 @@ TEST_CASE("Chain") {
 
 TEST_CASE("Fold") {
     auto flow = Flow(Successors(1)) | take(4);
-    auto sum = fold(flow, 0, [] (int a, int b) { return a + b; });
+    auto sum = fold(flow, 0, [](int a, int b) { return a + b; });
     REQUIRE(sum == 10);
+}
+
+TEST_CASE("Cofold") {
+    auto cofold_descending = [](int n) -> std::optional<std::pair<int, int>> {
+        if (n == 0) {
+            return {};
+        }
+        else {
+            return std::pair(n, n - 1);
+        }
+    };
+
+    auto flow = Cofold(4, cofold_descending);
+
+    REQUIRE(flow.next() == std::optional(4));
+    REQUIRE(flow.next() == std::optional(3));
+    REQUIRE(flow.next() == std::optional(2));
+    REQUIRE(flow.next() == std::optional(1));
+    REQUIRE(!flow.next().has_value());
 }
 
 TEST_CASE("NextGen") {
