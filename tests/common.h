@@ -75,6 +75,7 @@ struct S
     {
         printf("S(S&&): %d\n", id);
         printf(">  rhs: %s\n", rhs.display_flags().data());
+        rhs.id = -2;
     }
 
     S &operator=(const S &rhs)
@@ -94,6 +95,7 @@ struct S
         printf("S::operator=(S&&): %d\n", id);
         printf(">  this: %s\n", display_flags().data());
         printf(">  rhs:  %s\n", rhs.display_flags().data());
+        rhs.id = -2;
         return *this;
     }
 };
