@@ -29,7 +29,7 @@ namespace sequences
             if (exhausted)
             {
                 // The base sequence is already exhausted from previous calls
-                // to this function.
+                // to this functional.
                 return {};
             }
 

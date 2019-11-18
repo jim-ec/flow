@@ -6,7 +6,7 @@
 
 #include <optional>
 
-#include "Fuse.h"
+#include <sequences/functional/Fuse.h>
 
 namespace sequences
 {

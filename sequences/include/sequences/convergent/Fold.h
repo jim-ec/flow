@@ -6,7 +6,7 @@
 
 #include <optional>
 
-#include "TypeTraits.h"
+#include <sequences/core/TypeTraits.h>
 
 namespace sequences
 {

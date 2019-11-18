@@ -6,7 +6,7 @@
 
 #include <optional>
 
-#include "TypeTraits.h"
+#include <sequences/core/TypeTraits.h>
 
 namespace sequences
 {
@@ -32,7 +32,7 @@ namespace sequences
             std::optional<output_type> state = base.next();
             if (state.has_value())
             {
-                // Call inspection function on contained element,
+                // Call inspection functional on contained element,
                 // but ensure that the element is not modified.
                 fn(static_cast<output_type const &>(state.value()));
             }
