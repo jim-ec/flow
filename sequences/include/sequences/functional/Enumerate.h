@@ -39,4 +39,11 @@ namespace sequences
         Seq base;
         size_t k;
     };
+
+    auto enumerate()
+    {
+        return [](auto const &seq) {
+            return Enumerate{seq};
+        };
+    }
 }

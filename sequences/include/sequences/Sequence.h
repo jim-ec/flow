@@ -31,13 +31,22 @@ namespace sequences
 		/// Takes a sequence constructor, i.e. a function which expects this sequence and returns a new sequence
 		/// based on it. The resulting sequence is returned.
 		template<class Ctor>
-		auto operator|(Ctor ctor) &&
+		auto operator|(Ctor ctor) const&
 		{
 	        using SeqType = Sequence<function_return_type<Ctor, Seq>>;
 			return SeqType{
-                    ctor(std::move(seq))
+                    ctor(seq)
 			};
 		}
+
+        template<class Ctor>
+        auto operator|(Ctor ctor) &&
+        {
+            using SeqType = Sequence<function_return_type<Ctor, Seq>>;
+            return SeqType{
+                    ctor(std::move(seq))
+            };
+        }
 
 	private:
 		Seq seq;

@@ -63,15 +63,26 @@ cofold_descending(int n) {
 
 TEST_CASE("Sequence") {
     Sequence s = Sequence{Successors{0}}
-            | stride(3)
-            | map([] (int n) {
-                return Sequence{Successors{n}} | take(2);
-            })
-            | take(5)
-            | flatten();
+                 | stride(3)
+                 | map([](int n) {
+        return Sequence{Successors{n}} | take(2);
+    })
+                 | take(5)
+                 | flatten();
 
     for (int n : ForEach{s}) {
         printf("%d\n", n);
+    }
+}
+
+TEST_CASE("Merge") {
+    auto a = Sequence{Elements(std::initializer_list<int>{1, 2, 3})};
+    auto b = Sequence{Elements(std::initializer_list<char>{'a', 'b', 'c'})};
+    auto c = a | merge(b) | enumerate();
+
+    for (auto const[i, x] : ForEach{c}) {
+        auto const[n, c] = x;
+        printf("#%zu: %d, %c\n", i, n, c);
     }
 }
 
