@@ -14,8 +14,9 @@ namespace sequences {
     class Elements {
     public:
         static inline bool constexpr finite = true;
-        using output_type = typename C::value_type;
-        using iterator_type = typename C::iterator;
+        using value_type = typename C::value_type;
+        using output_type = value_type const *;
+        using iterator_type = typename C::const_iterator;
 
         explicit Elements(C const &xs) :
                 xs(xs),
@@ -29,7 +30,7 @@ namespace sequences {
 
         std::optional<output_type> next() {
             if (iterator != end) {
-                output_type const &el = *iterator;
+                output_type el = &*iterator;
                 ++iterator;
                 return el;
             }
