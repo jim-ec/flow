@@ -22,6 +22,11 @@ namespace sequences {
                 iterator{xs.begin()},
                 end{xs.end()} {}
 
+        template<class T>
+        Elements(std::initializer_list<T> const &xs) :
+                Elements(xs)
+        {}
+
         std::optional<output_type> next() {
             if (iterator != end) {
                 output_type const &el = *iterator;
@@ -39,19 +44,7 @@ namespace sequences {
         iterator_type end;
     };
 
-    template<class C>
-    Elements<C> elements(C const &elements) {
-        return [=](auto seq) {
-            return Elements{elements};
-        };
-    }
-
+    /// Deduce the correct container type when constructing from an initializer list.
     template<class T>
-    Elements<std::initializer_list<T>> elements(
-            std::initializer_list<T> const &elements
-    ) {
-        return [=](auto seq) {
-            return Elements{elements};
-        };
-    }
+    Elements(std::initializer_list<T> const &xs) -> Elements<std::initializer_list<T>>;
 }

@@ -23,7 +23,7 @@
 #include "sequences/functional/Deref.h"
 #include "sequences/functional/Inspect.h"
 #include "sequences/divergent/Cofold.h"
-#include "sequences/Sequence.h"
+#include "sequences/Flow.h"
 
 #include "common.h"
 
@@ -48,7 +48,7 @@ display(int n) {
 
 static S
 f(S const &s) {
-    return S{s.id * 2};
+    return S(s.id * 2);
 }
 
 static std::optional<std::pair<int, int>>
@@ -57,32 +57,32 @@ cofold_descending(int n) {
         return {};
     }
     else {
-        return std::pair{n, n - 1};
+        return std::pair(n, n - 1);
     }
 }
 
-TEST_CASE("Sequence") {
-    Sequence s = Sequence{Successors{0}}
-                 | stride(3)
-                 | map([](int n) {
-        return Sequence{Successors{n}} | take(2);
+TEST_CASE("Flow") {
+    Flow s = Flow(Successors(0))
+             | stride(3)
+             | map([](int n) {
+        return Flow(Successors(n)) | take(2);
     })
-                 | take(5)
-                 | flatten();
+             | take(5)
+             | flatten();
 
-    for (int n : ForEach{s}) {
+    for (int n : ForEach(s)) {
         printf("%d\n", n);
     }
 }
 
 TEST_CASE("Merge") {
-    auto a = Sequence{Elements(std::initializer_list<int>{1, 2, 3})};
-    auto b = Sequence{Elements(std::initializer_list<char>{'a', 'b', 'c'})};
-    auto c = a | merge(b) | enumerate();
+    auto a = Flow(Elements{1, 2, 3});
+    auto b = Flow(Elements{'a', 'b', 'c'});
+    auto c = a | merge(b, a) | enumerate();
 
-    for (auto const[i, x] : ForEach{c}) {
-        auto const[n, c] = x;
-        printf("#%zu: %d, %c\n", i, n, c);
+    for (auto const[i, x] : ForEach(c)) {
+        auto const[n, c, n2] = x;
+        printf("#%zu: %d, %c, %d\n", i, n, c, n2);
     }
 }
 
