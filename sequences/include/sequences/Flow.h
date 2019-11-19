@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <sequences/core/TypeTraits.h>
+
 namespace sequences {
 
     /// A flow merely acts as a wrapper for another sequence, while also offering a composition function to

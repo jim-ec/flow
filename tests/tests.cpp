@@ -58,8 +58,8 @@ f(Identifier const &s)
 TEST_CASE("Merge") {
     auto as = {1, 2, 3};
     auto bs = {'a', 'b', 'c'};
-    auto a = Flow(Elements(as)) | deref();
-    auto b = Flow(Elements(bs)) | deref();
+    auto a = elements(as);
+    auto b = elements(bs);
     auto c = a | merge(b, a) | enumerate();
 
     REQUIRE(c.next().value() == std::tuple(0, std::tuple(1, 'a', 1)));
@@ -73,8 +73,7 @@ TEST_CASE("Deref")
     std::array<int, 4> as{3, 1, 4, 2};
     std::array<int const *, 4> bs{&as[1], &as[3], &as[0], &as[2]};
 
-    auto b = Flow(Elements(bs))
-             | deref()
+    auto b = elements(bs)
              | deref();
 
     REQUIRE(b.next().value() == 1);
@@ -89,9 +88,8 @@ TEST_CASE("Chain")
     std::array<int, 2> as{1, 2};
     std::array<int, 2> bs{3, 4};
 
-    auto flow = Flow(Elements(as))
-                | chain(Flow(Elements(bs)))
-                | deref();
+    auto flow = elements(as)
+                | chain(elements(bs));
 
     REQUIRE(flow.next().value() == 1);
     REQUIRE(flow.next().value() == 2);
@@ -156,8 +154,7 @@ TEST_CASE("Filter")
 {
     std::array<int, 4> as{1, 2, 3, 4};
 
-    auto flow = Flow(Elements(as))
-                | deref()
+    auto flow = elements(as)
                 | filter([](int n) { return n % 2 == 0; });
 
     REQUIRE(flow.next().value() == 2);
@@ -168,10 +165,16 @@ TEST_CASE("Filter")
 TEST_CASE("Strings")
 {
     std::vector<std::string> strings{"hello,", "ciao,", "foo"};
-    auto flow = Flow(Elements(strings))
-                | map([](std::string const *s) { return Flow(Elements(*s)); })
-                | flatten()
-                | deref();
+    // TODO: Here is a case of a severe lifetime bug.
+    //  If I use `elements` rather then `ref_elements`,
+    //  than each string gets copied before the mapping takes place.
+    //  But the mapping creates another `elements` sequence, which requires the
+    //  underlying container to outlive itself. Because the string is destroyed
+    //  (when?) before the returned sequence, it is dangled.
+    // TODO: Rebuild this test using `Identifier` and `Container`.
+    auto flow = ref_elements(strings)
+                | map([](std::string const *s) { return elements(*s); })
+                | flatten();
 
     REQUIRE(flow.next().value() == 'h');
     REQUIRE(flow.next().value() == 'e');
@@ -200,11 +203,12 @@ TEST_CASE("Flatten")
 
     int invocations = 0;
 
-    auto flow = Flow(Elements(cc)) |
+    // TODO: Same lifetime problems as in "Strings".
+    auto flow = ref_elements(cc) |
                 map(
                     [&](Container<Identifier> const *c) {
                         ++invocations;
-                        return Flow(Elements(*c));
+                        return elements(*c);
                     }
                 ) |
                 flatten();
@@ -213,10 +217,10 @@ TEST_CASE("Flatten")
     // due to lazy evaluation.
     REQUIRE(invocations == 0);
 
-    REQUIRE(flow.next().value() == &cc.a().a());
-    REQUIRE(flow.next().value() == &cc.a().b());
-    REQUIRE(flow.next().value() == &cc.b().a());
-    REQUIRE(flow.next().value() == &cc.b().b());
+    REQUIRE(flow.next().value() == cc.a().a());
+    REQUIRE(flow.next().value() == cc.a().b());
+    REQUIRE(flow.next().value() == cc.b().a());
+    REQUIRE(flow.next().value() == cc.b().b());
     REQUIRE(!flow.next().has_value());
 
     // There are two inner maps.

@@ -99,6 +99,10 @@ struct Identifier
         rhs.moved_away = true;
         return *this;
     }
+
+    bool operator==(Identifier const &rhs) const {
+        return id == rhs.id;
+    }
 };
 
 template<class E>
