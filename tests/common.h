@@ -9,7 +9,7 @@ std::string concat(const std::string &a, const std::string &b);
 
 std::string concat(const std::string &a, int n);
 
-struct S
+struct Identifier
 {
     int id{};
     bool default_constructed{};
@@ -50,19 +50,19 @@ struct S
         return s;
     }
 
-    S() : id{-1}, default_constructed{true}
+    Identifier() : id{-1}, default_constructed{true}
     {
 //        printf("S()\n");
     }
 
-    explicit S(int id) :
+    explicit Identifier(int id) :
             id{id},
             argument_constructed{true}
     {
 //        printf("S(int): %d\n", id);
     }
 
-    S(const S &rhs) :
+    Identifier(const Identifier &rhs) :
             id{rhs.id},
             copy_constructed{true}
     {
@@ -70,7 +70,7 @@ struct S
 //        printf(">  rhs: %s\n", rhs.display_flags().data());
     }
 
-    S(S &&rhs) noexcept :
+    Identifier(Identifier &&rhs) noexcept :
             id{rhs.id},
             move_constructed{true}
     {
@@ -79,7 +79,7 @@ struct S
         rhs.moved_away = true;
     }
 
-    S &operator=(const S &rhs)
+    Identifier &operator=(Identifier const &rhs)
     {
         copy_assigned = true;
         id = rhs.id;
@@ -89,7 +89,7 @@ struct S
         return *this;
     }
 
-    S &operator=(S &&rhs) noexcept
+    Identifier &operator=(Identifier &&rhs) noexcept
     {
         move_assigned = true;
         id = rhs.id;
@@ -99,4 +99,93 @@ struct S
         rhs.moved_away = true;
         return *this;
     }
+};
+
+template<class E>
+struct ConstContainerIterator {
+    E const *ptr;
+
+    ConstContainerIterator &operator++() {
+        ++ptr;
+        return *this;
+    }
+
+    bool operator!=(ConstContainerIterator const &rhs) {
+        return ptr != rhs.ptr;
+    }
+
+    E const *operator->() const {
+        return ptr;
+    }
+
+    E const &operator*() const {
+        return *ptr;
+    }
+};
+
+/// A container with two elements hold in heap.
+/// Used to test correct lifetime behaviour.
+template<class E>
+class Container
+{
+public:
+
+    using value_type = E;
+    using const_iterator = ConstContainerIterator<E>;
+
+    Container() {
+        printf("Container()\n");
+        data = (E *) malloc(sizeof(E) * 2);
+        new (data) E();
+        new (data + 1) E();
+    }
+
+    ~Container() {
+        printf("~Container()\n");
+        data[0].~E();
+        data[1].~E();
+        free(data);
+    }
+
+    Container(Container const &rhs)
+    {
+        printf("Container(Container const &)\n");
+        data = (E *) malloc(sizeof(E) * 2);
+        new (data) E(rhs.data[0]);
+        new (data + 1) E(rhs.data[1]);
+    }
+
+    Container(Container &&rhs) noexcept
+    {
+        printf("Container(Container &&)\n");
+        data = rhs.data;
+        rhs.data = nullptr;
+    }
+
+    ConstContainerIterator<E> begin() const {
+        return {data};
+    }
+
+    ConstContainerIterator<E> end() const {
+        return {data + 2};
+    }
+
+    E &a() {
+        return data[0];
+    }
+
+    E &b() {
+        return data[1];
+    }
+
+    E const &a() const {
+        return data[0];
+    }
+
+    E const &b() const {
+        return data[1];
+    }
+
+private:
+    E *data;
 };
