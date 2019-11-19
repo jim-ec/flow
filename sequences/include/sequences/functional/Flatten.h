@@ -6,6 +6,8 @@
 
 #include <optional>
 
+#include <sequences/functional/Fuse.h>
+
 namespace sequences
 {
     /// Reduces the sequence depth by one.
@@ -23,7 +25,7 @@ namespace sequences
             Seq const &base
         ) :
             base(base),
-            current_sub_sequence(this->base.next())
+            current_sub_sequence()
         {}
 
         std::optional<output_type> next()
@@ -39,20 +41,14 @@ namespace sequences
                     {
                         return state;
                     }
-                    else
-                    {
-                        // Current sub sequence is exhausted, go to next.
-                        std::optional<sub_sequence_type> next_sub_sequence(base.next());
-                        if (next_sub_sequence.has_value())
-                        {
-                            // Go to next subsequence.
-                            current_sub_sequence.emplace(next_sub_sequence.value());
-                        }
-                        else
-                        {
-                            current_sub_sequence.reset();
-                        }
-                    }
+                }
+
+                // Current sub sequence is exhausted, go to next.
+                std::optional<sub_sequence_type> next_sub_sequence(base.next());
+                if (next_sub_sequence.has_value())
+                {
+                    // Go to next subsequence.
+                    current_sub_sequence.emplace(next_sub_sequence.value());
                 }
                 else
                 {
