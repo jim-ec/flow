@@ -23,10 +23,10 @@ namespace sequences {
                 iterator(xs.begin()),
                 end(xs.end()) {}
 
-        template<class T>
-        Elements(std::initializer_list<T> const &xs) :
-                Elements(xs)
-        {}
+//        template<class T>
+//        Elements(std::initializer_list<T> const &xs) :
+//                Elements(xs)
+//        {}
 
         std::optional<output_type> next() {
             if (iterator != end) {
@@ -45,7 +45,7 @@ namespace sequences {
         iterator_type end;
     };
 
-    /// Deduce the correct container type when constructing from an initializer list.
-    template<class T>
-    Elements(std::initializer_list<T> const &xs) -> Elements<std::initializer_list<T>>;
+//    /// Deduce the correct container type when constructing from an initializer list.
+//    template<class T>
+//    Elements(std::initializer_list<T> const &xs) -> Elements<std::initializer_list<T>>;
 }
