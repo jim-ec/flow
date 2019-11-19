@@ -45,9 +45,8 @@ namespace sequences
                         std::optional<sub_sequence_type> next_sub_sequence(base.next());
                         if (next_sub_sequence.has_value())
                         {
-                            current_sub_sequence.reset();
-//                            sub_sequence_type sub_seq(next_sub_sequence.value());
-//                            current_sub_sequence.emplace(sub_seq);
+                            // Go to next subsequence.
+                            current_sub_sequence.emplace(next_sub_sequence.value());
                         }
                         else
                         {
