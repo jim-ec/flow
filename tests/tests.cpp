@@ -30,87 +30,109 @@
 using namespace sequences;
 
 static int
-inc(int n) {
+inc(int n)
+{
     return n + 1;
 }
 
 static bool
-is_even(int n) {
+is_even(int n)
+{
     return n % 2 == 0;
 }
 
 static std::string
-display(int n) {
+display(int n)
+{
     std::stringstream ss;
     ss << n;
     return ss.str();
 }
 
-static S
-f(S const &s) {
-    return S(s.id * 2);
+static Identifier
+f(Identifier const &s)
+{
+    return Identifier(s.id * 2);
 }
 
-//TEST_CASE("Merge") {
-//    auto a = Flow(Elements{1, 2, 3});
-//    auto b = Flow(Elements{'a', 'b', 'c'});
-//    auto c = a | merge(b, a) | enumerate();
-//
-//    REQUIRE(c.next() == std::optional(std::tuple(0, std::tuple(1, 'a', 1))));
-//    REQUIRE(c.next() == std::optional(std::tuple(1, std::tuple(2, 'b', 2))));
-//    REQUIRE(c.next() == std::optional(std::tuple(2, std::tuple(3, 'c', 3))));
-//    REQUIRE(!c.next().has_value());
-//}
+TEST_CASE("Merge") {
+    auto as = {1, 2, 3};
+    auto bs = {'a', 'b', 'c'};
+    auto a = Flow(Elements(as)) | deref();
+    auto b = Flow(Elements(bs)) | deref();
+    auto c = a | merge(b, a) | enumerate();
 
-//TEST_CASE("Deref") {
-//    std::vector<int> numbers{3, 1, 4, 2};
-//
-//    Flow a(Elements{numbers});
-//    Flow b = Flow(Elements{&numbers[1], &numbers[3], &numbers[0], &numbers[2]})
-//             | deref();
-//
-//    REQUIRE(b.next() == std::optional(1));
-//    REQUIRE(b.next() == std::optional(2));
-//    REQUIRE(b.next() == std::optional(3));
-//    REQUIRE(b.next() == std::optional(4));
-//    REQUIRE(!b.next().has_value());
-//}
-//
-//TEST_CASE("Chain") {
-//    auto flow = Flow(Elements{1, 2})
-//                | chain(Flow(Elements{3, 4}));
-//
-//    REQUIRE(flow.next() == std::optional(1));
-//    REQUIRE(flow.next() == std::optional(2));
-//    REQUIRE(flow.next() == std::optional(3));
-//    REQUIRE(flow.next() == std::optional(4));
-//    REQUIRE(!flow.next().has_value());
-//}
+    REQUIRE(c.next().value() == std::tuple(0, std::tuple(1, 'a', 1)));
+    REQUIRE(c.next().value() == std::tuple(1, std::tuple(2, 'b', 2)));
+    REQUIRE(c.next().value() == std::tuple(2, std::tuple(3, 'c', 3)));
+    REQUIRE(!c.next().has_value());
+}
 
-//TEST_CASE("Fold") {
-//    auto flow = Flow(Successors(1)) | take(4);
-//    auto sum = fold(flow, 0, [](int a, int b) { return a + b; });
-//    REQUIRE(sum == 10);
-//}
+TEST_CASE("Deref")
+{
+    std::array<int, 4> as{3, 1, 4, 2};
+    std::array<int const *, 4> bs{&as[1], &as[3], &as[0], &as[2]};
 
-//TEST_CASE("Cofold") {
-//    auto cofold_descending = [](int n) -> std::optional<std::pair<int, int>> {
-//        if (n == 0) {
-//            return {};
-//        }
-//        else {
-//            return std::pair(n, n - 1);
-//        }
-//    };
-//
-//    auto flow = Cofold(4, cofold_descending);
-//
-//    REQUIRE(flow.next() == std::optional(4));
-//    REQUIRE(flow.next() == std::optional(3));
-//    REQUIRE(flow.next() == std::optional(2));
-//    REQUIRE(flow.next() == std::optional(1));
-//    REQUIRE(!flow.next().has_value());
-//}
+    auto b = Flow(Elements(bs))
+             | deref()
+             | deref();
+
+    REQUIRE(b.next().value() == 1);
+    REQUIRE(b.next().value() == 2);
+    REQUIRE(b.next().value() == 3);
+    REQUIRE(b.next().value() == 4);
+    REQUIRE(!b.next().has_value());
+}
+
+TEST_CASE("Chain")
+{
+    std::array<int, 2> as{1, 2};
+    std::array<int, 2> bs{3, 4};
+
+    auto flow = Flow(Elements(as))
+                | chain(Flow(Elements(bs)))
+                | deref();
+
+    REQUIRE(flow.next().value() == 1);
+    REQUIRE(flow.next().value() == 2);
+    REQUIRE(flow.next().value() == 3);
+    REQUIRE(flow.next().value() == 4);
+    REQUIRE(!flow.next().has_value());
+}
+
+TEST_CASE("Fold")
+{
+    auto flow = Flow(Successors(1)) | take(4);
+    auto sum = fold(
+        flow, 0, [](
+            int a,
+            int b
+        ) { return a + b; }
+    );
+    REQUIRE(sum == 10);
+}
+
+TEST_CASE("Cofold")
+{
+    auto cofold_descending = [](int n) -> std::optional<std::pair<int, int>> {
+        if (n == 0)
+        {
+            return {};
+        }
+        else
+        {
+            return std::pair(n, n - 1);
+        }
+    };
+
+    auto flow = Cofold(4, cofold_descending);
+
+    REQUIRE(flow.next().value() == 4);
+    REQUIRE(flow.next().value() == 3);
+    REQUIRE(flow.next().value() == 2);
+    REQUIRE(flow.next().value() == 1);
+    REQUIRE(!flow.next().has_value());
+}
 
 //TEST_CASE("Copy elements") {
 //    std::vector<S> elements;
@@ -130,51 +152,79 @@ f(S const &s) {
 //    REQUIRE(elements[0].moved_away);
 //}
 
-//TEST_CASE("Filter") {
-//    auto flow = Flow(Elements{1, 2, 3, 4})
-//            | filter([] (int n) { return n % 2 == 0; });
-//
-//    REQUIRE(flow.next() == std::optional(2));
-//    REQUIRE(flow.next() == std::optional(4));
-//    REQUIRE(!flow.next().has_value());
-//}
+TEST_CASE("Filter")
+{
+    std::array<int, 4> as{1, 2, 3, 4};
 
-TEST_CASE("Flatten") {
+    auto flow = Flow(Elements(as))
+                | deref()
+                | filter([](int n) { return n % 2 == 0; });
 
-//    Flow flow(Elements(std::string("h")));
-//    auto flow = Flow(Elements(std::string("h")));
-    std::vector<std::string> strings{"hello,", "ciao,", "foo"};
-    auto flow = Flow(Elements(strings))
-        | map([] (std::string const *s) { return Flow(Elements(*s)); })
-        | flatten();
-    auto const a1 = flow.next();
-    auto const a2 = flow.next();
-    auto const a3 = flow.next();
-    auto const a4 = flow.next();
-    auto const a5 = flow.next();
-    auto const a6 = flow.next();
-    auto const a7 = flow.next();
-    auto const a8 = flow.next();
-    auto const a9 = flow.next();
-//    REQUIRE(flow.next() == std::optional('h'));
-//    REQUIRE(flow.next() == std::optional('e'));
-//    REQUIRE(flow.next() == std::optional('l'));
-//    REQUIRE(flow.next() == std::optional('l'));
-//    REQUIRE(flow.next() == std::optional('o'));
-//    REQUIRE(flow.next() == std::optional(','));
-//    flow.next();
-//    REQUIRE(flow.next() == std::optional('c'));
-//    REQUIRE(flow.next() == std::optional('i'));
-//    REQUIRE(flow.next() == std::optional('a'));
-//    REQUIRE(flow.next() == std::optional('o'));
-//    REQUIRE(flow.next() == std::optional(','));
-//    REQUIRE(flow.next() == std::optional('f'));
-//    REQUIRE(flow.next() == std::optional('o'));
-//    REQUIRE(flow.next() == std::optional('o'));
-//    REQUIRE(!flow.next().has_value());
+    REQUIRE(flow.next().value() == 2);
+    REQUIRE(flow.next().value() == 4);
+    REQUIRE(!flow.next().has_value());
 }
 
-TEST_CASE("NextGen") {
+TEST_CASE("Strings")
+{
+    std::vector<std::string> strings{"hello,", "ciao,", "foo"};
+    auto flow = Flow(Elements(strings))
+                | map([](std::string const *s) { return Flow(Elements(*s)); })
+                | flatten()
+                | deref();
+
+    REQUIRE(flow.next().value() == 'h');
+    REQUIRE(flow.next().value() == 'e');
+    REQUIRE(flow.next().value() == 'l');
+    REQUIRE(flow.next().value() == 'l');
+    REQUIRE(flow.next().value() == 'o');
+    REQUIRE(flow.next().value() == ',');
+    REQUIRE(flow.next().value() == 'c');
+    REQUIRE(flow.next().value() == 'i');
+    REQUIRE(flow.next().value() == 'a');
+    REQUIRE(flow.next().value() == 'o');
+    REQUIRE(flow.next().value() == ',');
+    REQUIRE(flow.next().value() == 'f');
+    REQUIRE(flow.next().value() == 'o');
+    REQUIRE(flow.next().value() == 'o');
+    REQUIRE(!flow.next().has_value());
+}
+
+TEST_CASE("Flatten")
+{
+    Container<Container<Identifier>> cc;
+    cc.a().a().id = 1;
+    cc.a().b().id = 2;
+    cc.b().a().id = 3;
+    cc.b().b().id = 4;
+
+    int invocations = 0;
+
+    auto flow = Flow(Elements(cc)) |
+                map(
+                    [&](Container<Identifier> const *c) {
+                        ++invocations;
+                        return Flow(Elements(*c));
+                    }
+                ) |
+                flatten();
+
+    // While building the sequence, the functors must not be called
+    // due to lazy evaluation.
+    REQUIRE(invocations == 0);
+
+    REQUIRE(flow.next().value() == &cc.a().a());
+    REQUIRE(flow.next().value() == &cc.a().b());
+    REQUIRE(flow.next().value() == &cc.b().a());
+    REQUIRE(flow.next().value() == &cc.b().b());
+    REQUIRE(!flow.next().has_value());
+
+    // There are two inner maps.
+    REQUIRE(invocations == 2);
+}
+
+TEST_CASE("NextGen")
+{
 //    Cofold a{&cofold_descending, 10};
 //
 //    for (int n : ForEach{a}) {

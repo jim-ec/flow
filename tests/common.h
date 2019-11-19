@@ -134,14 +134,14 @@ public:
     using const_iterator = ConstContainerIterator<E>;
 
     Container() {
-        printf("Container()\n");
+//        printf("Container()\n");
         data = (E *) malloc(sizeof(E) * 2);
         new (data) E();
         new (data + 1) E();
     }
 
     ~Container() {
-        printf("~Container()\n");
+//        printf("~Container()\n");
         data[0].~E();
         data[1].~E();
         free(data);
@@ -149,7 +149,7 @@ public:
 
     Container(Container const &rhs)
     {
-        printf("Container(Container const &)\n");
+//        printf("Container(Container const &)\n");
         data = (E *) malloc(sizeof(E) * 2);
         new (data) E(rhs.data[0]);
         new (data + 1) E(rhs.data[1]);
@@ -157,7 +157,7 @@ public:
 
     Container(Container &&rhs) noexcept
     {
-        printf("Container(Container &&)\n");
+//        printf("Container(Container &&)\n");
         data = rhs.data;
         rhs.data = nullptr;
     }
