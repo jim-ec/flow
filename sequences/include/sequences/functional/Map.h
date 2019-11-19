@@ -11,7 +11,7 @@
 namespace sequences
 {
     /// Maps each sequence element through a function.
-	/// Arity: 1 -> 1
+    /// Arity: 1 -> 1
     template<class Seq, class Fn>
     class Map
     {
@@ -26,7 +26,7 @@ namespace sequences
 
         Map(
             Seq const &base,
-            Fn fn
+            Fn const &fn
         ) :
             base(base),
             fn(fn)
@@ -48,10 +48,14 @@ namespace sequences
     };
 
     template<class Fn>
-    auto map(Fn fn)
+    auto
+    map(Fn &&fn)
     {
-        return [=](auto seq) {
-            return Map(seq, fn);
+        return [=](auto &&seq) {
+            return Map(
+                std::forward<decltype(seq)>(seq),
+                fn
+            );
         };
     }
 }
