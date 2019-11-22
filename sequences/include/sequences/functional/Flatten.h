@@ -22,9 +22,9 @@ namespace sequences
         using output_type = typename sub_sequence_type::output_type;
 
         explicit Flatten(
-            Seq const &base
+            Seq &&base
         ) :
-            base(base),
+            base(std::move(base)),
             current_sub_sequence()
         {}
 
@@ -66,8 +66,8 @@ namespace sequences
     };
 
     auto flatten() {
-        return [](auto seq) {
-            return Flatten(seq);
+        return [](auto &&seq) {
+            return Flatten(std::forward<decltype(seq)>(seq));
         };
     }
 

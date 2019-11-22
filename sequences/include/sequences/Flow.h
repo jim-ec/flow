@@ -27,6 +27,8 @@ namespace sequences {
 
         explicit Flow(Seq const &seq) : seq(seq) {}
 
+        explicit Flow(Seq &&seq) : seq(std::move(seq)) {}
+
         /// The sequence composition.
         /// Takes a sequence constructor, i.e. a function which expects this sequence and returns a new sequence
         /// based on it. The resulting sequence is returned.

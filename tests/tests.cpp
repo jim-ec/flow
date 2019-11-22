@@ -165,15 +165,8 @@ TEST_CASE("Filter")
 TEST_CASE("Strings")
 {
     std::vector<std::string> strings{"hello,", "ciao,", "foo"};
-    // TODO: Here is a case of a severe lifetime bug.
-    //  If I use `elements` rather then `ref_elements`,
-    //  than each string gets copied before the mapping takes place.
-    //  But the mapping creates another `elements` sequence, which requires the
-    //  underlying container to outlive itself. Because the string is destroyed
-    //  (when?) before the returned sequence, it is dangled.
-    // TODO: Rebuild this test using `Identifier` and `Container`.
-    auto flow = ref_elements(strings)
-                | map([](std::string const *s) { return elements(*s); })
+    auto flow = elements(strings)
+                | map([](std::string const &s) { return elements(s); })
                 | flatten();
 
     REQUIRE(flow.next().value() == 'h');
@@ -203,12 +196,13 @@ TEST_CASE("Flatten")
 
     int invocations = 0;
 
-    // TODO: Same lifetime problems as in "Strings".
-    auto flow = ref_elements(cc) |
+    // The container is moved here, so we do not need to expect
+    // any copies, only moves.
+    auto flow = elements(std::move(cc)) |
                 map(
-                    [&](Container<Identifier> const *c) {
+                    [&](Container<Identifier> const &c) {
                         ++invocations;
-                        return elements(*c);
+                        return elements(c);
                     }
                 ) |
                 flatten();
@@ -217,10 +211,10 @@ TEST_CASE("Flatten")
     // due to lazy evaluation.
     REQUIRE(invocations == 0);
 
-    REQUIRE(flow.next().value() == cc.a().a());
-    REQUIRE(flow.next().value() == cc.a().b());
-    REQUIRE(flow.next().value() == cc.b().a());
-    REQUIRE(flow.next().value() == cc.b().b());
+    REQUIRE(flow.next().value().id == 1);
+    REQUIRE(flow.next().value().id == 2);
+    REQUIRE(flow.next().value().id == 3);
+    REQUIRE(flow.next().value().id == 4);
     REQUIRE(!flow.next().has_value());
 
     // There are two inner maps.

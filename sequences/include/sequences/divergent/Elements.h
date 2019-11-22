@@ -9,22 +9,52 @@
 
 #include <sequences/Flow.h>
 #include <sequences/functional/Deref.h>
+#include <sequences/core/Log.h>
 
 namespace sequences {
     /// Yields all elements of the given container.
     /// Arity: 0 -> 1
     template<class C>
-    class RefElements {
+    class Elements {
     public:
         static inline bool constexpr finite = true;
         using value_type = typename C::value_type;
-        using output_type = value_type const *;
-        using iterator_type = typename C::const_iterator;
+        using output_type = value_type;
+        using iterator_type = typename C::iterator;
 
-        explicit RefElements(C const &xs) :
-                xs(xs),
-                iterator(xs.begin()),
-                end(xs.end()) {}
+        Elements(Elements const &rhs) :
+            xs(rhs.xs),
+            iterator(xs.begin()),
+            end(xs.end())
+        {
+            log("Elements(Elements const &)");
+        }
+
+        Elements(Elements &&rhs) noexcept :
+            xs(std::move(rhs.xs)),
+            iterator(xs.begin()),
+            end(xs.end())
+        {
+            log("Elements(Elements &&)");
+        }
+
+        explicit Elements(C const &xs) :
+            xs(xs),
+            iterator(this->xs.begin()),
+            end(this->xs.end()) {
+            log("Elements(C const &)");
+        }
+
+        explicit Elements(C &&xs) :
+            xs(std::move(xs)),
+            iterator(this->xs.begin()),
+            end(this->xs.end()) {
+            log("Elements(C &&)");
+        }
+
+        ~Elements() {
+            log("~Elements()");
+        }
 
 //        template<class T>
 //        Elements(std::initializer_list<T> const &xs) :
@@ -33,9 +63,12 @@ namespace sequences {
 
         std::optional<output_type> next() {
             if (iterator != end) {
-                output_type el = &*iterator;
+                // Because we own the container, we can move elements out of it.
+                log("Elements: Move next element out of container.");
+                output_type el(std::move(*std::move(iterator)));
                 ++iterator;
-                return el;
+                log("Elements: Return element by move.");
+                return std::move(el);
             }
             else {
                 return {};
@@ -43,7 +76,7 @@ namespace sequences {
         }
 
     private:
-        C const &xs;
+        C xs;
         iterator_type iterator;
         iterator_type end;
     };
@@ -52,13 +85,13 @@ namespace sequences {
 //    template<class T>
 //    Elements(std::initializer_list<T> const &xs) -> Elements<std::initializer_list<T>>;
 
-    template<class C>
-    auto ref_elements(C const &c) {
-        return Flow(RefElements(c));
-    }
+//    template<class C>
+//    auto ref_elements(C const &c) {
+//        return Flow(RefElements(c));
+//    }
 
     template<class C>
-    auto elements(C const &c) {
-        return Flow(RefElements(c)) | deref();
+    auto elements(C &&c) {
+        return Flow(Elements(std::forward<C>(c)));
     }
 }
