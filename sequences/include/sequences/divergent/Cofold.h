@@ -69,4 +69,9 @@ namespace sequences
         Fn fn;
         seed_type state;
     };
+
+    template<class T, class Fn>
+    auto cofold(T const &init, Fn fn) {
+        return Flow(Cofold(init, fn));
+    }
 }

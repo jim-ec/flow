@@ -18,9 +18,7 @@ namespace sequences
         static inline bool constexpr finite = false;
         using output_type = T;
 
-        Successors() = default;
-
-        explicit Successors(const T &n) :
+        explicit Successors(T const &n) :
             n(n)
         {}
 
@@ -34,4 +32,9 @@ namespace sequences
     private:
         T n;
     };
+
+    template<class T>
+    auto successors(T const &n) {
+        return Flow(Successors(n));
+    }
 }

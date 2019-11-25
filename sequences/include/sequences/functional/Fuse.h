@@ -48,4 +48,10 @@ namespace sequences
         Seq base;
         bool exhausted;
     };
+
+    auto fuse() {
+        return [] (auto &&seq) {
+            return Fuse(std::forward<decltype(seq)>(seq));
+        };
+    }
 }
