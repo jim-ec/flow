@@ -5,36 +5,73 @@
 #pragma once
 
 #include <optional>
+#include <initializer_list>
 
-namespace sequences
-{
+#include <sequences/Flow.h>
+#include <sequences/functional/Deref.h>
+#include <sequences/core/Log.h>
+
+namespace sequences {
     /// Yields all elements of the given container.
-	/// Arity: 0 -> 1
-    template<class O>
-    class Elements
-    {
+    /// The container is owned by this sequence.
+    /// This allows returning an `Elements` sequence from a scope without exceeding its lifetime.
+    /// This is especially useful when mapping elements of a sequence to `Elements` sequences.
+    /// Arity: 0 -> 1
+    template<class C>
+    class Elements {
     public:
         static inline bool constexpr finite = true;
-        using output_type = O;
+        using value_type = typename C::value_type;
+        using output_type = value_type;
+        using iterator_type = typename C::iterator;
 
-        explicit Elements(std::vector<O> const &xs) :
-            xs{xs},
-            k{0}
+        Elements(Elements const &rhs) :
+            xs(rhs.xs),
+            iterator(xs.begin()),
+            end(xs.end())
         {}
 
-        std::optional<O> next()
-        {
-            if (k >= xs.size())
-            {
+        Elements(Elements &&rhs) noexcept :
+            xs(std::move(rhs.xs)),
+            iterator(xs.begin()),
+            end(xs.end())
+        {}
+
+        explicit Elements(C const &xs) :
+            xs(xs),
+            iterator(this->xs.begin()),
+            end(this->xs.end())
+        {}
+
+        explicit Elements(C &&xs) :
+            xs(std::move(xs)),
+            iterator(this->xs.begin()),
+            end(this->xs.end())
+        {}
+
+        std::optional<output_type> next() {
+            if (iterator != end) {
+                // Because we own the container, we can move elements out of it.
+                log("Elements: Move next element out of container.");
+                output_type el(std::move(*std::move(iterator)));
+                ++iterator;
+                log("Elements: Return element by move.");
+                return std::move(el);
+            }
+            else {
                 return {};
             }
-            O state{xs[k]};
-            ++k;
-            return std::move(state);
         }
 
     private:
-        std::vector<O> const &xs;
-        size_t k;
+        C xs;
+        iterator_type iterator;
+        iterator_type end;
     };
+
+    /// Creates an `Elements` flow.
+    template<class C>
+    auto elements(C &&c) {
+        return Flow(Elements(std::forward<C>(c)));
+    }
 }

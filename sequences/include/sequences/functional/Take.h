@@ -22,9 +22,9 @@ namespace sequences
             Seq const &base,
             size_t const n
         ) :
-            base{base},
-            k{0},
-            n{n}
+            base(base),
+            k(0),
+            n(n)
         {}
 
         std::optional<output_type> next()
@@ -45,4 +45,10 @@ namespace sequences
         size_t k;
         size_t n;
     };
+
+    auto take(size_t const n) {
+        return [=] (auto &&seq) {
+            return Take(std::forward<decltype(seq)>(seq), n);
+        };
+    }
 }

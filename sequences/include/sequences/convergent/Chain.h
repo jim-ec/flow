@@ -26,9 +26,9 @@ namespace sequences
             DrainSeq const &drain_seq,
             ContSeq const &cont_seq
         ) :
-            drain_seq{drain_seq},
-            cont_seq{cont_seq},
-            draining{true}
+            drain_seq(drain_seq),
+            cont_seq(cont_seq),
+            draining(true)
         {}
 
         std::optional<output_type> next()
@@ -54,5 +54,12 @@ namespace sequences
         ContSeq cont_seq;
         bool draining;
     };
+
+    template<class ContSeq>
+    auto chain(ContSeq const &cont_seq) {
+        return [=](auto const &drain_seq) {
+            return Chain(drain_seq, cont_seq);
+        };
+    }
 
 }

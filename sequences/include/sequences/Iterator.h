@@ -23,8 +23,8 @@ namespace sequences
 
     	/// Constructs an iterator yielding elements from the given sequence.
         explicit SequenceIterator(Seq const &seq) :
-            seq{seq},
-            element{this->seq.next()}
+            seq(seq),
+            element(this->seq.next())
         {}
 
         /// Yields the next element from the sequence.
@@ -33,7 +33,7 @@ namespace sequences
         SequenceIterator &operator++()
         {
             element.reset();
-            std::optional<value_type> el = seq.next();
+            std::optional<value_type> el(seq.next());
             if (el.has_value()) {
                 element.emplace(*el);
             }
@@ -83,12 +83,12 @@ namespace sequences
         using value_type = typename Seq::output_type;
 
         explicit ForEach(Seq const &seq) :
-            seq{seq}
+            seq(seq)
         {}
 
         SequenceIterator<Seq> begin()
         {
-            return SequenceIterator<Seq>{seq};
+            return SequenceIterator<Seq>(seq);
         }
 
 		SequenceEndIterator end()
@@ -99,4 +99,11 @@ namespace sequences
     private:
         Seq seq;
     };
+
+    template<class Seq>
+    void exhaust(Seq const &seq) {
+        for(auto const &el : ForEach{seq}) {
+            static_cast<void>(el);
+        }
+    }
 }

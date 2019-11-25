@@ -6,12 +6,13 @@
 
 #include <optional>
 
+#include <sequences/core/Log.h>
 #include <sequences/core/TypeTraits.h>
 
 namespace sequences
 {
     /// Maps each sequence element through a function.
-	/// Arity: 1 -> 1
+    /// Arity: 1 -> 1
     template<class Seq, class Fn>
     class Map
     {
@@ -25,19 +26,21 @@ namespace sequences
         static_assert(!std::is_rvalue_reference_v<output_type>, "The mapped type must be owned.");
 
         Map(
-            Seq const &base,
+            Seq &&base,
             Fn fn
         ) :
-            base{base},
-            fn{fn}
+            base(std::move(base)),
+            fn(fn)
         {}
 
         std::optional<output_type> next()
         {
-            std::optional<typename Seq::output_type> k = base.next();
+            log("Map: Get next element.");
+            std::optional<domain_type> k(base.next());
             if (k.has_value())
             {
-                return fn(std::move(*k));
+                log("Map: Give element by move to function.");
+                return fn(std::move(k.value()));
             }
             return {};
         }
@@ -46,4 +49,11 @@ namespace sequences
         Seq base;
         Fn fn;
     };
+
+    template<class Fn>
+    auto map(Fn fn) {
+        return [=](auto &&seq) {
+            return Map(std::forward<decltype(seq)>(seq),fn);
+        };
+    }
 }

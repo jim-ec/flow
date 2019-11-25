@@ -37,15 +37,14 @@ namespace sequences
         static_assert(std::is_same_v<seed_type, typename fn_domain_inner_type::second_type>,
             "The functional's second return value must have the same type as it's argument.");
 
-        explicit Cofold(Fn fn, seed_type const &init) :
-            fn{fn},
-            state{init}
+        explicit Cofold(seed_type const &init, Fn fn) :
+            fn(fn),
+            state(init)
         {}
 
         std::optional<output_type> next()
         {
-            fn_domain_type result =
-                fn(std::move(state));
+            fn_domain_type result(fn(std::move(state)));
 
             if (result.has_value())
             {
@@ -54,7 +53,7 @@ namespace sequences
 
                 // Re-initialize new state.
                 state.~seed_type();
-                new (&state) seed_type{std::move(result_value.second)};
+                new (&state) seed_type(std::move(result_value.second));
 
                 // Yield the actual compute element.
                 return std::move(result_value.first);
@@ -70,4 +69,9 @@ namespace sequences
         Fn fn;
         seed_type state;
     };
+
+    template<class T, class Fn>
+    auto cofold(T const &init, Fn fn) {
+        return Flow(Cofold(init, fn));
+    }
 }

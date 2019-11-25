@@ -24,13 +24,13 @@ namespace sequences
             Seq const &base,
             size_t const n
         ) :
-            base{Fuse{base}},
-            n{n}
+            base(Fuse(base)),
+            n(n)
         {}
 
         std::optional<output_type> next()
         {
-            std::optional<output_type> state{base.next()};
+            std::optional<output_type> state(base.next());
 
             if (state.has_value())
             {
@@ -49,4 +49,10 @@ namespace sequences
         Fuse<Seq> base;
         size_t n;
     };
+
+    auto stride(size_t const n) {
+        return [=](auto &&seq) {
+            return Stride(std::forward<decltype(seq)>(seq), n);
+        };
+    }
 }

@@ -7,7 +7,7 @@
 
 #include "sequences/Iterator.h"
 #include "sequences/divergent/Elements.h"
-#include "sequences/divergent/MoveElements.h"
+#include "sequences/divergent/RefElements.h"
 #include "sequences/functional/Flatten.h"
 #include "sequences/functional/Filter.h"
 #include "sequences/functional/Map.h"
@@ -23,6 +23,7 @@
 #include "sequences/functional/Deref.h"
 #include "sequences/functional/Inspect.h"
 #include "sequences/divergent/Cofold.h"
+#include "sequences/Flow.h"
 
 #include "common.h"
 
@@ -48,130 +49,174 @@ display(int n)
     return ss.str();
 }
 
-static S
-f(S const &s)
+static Identifier
+f(Identifier const &s)
 {
-    return S{s.id * 2};
+    return Identifier(s.id * 2);
 }
 
-static std::optional<std::pair<int, int>>
-cofold_descending(int n)
-{
-    if (n == 0)
-    {
-        return {};
-    }
-    else
-    {
-        return std::pair{n, n - 1};
-    }
+TEST_CASE("Merge") {
+    auto as = {1, 2, 3};
+    auto bs = {'a', 'b', 'c'};
+    auto a = elements(as);
+    auto b = elements(bs);
+    auto c = a | merge(b, a) | enumerate();
+
+    REQUIRE(c.next().value() == std::tuple(0, std::tuple(1, 'a', 1)));
+    REQUIRE(c.next().value() == std::tuple(1, std::tuple(2, 'b', 2)));
+    REQUIRE(c.next().value() == std::tuple(2, std::tuple(3, 'c', 3)));
+    REQUIRE(!c.next().has_value());
 }
 
-TEST_CASE("NextGen")
+TEST_CASE("Deref")
 {
-    Cofold a{&cofold_descending, 10};
+    std::array<int, 4> as{3, 1, 4, 2};
+    std::array<int const *, 4> bs{&as[1], &as[3], &as[0], &as[2]};
 
-    for (int n : ForEach{a}) {
-        printf("%d\n", n);
-    }
+    auto b = elements(bs)
+             | deref();
 
-//
-//
-//    std::vector<int> numbers{3, 1, 4, 2};
-//    std::vector<int const *> pointers{
-//        &numbers[1],
-//        &numbers[3],
-//        &numbers[0],
-//        &numbers[2]
-//    };
-//
-//    Elements a{pointers};
-//    Deref aa{a};
-//    Inspect aaa{aa, [](int const &n) {
-//        printf("Inspector: %d\n", n);
-//    }};
-//
-//    for (int n : Exhaust{aaa}) {
-//        printf("%d\n", n);
-//    }
+    REQUIRE(b.next().value() == 1);
+    REQUIRE(b.next().value() == 2);
+    REQUIRE(b.next().value() == 3);
+    REQUIRE(b.next().value() == 4);
+    REQUIRE(!b.next().has_value());
+}
 
-//    Successors a{1};
-//    Take aa{a, 4};
-//    Fold aaa{aa, [](int c, int a) {
-////        std::stringstream ss;
-////        ss << n << ", " << a;
-////        return ss.str();
-//        return c * a;
-//    }};
-//
-////    std::string sum = aaa.reduce("");
-//    int sum = *aaa.reduce_maybe();
-//
-//    printf("%d\n", sum);
+TEST_CASE("Chain")
+{
+    std::array<int, 2> as{1, 2};
+    std::array<int, 2> bs{3, 4};
 
-//    Successors a{0};
-//    Stride aa{a, 2};
-//    Take aaa{aa, 5};
-//    Enumerate aaaa{aaa};
-//
-//    for(auto const &[i, n] : Exhaust{aaaa})
-//    {
-//        printf("%zu: %d\n", i, n);
-//    }
+    auto flow = elements(as)
+                | chain(elements(bs));
 
+    REQUIRE(flow.next().value() == 1);
+    REQUIRE(flow.next().value() == 2);
+    REQUIRE(flow.next().value() == 3);
+    REQUIRE(flow.next().value() == 4);
+    REQUIRE(!flow.next().has_value());
+}
 
-//    Successors<int> a{0};
-//    Successors<int> b{1};
-//    Successors<int> c{2};
-//
-//    Stride aa{a, 2};
-//    Map bb{b, &display};
-//    Map cc{c, [](int n) { return 1 << n; }};
-//
-//    Take aaa{aa, 5};
-//
-//    Merge m{std::tuple{aaa, bb, cc}};
-//    Take mm{m, 10};
-//
-//    for(auto [a, b, c] : Exhaust{mm})
-//    {
-//        printf("%d, %s, %d\n", a, b.data(), c);
-//    }
+TEST_CASE("Fold")
+{
+    auto flow = Flow(Successors(1)) | take(4);
+    auto sum = fold(
+        flow, 0, [](
+            int a,
+            int b
+        ) { return a + b; }
+    );
+    REQUIRE(sum == 10);
+}
 
-//    std::vector<int> xs{1, 2, 3, 4};
-//    std::vector<int> ys{10, 20, 30, 40};
-//    Elements x{xs};
-//    Elements y{ys};
-//    std::vector<Elements<int>> as{x, y};
-//    Elements a{as};
-//    Flatten b{a};
-//    Filter c{b, &is_even};
-//    Map d{c, &inc};
+TEST_CASE("Cofold")
+{
+    auto cofold_descending = [](int n) -> std::optional<std::pair<int, int>> {
+        if (n == 0)
+        {
+            return {};
+        }
+        else
+        {
+            return std::pair(n, n - 1);
+        }
+    };
 
-//    Successors<float> a{0u};
-//    Take b{a, 10};
-//    Stride c{b, 3};
-//
-//    auto &seq = c;
-//
-//    for (int n : Exhaust{seq})
-//    {
-//        printf("%d\n", n);
-//    }
+    auto flow = Cofold(4, cofold_descending);
 
-//    SECTION("Base case")
-//    {
-//        Successors a;
-//        Filter b{a, &is_even};
-//        Map c{b, &inc};
-//        Take d{c, 3};
-//
-//        auto &seq = d;
-//
-//        for (auto x = seq.next(); x; x = seq.next())
-//        {
-//            auto n = *x;
-//            printf("%d\n", n);
-//        }
-//    }
+    REQUIRE(flow.next().value() == 4);
+    REQUIRE(flow.next().value() == 3);
+    REQUIRE(flow.next().value() == 2);
+    REQUIRE(flow.next().value() == 1);
+    REQUIRE(!flow.next().has_value());
+}
+
+TEST_CASE("Elements") {
+    std::vector<Identifier> xs;
+    xs.emplace_back(3);
+
+    auto seq = elements(xs);
+    REQUIRE(seq.next().value().id == 3);
+    REQUIRE(!seq.next().has_value());
+}
+
+TEST_CASE("ref_elements") {
+    std::vector<Identifier> xs;
+    xs.emplace_back(3);
+
+    auto seq = ref_elements(xs);
+    REQUIRE(seq.next().value()->id == 3);
+    REQUIRE(!seq.next().has_value());
+}
+
+TEST_CASE("Filter")
+{
+    std::array<int, 4> as{1, 2, 3, 4};
+
+    auto flow = elements(as)
+                | filter([](int n) { return n % 2 == 0; });
+
+    REQUIRE(flow.next().value() == 2);
+    REQUIRE(flow.next().value() == 4);
+    REQUIRE(!flow.next().has_value());
+}
+
+TEST_CASE("Strings")
+{
+    std::vector<std::string> strings{"hello,", "ciao,", "foo"};
+    auto flow = elements(strings)
+                | map([](std::string const &s) { return elements(s); })
+                | flatten();
+
+    REQUIRE(flow.next().value() == 'h');
+    REQUIRE(flow.next().value() == 'e');
+    REQUIRE(flow.next().value() == 'l');
+    REQUIRE(flow.next().value() == 'l');
+    REQUIRE(flow.next().value() == 'o');
+    REQUIRE(flow.next().value() == ',');
+    REQUIRE(flow.next().value() == 'c');
+    REQUIRE(flow.next().value() == 'i');
+    REQUIRE(flow.next().value() == 'a');
+    REQUIRE(flow.next().value() == 'o');
+    REQUIRE(flow.next().value() == ',');
+    REQUIRE(flow.next().value() == 'f');
+    REQUIRE(flow.next().value() == 'o');
+    REQUIRE(flow.next().value() == 'o');
+    REQUIRE(!flow.next().has_value());
+}
+
+TEST_CASE("Flatten")
+{
+    Container<Container<Identifier>> cc;
+    cc.a().a().id = 1;
+    cc.a().b().id = 2;
+    cc.b().a().id = 3;
+    cc.b().b().id = 4;
+
+    int invocations = 0;
+
+    // The container is moved here, so we do not need to expect
+    // any copies, only moves.
+    auto flow = elements(std::move(cc)) |
+                map(
+                    [&](Container<Identifier> const &c) {
+                        ++invocations;
+                        return elements(c);
+                    }
+                ) |
+                flatten();
+
+    // While building the sequence, the functors must not be called
+    // due to lazy evaluation.
+    REQUIRE(invocations == 0);
+
+    REQUIRE(flow.next().value().id == 1);
+    REQUIRE(flow.next().value().id == 2);
+    REQUIRE(flow.next().value().id == 3);
+    REQUIRE(flow.next().value().id == 4);
+    REQUIRE(!flow.next().has_value());
+
+    // There are two inner maps.
+    REQUIRE(invocations == 2);
 }

@@ -15,29 +15,29 @@ namespace sequences
     {
     public:
 
-        static inline bool constexpr finite = Seq::finite;
+        constexpr static inline bool finite = Seq::finite;
         using output_type = typename Seq::output_type;
 
         Filter(
             Seq const &base,
             Fn fn
         ) :
-            base{base},
-            fn{fn}
+            base(base),
+            fn(fn)
         {}
 
         std::optional<output_type> next()
         {
             for (;;)
             {
-                std::optional<output_type> k = base.next();
-                if (!k.has_value())
+                std::optional<output_type> state(base.next());
+                if (!state.has_value())
                 {
                     return {};
                 }
-                if (fn(*k))
+                if (fn(*state))
                 {
-                    return std::move(k);
+                    return state;
                 }
             }
         }
@@ -46,4 +46,11 @@ namespace sequences
         Seq base;
         Fn fn;
     };
+
+    template<class Fn>
+    auto filter(Fn fn) {
+        return [=](auto &&seq) {
+            return Filter(std::forward<decltype(seq)>(seq), fn);
+        };
+    }
 }

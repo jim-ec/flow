@@ -18,22 +18,23 @@ namespace sequences
         static inline bool constexpr finite = false;
         using output_type = T;
 
-        Successors() :
-            n{}
-        {}
-
-        explicit Successors(const T &n) :
-            n{n}
+        explicit Successors(T const &n) :
+            n(n)
         {}
 
         std::optional<T> next()
         {
-            T state = n;
+            T state(n);
             ++n;
-            return std::move(state);
+            return state;
         }
 
     private:
         T n;
     };
+
+    template<class T>
+    auto successors(T const &n) {
+        return Flow(Successors(n));
+    }
 }
