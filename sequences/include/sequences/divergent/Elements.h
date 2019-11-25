@@ -13,6 +13,9 @@
 
 namespace sequences {
     /// Yields all elements of the given container.
+    /// The container is owned by this sequence.
+    /// This allows returning an `Elements` sequence from a scope without exceeding its lifetime.
+    /// This is especially useful when mapping elements of a sequence to `Elements` sequences.
     /// Arity: 0 -> 1
     template<class C>
     class Elements {
@@ -26,40 +29,25 @@ namespace sequences {
             xs(rhs.xs),
             iterator(xs.begin()),
             end(xs.end())
-        {
-            log("Elements(Elements const &)");
-        }
+        {}
 
         Elements(Elements &&rhs) noexcept :
             xs(std::move(rhs.xs)),
             iterator(xs.begin()),
             end(xs.end())
-        {
-            log("Elements(Elements &&)");
-        }
+        {}
 
         explicit Elements(C const &xs) :
             xs(xs),
             iterator(this->xs.begin()),
-            end(this->xs.end()) {
-            log("Elements(C const &)");
-        }
+            end(this->xs.end())
+        {}
 
         explicit Elements(C &&xs) :
             xs(std::move(xs)),
             iterator(this->xs.begin()),
-            end(this->xs.end()) {
-            log("Elements(C &&)");
-        }
-
-        ~Elements() {
-            log("~Elements()");
-        }
-
-//        template<class T>
-//        Elements(std::initializer_list<T> const &xs) :
-//                Elements(xs)
-//        {}
+            end(this->xs.end())
+        {}
 
         std::optional<output_type> next() {
             if (iterator != end) {
@@ -81,15 +69,7 @@ namespace sequences {
         iterator_type end;
     };
 
-//    /// Deduce the correct container type when constructing from an initializer list.
-//    template<class T>
-//    Elements(std::initializer_list<T> const &xs) -> Elements<std::initializer_list<T>>;
-
-//    template<class C>
-//    auto ref_elements(C const &c) {
-//        return Flow(RefElements(c));
-//    }
-
+    /// Creates an `Elements` flow.
     template<class C>
     auto elements(C &&c) {
         return Flow(Elements(std::forward<C>(c)));
