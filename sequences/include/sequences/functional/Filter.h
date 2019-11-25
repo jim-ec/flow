@@ -15,7 +15,7 @@ namespace sequences
     {
     public:
 
-        static inline bool constexpr finite = Seq::finite;
+        constexpr static inline bool finite = Seq::finite;
         using output_type = typename Seq::output_type;
 
         Filter(
