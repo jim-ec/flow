@@ -47,8 +47,8 @@ namespace sequences
     };
 
     auto take(size_t const n) {
-        return [=] (auto seq) {
-            return Take(seq, n);
+        return [=] (auto &&seq) {
+            return Take(std::forward<decltype(seq)>(seq), n);
         };
     }
 }

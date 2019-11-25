@@ -50,10 +50,9 @@ namespace sequences
         size_t n;
     };
 
-    auto stride(size_t const n)
-    {
-        return [=](auto seq) {
-            return Stride(seq, n);
+    auto stride(size_t const n) {
+        return [=](auto &&seq) {
+            return Stride(std::forward<decltype(seq)>(seq), n);
         };
     }
 }

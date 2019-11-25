@@ -45,8 +45,8 @@ namespace sequences
 
     template<class Fn>
     auto inspect(Fn fn) {
-        return [fn](auto const &seq) {
-            return Inspect{seq, fn};
+        return [=](auto &&seq) {
+            return Inspect(std::forward<decltype(seq)>(seq), fn);
         };
     }
 }

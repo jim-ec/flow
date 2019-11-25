@@ -49,8 +49,8 @@ namespace sequences
 
     template<class Fn>
     auto filter(Fn fn) {
-        return [=](auto const &seq) {
-            return Filter{seq, fn};
+        return [=](auto &&seq) {
+            return Filter(std::forward<decltype(seq)>(seq), fn);
         };
     }
 }

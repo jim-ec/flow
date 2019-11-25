@@ -51,14 +51,9 @@ namespace sequences
     };
 
     template<class Fn>
-    auto
-    map(Fn fn)
-    {
-        return [fn](auto &&seq) {
-            return Map(
-                std::forward<decltype(seq)>(seq),
-                fn
-            );
+    auto map(Fn fn) {
+        return [=](auto &&seq) {
+            return Map(std::forward<decltype(seq)>(seq),fn);
         };
     }
 }
