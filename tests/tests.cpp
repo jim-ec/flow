@@ -7,7 +7,7 @@
 
 #include "sequences/Iterator.h"
 #include "sequences/divergent/Elements.h"
-#include "sequences/divergent/MoveElements.h"
+#include "sequences/divergent/RefElements.h"
 #include "sequences/functional/Flatten.h"
 #include "sequences/functional/Filter.h"
 #include "sequences/functional/Map.h"
@@ -132,23 +132,23 @@ TEST_CASE("Cofold")
     REQUIRE(!flow.next().has_value());
 }
 
-//TEST_CASE("Copy elements") {
-//    std::vector<S> elements;
-//    elements.emplace_back();
-//
-//    exhaust(Elements{elements});
-//
-//    REQUIRE(!elements[0].moved_away);
-//}
+TEST_CASE("Elements") {
+    std::vector<Identifier> xs;
+    xs.emplace_back(3);
 
-//TEST_CASE("Move elements") {
-//    std::vector<S> elements;
-//    elements.emplace_back();
-//
-//    exhaust(MoveElements(std::move(elements)));
-//
-//    REQUIRE(elements[0].moved_away);
-//}
+    auto seq = elements(xs);
+    REQUIRE(seq.next().value().id == 3);
+    REQUIRE(!seq.next().has_value());
+}
+
+TEST_CASE("ref_elements") {
+    std::vector<Identifier> xs;
+    xs.emplace_back(3);
+
+    auto seq = ref_elements(xs);
+    REQUIRE(seq.next().value()->id == 3);
+    REQUIRE(!seq.next().has_value());
+}
 
 TEST_CASE("Filter")
 {
