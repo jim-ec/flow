@@ -4,7 +4,7 @@
 
 #pragma once
 
-namespace sequences
+namespace flow
 {
 	class SequenceEndIterator {
 	};
@@ -71,8 +71,8 @@ namespace sequences
 
     /// A container interface to a sequence.
     /// It allows to iterate over the elements of a sequence in a range-based for-loop construct,
-    /// which is not possible with sequences directly, as they have a simpler interface.
-    /// The main purpose of this class is that the actual sequences do not need to implement the impractical iterator
+    /// which is not possible with flow directly, as they have a simpler interface.
+    /// The main purpose of this class is that the actual flow do not need to implement the impractical iterator
     /// interface, such as comparing to another iterator to check whether a sequence is still valid.
     template<class Seq>
     class ForEach

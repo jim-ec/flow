@@ -4,15 +4,15 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 SET(CMAKE_C_COMPILER clang)
 SET(CMAKE_CXX_COMPILER clang++)
 
-project(sequences)
+project(flow)
 
-option(SEQUENCE_TESTING "Build unit tests" ON)
+option(FLOW_BUILD_TESTS "Build unit tests" ON)
 
-set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT sequences)
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT flow)
 
-add_subdirectory(sequences)
+add_subdirectory(flow)
 
-if (${SEQUENCE_TESTING})
+if (${FLOW_BUILD_TESTS})
     add_subdirectory(tests)
 endif ()
 

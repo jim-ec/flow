@@ -1,2 +1,0 @@
-add_library(sequences INTERFACE)
-target_include_directories(sequences INTERFACE include)

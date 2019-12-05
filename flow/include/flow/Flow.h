@@ -4,13 +4,13 @@
 
 #pragma once
 
-#include <sequences/core/TypeTraits.h>
+#include <flow/core/TypeTraits.h>
 
-namespace sequences {
+namespace flow {
 
     /// A flow merely acts as a wrapper for another sequence, while also offering a composition function to
     /// compose a new sequence out of the hold sequence and another sequence.
-    /// To compose two sequences, `a` and `b`: `Sequence(a) | b`.
+    /// To compose two flow, `a` and `b`: `Sequence(a) | b`.
     template<class Seq>
     class Flow {
     public:

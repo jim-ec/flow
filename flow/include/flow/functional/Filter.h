@@ -6,7 +6,7 @@
 
 #include <optional>
 
-namespace sequences
+namespace flow
 {
     /// Yields only elements of the base sequence where the test function returns `true`.
 	/// Arity: 1 -> 1

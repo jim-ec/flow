@@ -6,12 +6,12 @@
 
 #include <optional>
 
-namespace sequences
+namespace flow
 {
     /// First yields all elements from the first sequence,
-    /// then yields elements from the second sequences.
-    /// The first sequences should be finite.
-    /// Elements from the continuation sequences must be convertible to the output
+    /// then yields elements from the second flow.
+    /// The first flow should be finite.
+    /// Elements from the continuation flow must be convertible to the output
     /// type of the drain sequence.
     /// Arity: 2 -> 1
     template<class DrainSeq, class ContSeq>

@@ -1,5 +1,5 @@
 add_executable(tests main.cpp common.cpp common.h tests.cpp)
-target_link_libraries(tests sequences)
+target_link_libraries(tests flow)
 enable_testing()
 add_test(tests tests)
 

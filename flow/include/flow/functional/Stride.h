@@ -6,9 +6,9 @@
 
 #include <optional>
 
-#include <sequences/functional/Fuse.h>
+#include <flow/functional/Fuse.h>
 
-namespace sequences
+namespace flow
 {
     /// Before yielding the next element, skip `n - 1` elements.
 	/// Arity: 1 -> 1

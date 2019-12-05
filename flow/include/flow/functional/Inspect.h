@@ -6,7 +6,7 @@
 
 #include <optional>
 
-namespace sequences
+namespace flow
 {
     /// Calls a function on sequence elements, but passes the elements unchanged otherwise.
 	/// Arity: 1 -> 1

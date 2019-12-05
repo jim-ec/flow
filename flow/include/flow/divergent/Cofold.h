@@ -6,7 +6,7 @@
 
 #include <optional>
 
-namespace sequences
+namespace flow
 {
     /// Generates a sequence out of a unfolding function.
     /// This function returns a maybe type, containing both the next element

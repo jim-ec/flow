@@ -6,10 +6,10 @@
 
 #include <optional>
 
-#include <sequences/core/Log.h>
-#include <sequences/core/TypeTraits.h>
+#include <flow/core/Log.h>
+#include <flow/core/TypeTraits.h>
 
-namespace sequences
+namespace flow
 {
     /// Maps each sequence element through a function.
     /// Arity: 1 -> 1

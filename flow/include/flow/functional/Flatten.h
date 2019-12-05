@@ -6,9 +6,9 @@
 
 #include <optional>
 
-#include <sequences/functional/Fuse.h>
+#include <flow/functional/Fuse.h>
 
-namespace sequences
+namespace flow
 {
     /// Reduces the sequence depth by one.
 	/// Arity: 1 -> 1

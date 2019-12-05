@@ -6,7 +6,7 @@
 
 #include <optional>
 
-namespace sequences
+namespace flow
 {
     /// Ensures the further calls to `next()` on a sequence return `None`s
     /// after it has been returned once from the base sequence.
@@ -16,7 +16,7 @@ namespace sequences
     {
     public:
 
-        // TODO: Optimized implementation for infinite sequences?
+        // TODO: Optimized implementation for infinite flow?
         static inline bool constexpr finite = Seq::finite;
         using output_type = typename Seq::output_type;
 

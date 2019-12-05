@@ -5,29 +5,29 @@
 #include <functional>
 #include <map>
 
-#include "sequences/Iterator.h"
-#include "sequences/divergent/Elements.h"
-#include "sequences/divergent/RefElements.h"
-#include "sequences/functional/Flatten.h"
-#include "sequences/functional/Filter.h"
-#include "sequences/functional/Map.h"
-#include "sequences/convergent/Merge.h"
-#include "sequences/convergent/Chain.h"
-#include "sequences/divergent/Successors.h"
-#include "sequences/functional/Take.h"
-#include "sequences/functional/Stride.h"
-#include "sequences/convergent/Merge.h"
-#include "sequences/functional/Fuse.h"
-#include "sequences/functional/Enumerate.h"
-#include "sequences/convergent/Fold.h"
-#include "sequences/functional/Deref.h"
-#include "sequences/functional/Inspect.h"
-#include "sequences/divergent/Cofold.h"
-#include "sequences/Flow.h"
+#include "flow/Iterator.h"
+#include "flow/divergent/Elements.h"
+#include "flow/divergent/RefElements.h"
+#include "flow/functional/Flatten.h"
+#include "flow/functional/Filter.h"
+#include "flow/functional/Map.h"
+#include "flow/convergent/Merge.h"
+#include "flow/convergent/Chain.h"
+#include "flow/divergent/Successors.h"
+#include "flow/functional/Take.h"
+#include "flow/functional/Stride.h"
+#include "flow/convergent/Merge.h"
+#include "flow/functional/Fuse.h"
+#include "flow/functional/Enumerate.h"
+#include "flow/convergent/Fold.h"
+#include "flow/functional/Deref.h"
+#include "flow/functional/Inspect.h"
+#include "flow/divergent/Cofold.h"
+#include "flow/Flow.h"
 
 #include "common.h"
 
-using namespace sequences;
+using namespace flow;
 
 static int
 inc(int n)

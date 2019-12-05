@@ -7,11 +7,11 @@
 #include <optional>
 #include <initializer_list>
 
-#include <sequences/Flow.h>
-#include <sequences/functional/Deref.h>
-#include <sequences/core/Log.h>
+#include <flow/Flow.h>
+#include <flow/functional/Deref.h>
+#include <flow/core/Log.h>
 
-namespace sequences {
+namespace flow {
     /// Yields all elements by reference of the given container.
     /// Because references cannot be used with `std::optional`, pointers are used instead.
     /// As the pointer are not `const`, it is possible to mutate the underlying container values.

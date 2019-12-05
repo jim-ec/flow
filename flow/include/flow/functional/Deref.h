@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include <sequences/functional/Map.h>
+#include <flow/functional/Map.h>
 
-namespace sequences
+namespace flow
 {
     /// Dereferences the values behind element pointers.
 	/// Arity: 1 -> 1

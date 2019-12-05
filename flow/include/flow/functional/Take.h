@@ -6,7 +6,7 @@
 
 #include <optional>
 
-namespace sequences
+namespace flow
 {
     /// Yields up to a fixed amount of elements out of a base sequence.
 	/// Arity: 1 -> 1

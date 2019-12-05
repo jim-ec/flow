@@ -7,15 +7,15 @@
 #include <optional>
 #include <initializer_list>
 
-#include <sequences/Flow.h>
-#include <sequences/functional/Deref.h>
-#include <sequences/core/Log.h>
+#include <flow/Flow.h>
+#include <flow/functional/Deref.h>
+#include <flow/core/Log.h>
 
-namespace sequences {
+namespace flow {
     /// Yields all elements of the given container.
     /// The container is owned by this sequence.
     /// This allows returning an `Elements` sequence from a scope without exceeding its lifetime.
-    /// This is especially useful when mapping elements of a sequence to `Elements` sequences.
+    /// This is especially useful when mapping elements of a sequence to `Elements` flow.
     /// Arity: 0 -> 1
     template<class C>
     class Elements {

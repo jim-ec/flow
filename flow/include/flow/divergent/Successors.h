@@ -6,7 +6,7 @@
 
 #include <optional>
 
-namespace sequences
+namespace flow
 {
     /// Successors based on some initial value.
 	/// Arity: 0 -> 1

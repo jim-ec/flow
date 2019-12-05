@@ -1,4 +1,4 @@
-# Sequences
+# Flow
 
 This is an experimantel project for implementing sequences, also known as pull iterators from Rust or streams from Java, in C++ 17.
 It aims to be as extensible as possible, meaning that sequences defined in this project such as `map` are implemented using the exact same toolset as custom sequences would use.

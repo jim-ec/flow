@@ -6,7 +6,7 @@
 
 #include <optional>
 
-namespace sequences
+namespace flow
 {
     template<class Seq, class Fn, class T>
     T fold(Seq seq, T const &init, Fn fn) {

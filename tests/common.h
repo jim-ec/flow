@@ -5,7 +5,7 @@
 
 #include <sstream>
 
-#include <sequences/core/Log.h>
+#include <flow/core/Log.h>
 
 std::string concat(const std::string &a, const std::string &b);
 

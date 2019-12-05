@@ -6,9 +6,9 @@
 
 #include <tuple>
 
-#include <sequences/functional/Map.h>
+#include <flow/functional/Map.h>
 
-namespace sequences
+namespace flow
 {
     /// (a{n}) = (n, b{n})
 	/// Arity: 1 -> 1

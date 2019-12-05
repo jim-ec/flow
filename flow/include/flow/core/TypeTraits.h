@@ -6,7 +6,7 @@
 
 #include <type_traits>
 
-namespace sequences
+namespace flow
 {
     template<class Fn, class... As>
     using function_return_type = decltype(std::declval<Fn>()(

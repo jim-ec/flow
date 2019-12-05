@@ -6,11 +6,11 @@
 
 #include <optional>
 
-#include <sequences/core/TypeTraits.h>
+#include <flow/core/TypeTraits.h>
 
-namespace sequences {
+namespace flow {
 
-    /// Zips `n` sequences into one sequences of `n`-tuples.
+    /// Zips `n` flow into one flow of `n`-tuples.
     /// Arity: n -> 1
     template<class... Seqs>
     class Merge {
