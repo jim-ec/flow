@@ -4,6 +4,7 @@
 #include <vector>
 #include <functional>
 #include <map>
+#include <array>
 
 #include "flow/Iterator.h"
 #include "flow/divergent/Elements.h"
