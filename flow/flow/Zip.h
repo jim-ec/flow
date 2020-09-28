@@ -12,7 +12,7 @@ namespace flow
     {
     public:
         static inline bool constexpr finite = L::finite || R::finite;
-        using output_type = std::tuple<typename L::output_type, typename R::output_type>;
+        using ElementType = std::tuple<typename L::ElementType, typename R::ElementType>;
 
         explicit Zip(L const &left, R const &right):
             left(left),
@@ -20,7 +20,7 @@ namespace flow
         {
         }
 
-        std::optional<output_type> next()
+        std::optional<ElementType> next()
         {
             // Create tuple containing the next element for each sequence.
             // Then check is any entry is none, if so, this sequence is exhausted.

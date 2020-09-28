@@ -11,13 +11,13 @@ namespace flow
     class Flow
     {
     public:
-        using output_type = typename S::output_type;
+        using ElementType = typename S::ElementType;
 
         /// Whether this sequence is finite or not depends on the underlying sequence.
         static inline bool const finite = S::finite;
 
         /// The next element in this stream is simply the next element of the sequence.
-        std::optional<output_type> next()
+        std::optional<ElementType> next()
         {
             return seq.next();
         }

@@ -1,7 +1,3 @@
-//
-// Created by jim on 11/13/19.
-//
-
 #pragma once
 
 #include <optional>
@@ -10,7 +6,7 @@ namespace flow
 {
     template<class Seq, class Fn, class T>
     T fold(Seq seq, T const &init, Fn fn) {
-        using output_type = typename Seq::output_type;
+        using output_type = typename Seq::ElementType;
 
         T acc(init);
 

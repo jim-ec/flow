@@ -15,7 +15,7 @@ namespace flow
     {
     public:
         static inline bool constexpr finite = true;
-        using output_type = typename S::output_type;
+        using ElementType = typename S::ElementType;
 
         Take(S const &base, size_t const n):
             base(base),
@@ -24,7 +24,7 @@ namespace flow
         {
         }
 
-        std::optional<output_type> next()
+        std::optional<ElementType> next()
         {
             if (k < n)
             {

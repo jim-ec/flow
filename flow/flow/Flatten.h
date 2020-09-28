@@ -13,8 +13,8 @@ namespace flow
     {
     public:
         static inline bool constexpr finite = S::finite;
-        using SubSequenceType = typename S::output_type;
-        using output_type = typename SubSequenceType::output_type;
+        using SubSequenceType = typename S::ElementType;
+        using ElementType = typename SubSequenceType::ElementType;
 
         explicit Flatten(S &&base):
             base(std::move(base)),
@@ -22,14 +22,14 @@ namespace flow
         {
         }
 
-        std::optional<output_type> next()
+        std::optional<ElementType> next()
         {
             // Try to get another element to return until there are no more elements.
             for (;;)
             {
                 if (currentSubSequence) {
                     // Try to get the next value out of the current sub sequence.
-                    std::optional<output_type> state(currentSubSequence->next());
+                    std::optional<ElementType> state(currentSubSequence->next());
                     if (state.has_value())
                     {
                         return state;

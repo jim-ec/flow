@@ -11,18 +11,18 @@ namespace flow
     {
     public:
         constexpr static inline bool finite = S::finite;
-        using output_type = typename S::output_type;
+        using ElementType = typename S::ElementType;
 
         Filter(S const &base, F fn):
             base(base),
             fn(fn)
         {}
 
-        std::optional<output_type> next()
+        std::optional<ElementType> next()
         {
             for (;;)
             {
-                std::optional<output_type> state(base.next());
+                std::optional<ElementType> state(base.next());
                 if (!state.has_value())
                 {
                     return {};

@@ -19,7 +19,7 @@ namespace flow
     {
     public:
         static inline bool constexpr finite = true;
-        using output_type = typename C::value_type *;
+        using ElementType = typename C::value_type *;
         using IteratorType = typename C::iterator;
 
         Reference(Reference const &rhs) = default;
@@ -37,11 +37,11 @@ namespace flow
         /// it cannot take ownership of it.
         explicit Reference(C &&xs) = delete;
 
-        std::optional<output_type> next()
+        std::optional<ElementType> next()
         {
             if (iterator != end)
             {
-                output_type const el_ptr(&*iterator);
+                ElementType const el_ptr(&*iterator);
                 ++iterator;
                 return el_ptr;
             }

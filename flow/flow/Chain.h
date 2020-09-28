@@ -16,7 +16,7 @@ namespace flow
     public:
         static_assert(D::finite, "Cannot enchain a sequence to an infinite sequence.");
         static inline bool constexpr finite = C::finite;
-        using output_type = typename D::output_type;
+        using ElementType = typename D::ElementType;
 
         explicit Chain(D const &drain_seq, C const &cont_seq):
             drainingSequence(drain_seq),
@@ -24,12 +24,12 @@ namespace flow
             draining(true)
         {}
 
-        std::optional<output_type> next()
+        std::optional<ElementType> next()
         {
             if (draining)
             {
                 // Try to get another element of the drain sequence.
-                std::optional<output_type> element = drainingSequence.next();
+                std::optional<ElementType> element = drainingSequence.next();
                 if (element.has_value())
                 {
                     return std::move(element);

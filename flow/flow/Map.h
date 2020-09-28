@@ -13,11 +13,11 @@ namespace flow
     {
     public:
         static inline bool constexpr finite = S::finite;
-        using FunctionInputType = typename S::output_type;
-        using output_type = details::FunctionReturnType<F, FunctionInputType>;
+        using FunctionInputType = typename S::ElementType;
+        using ElementType = details::FunctionReturnType<F, FunctionInputType>;
 
-        static_assert(!std::is_lvalue_reference_v<output_type>, "The mapped type must be owned.");
-        static_assert(!std::is_rvalue_reference_v<output_type>, "The mapped type must be owned.");
+        static_assert(!std::is_lvalue_reference_v<ElementType>, "The mapped type must be owned.");
+        static_assert(!std::is_rvalue_reference_v<ElementType>, "The mapped type must be owned.");
 
         Map(S &&base, F fn):
             base(std::move(base)),
@@ -25,7 +25,7 @@ namespace flow
         {
         }
 
-        std::optional<output_type> next()
+        std::optional<ElementType> next()
         {
             std::optional<FunctionInputType> k(base.next());
             if (k.has_value())

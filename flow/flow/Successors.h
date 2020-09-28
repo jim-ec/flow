@@ -11,7 +11,7 @@ namespace flow
     {
     public:
         static inline bool constexpr finite = false;
-        using output_type = T;
+        using ElementType = T;
 
         explicit Successors(T const &n):
             n(n)

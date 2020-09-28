@@ -17,7 +17,7 @@ namespace flow
     {
     public:
         static inline bool constexpr finite = true;
-        using output_type = typename C::value_type;
+        using ElementType = typename C::value_type;
         using IteratorType = typename C::iterator;
 
         Elements(Elements const &rhs):
@@ -44,12 +44,12 @@ namespace flow
             end(this->xs.end())
         {}
 
-        std::optional<output_type> next()
+        std::optional<ElementType> next()
         {
             if (iterator != end)
             {
                 // Because we own the container, we can move elements out of it.
-                output_type el(std::move(*std::move(iterator)));
+                ElementType el(std::move(*std::move(iterator)));
                 ++iterator;
                 return std::move(el);
             }

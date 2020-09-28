@@ -24,7 +24,7 @@ namespace flow
         static inline bool constexpr finite = true;
 
         using FunctionReturnType = details::FunctionReturnType<F, T>;
-        using output_type = typename FunctionReturnType::value_type::first_type;
+        using ElementType = typename FunctionReturnType::value_type::first_type;
 
         static_assert(std::is_same_v<T, typename FunctionReturnType::value_type::second_type>,
             "The function's second return value must have the same type as it's argument.");
@@ -34,7 +34,7 @@ namespace flow
             state(init)
         {}
 
-        std::optional<output_type> next()
+        std::optional<ElementType> next()
         {
             FunctionReturnType nextOptionalValue(fn(std::move(state)));
 

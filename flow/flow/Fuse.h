@@ -13,14 +13,14 @@ namespace flow
     public:
         // TODO: Optimized implementation for infinite flow?
         static inline bool constexpr finite = S::finite;
-        using output_type = typename S::output_type;
+        using ElementType = typename S::ElementType;
 
         explicit Fuse(S const &base):
             base(base),
             exhausted(false)
         {}
 
-        std::optional<output_type> next()
+        std::optional<ElementType> next()
         {
             if (exhausted)
             {
@@ -29,7 +29,7 @@ namespace flow
                 return {};
             }
 
-            std::optional<output_type> state(base.next());
+            std::optional<ElementType> state(base.next());
             if (!state.has_value())
             {
                 // The base sequence has been exhausted.

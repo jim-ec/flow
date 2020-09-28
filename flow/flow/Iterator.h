@@ -15,7 +15,7 @@ namespace flow
     public:
     	/// The type of elements yielded by this iterator is simply the type of elements yielded by the
     	/// underlying sequence.
-        using value_type = typename S::output_type;
+        using value_type = typename S::ElementType;
 
     	/// Constructs an iterator yielding elements from the given sequence.
         explicit SequenceIterator(S const &seq):
@@ -78,7 +78,7 @@ namespace flow
     public:
 
         static_assert(S::finite, "Cannot exhaust an infinite sequence.");
-        using value_type = typename S::output_type;
+        using value_type = typename S::ElementType;
 
         explicit ForEach(S const &seq):
             seq(seq)

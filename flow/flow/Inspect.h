@@ -11,7 +11,7 @@ namespace flow
     {
     public:
         static inline bool constexpr finite = S::finite;
-        using output_type = typename S::output_type;
+        using ElementType = typename S::ElementType;
 
         Inspect(S const &base, F fn):
             base(base),
@@ -19,14 +19,14 @@ namespace flow
         {
         }
 
-        std::optional<output_type> next()
+        std::optional<ElementType> next()
         {
-            std::optional<output_type> state(base.next());
+            std::optional<ElementType> state(base.next());
             if (state.has_value())
             {
                 // Call inspection functional on contained element,
                 // but ensure that the element is not modified.
-                fn(static_cast<output_type const &>(state.value()));
+                fn(static_cast<ElementType const &>(state.value()));
             }
             return state;
         }
