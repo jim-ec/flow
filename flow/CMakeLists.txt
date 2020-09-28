@@ -3,7 +3,7 @@ add_library(flow INTERFACE)
 target_include_directories(flow INTERFACE .)
 target_sources(flow INTERFACE
     flow/Chain.h
-    flow/Cofold.h
+    flow/Unfold.h
     flow/Deref.h
     flow/Elements.h
     flow/Enumerate.h

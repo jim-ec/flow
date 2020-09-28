@@ -22,7 +22,7 @@
 #include "flow/Fold.h"
 #include "flow/Deref.h"
 #include "flow/Inspect.h"
-#include "flow/Cofold.h"
+#include "flow/Unfold.h"
 #include "flow/Flow.h"
 
 #include "common.h"
@@ -115,9 +115,9 @@ TEST_CASE("Fold")
     REQUIRE(sum == 10);
 }
 
-TEST_CASE("Cofold")
+TEST_CASE("Unfold")
 {
-    auto cofold_descending = [](int n) -> std::optional<std::pair<int, int>> {
+    auto unfoldDescending = [](int n) -> std::optional<std::pair<int, int>> {
         if (n == 0)
         {
             return {};
@@ -128,7 +128,7 @@ TEST_CASE("Cofold")
         }
     };
 
-    auto flow = Cofold(4, cofold_descending);
+    auto flow = Unfold(4, unfoldDescending);
 
     REQUIRE(flow.next().value() == 4);
     REQUIRE(flow.next().value() == 3);

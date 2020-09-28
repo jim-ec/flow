@@ -17,7 +17,7 @@ namespace flow
     /// This sequence generates elements of type `first_type`.
     /// `Fn` must take a single owned parameter whose type is `second_type`.
     template<class T, class F>
-    class Cofold
+    class Unfold
     {
     public:
         /// This is simply assumed, as it is impossible to check if the
@@ -32,7 +32,7 @@ namespace flow
         static_assert(std::is_same_v<SeedType, typename fn_domain_inner_type::second_type>,
             "The function's second return value must have the same type as it's argument.");
 
-        explicit Cofold(SeedType const &init, F fn):
+        explicit Unfold(SeedType const &init, F fn):
             fn(fn),
             state(init)
         {}
@@ -66,8 +66,8 @@ namespace flow
     };
 
     template<class T, class F>
-    auto cofold(T const &init, F fn)
+    auto unfold(T const &init, F fn)
     {
-        return Flow(Cofold(init, fn));
+        return Flow(Unfold(init, fn));
     }
 }
