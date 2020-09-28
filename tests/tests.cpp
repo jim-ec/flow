@@ -24,10 +24,24 @@
 #include "flow/Inspect.h"
 #include "flow/Unfold.h"
 #include "flow/Flow.h"
+#include "flow/Then.h"
 
 #include "TestsAuxiliary.h"
 
-TEST_CASE("Zip") {
+TEST_CASE("Then")
+{
+    auto xs = {std::optional(3), std::optional<int>(), std::optional(7)};
+    
+    auto c = flow::elements(xs) | flow::then([] (int i) { return i + 1; });
+    
+    REQUIRE(c.next().value() == std::optional(4));
+    REQUIRE(!c.next().value().has_value());
+    REQUIRE(c.next().value() == std::optional(8));
+    REQUIRE(!c.next().has_value());
+}
+
+TEST_CASE("Zip")
+{
     auto as = {1, 2, 3};
     auto bs = {'a', 'b', 'c'};
     auto a = flow::elements(as);

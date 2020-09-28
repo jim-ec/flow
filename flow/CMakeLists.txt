@@ -21,4 +21,5 @@ target_sources(flow INTERFACE
     flow/Successors.h
     flow/Take.h
     flow/TypeTraits.h
+    flow/Then.h
 )
