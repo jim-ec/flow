@@ -4,14 +4,14 @@
 
 namespace flow
 {
-    template<class Seq, class Fn, class T>
-    T fold(Seq seq, T const &init, Fn fn) {
-        using output_type = typename Seq::ElementType;
+    template<class S, class F, class T>
+    T fold(S seq, T const &init, F fn) {
+        using ElementType = typename S::ElementType;
 
         T acc(init);
 
         for(;;) {
-            std::optional<output_type> state(seq.next());
+            std::optional<ElementType> state(seq.next());
 
             if (!state.has_value())
             {
@@ -20,26 +20,26 @@ namespace flow
             }
 
             // Next reduction step.
-            T next_reduction(fn(std::move(acc), *state));
+            T nextReduction(fn(std::move(acc), *state));
             acc.~T();
-            new (&acc) T(std::move(next_reduction));
+            new (&acc) T(std::move(nextReduction));
         }
     }
 
-    template<class Seq, class Fn>
-    std::optional<typename Seq::output_type>
-    fold_maybe(Seq seq, Fn fn) {
-        using output_type = typename Seq::output_type;
+    template<class S, class F>
+    std::optional<typename S::ElementType>
+    fold_maybe(S seq, F fn) {
+        using ElementType = typename S::ElementType;
 
         // Initial attempt to populate the accumulator.
-        std::optional<output_type> acc(seq.next());
+        std::optional<ElementType> acc(seq.next());
         if (!acc.has_value())
         {
             return {};
         }
 
         for(;;) {
-            std::optional<output_type> state(seq.next());
+            std::optional<ElementType> state(seq.next());
 
             if (!state.has_value())
             {
@@ -48,9 +48,9 @@ namespace flow
             }
 
             // Next reduction step.
-            output_type next_reduction(fn(std::move(*acc), *state));
+            ElementType nextReduction(fn(std::move(*acc), *state));
             acc.reset();
-            acc.emplace(std::move(next_reduction));
+            acc.emplace(std::move(nextReduction));
         }
     }
 }

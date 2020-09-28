@@ -10,6 +10,7 @@ target_sources(flow INTERFACE
     flow/Filter.h
     flow/Flatten.h
     flow/Flow.h
+    flow/Fold.h
     flow/Fuse.h
     flow/Inspect.h
     flow/Iterator.h
