@@ -83,7 +83,7 @@ TEST_CASE("Fold")
 
 TEST_CASE("Unfold")
 {
-    auto unfoldDescending = [](int n) -> std::optional<std::pair<int, int>> {
+    auto unfoldDescending = [] (int n) -> std::optional<std::pair<int, int>> {
         if (n == 0)
         {
             return {};
@@ -128,7 +128,7 @@ TEST_CASE("Filter")
     std::array<int, 4> as{1, 2, 3, 4};
 
     auto flow = elements(as)
-                | filter([](int n) { return n % 2 == 0; });
+                | filter([] (int n) { return n % 2 == 0; });
 
     REQUIRE(flow.next().value() == 2);
     REQUIRE(flow.next().value() == 4);
@@ -139,7 +139,7 @@ TEST_CASE("Strings")
 {
     std::vector<std::string> strings{"hello,", "ciao,", "foo"};
     auto flow = elements(strings)
-                | map([](std::string const &s) { return elements(s); })
+                | map([] (std::string const &s) { return elements(s); })
                 | flatten();
 
     REQUIRE(flow.next().value() == 'h');
@@ -171,14 +171,9 @@ TEST_CASE("Flatten")
 
     // The container is moved here, so we do not need to expect
     // any copies, only moves.
-    auto flow = elements(std::move(cc)) |
-                map(
-                    [&](Container<Identifier> const &c) {
-                        ++invocations;
-                        return elements(c);
-                    }
-                ) |
-                flatten();
+    auto flow = elements(std::move(cc))
+                | map([&] (Container<Identifier> const &c) { ++invocations; return elements(c); })
+                | flatten();
 
     // While building the sequence, the functors must not be called
     // due to lazy evaluation.
