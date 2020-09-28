@@ -8,13 +8,13 @@ namespace flow {
 
     /// Arity: 2 -> 1
     template<class L, class R>
-    class Merge
+    class Zip
     {
     public:
         static inline bool constexpr finite = L::finite || R::finite;
         using output_type = std::tuple<typename L::output_type, typename R::output_type>;
 
-        explicit Merge(L const &left, R const &right):
+        explicit Zip(L const &left, R const &right):
             left(left),
             right(right)
         {
@@ -45,11 +45,11 @@ namespace flow {
     };
 
     template<class Seq>
-    auto merge(Seq right)
+    auto zip(Seq right)
     {
         return [=] (auto const &left)
         {
-            return Merge(left, right);
+            return Zip(left, right);
         };
     }
 }

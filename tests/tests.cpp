@@ -12,12 +12,11 @@
 #include "flow/Flatten.h"
 #include "flow/Filter.h"
 #include "flow/Map.h"
-#include "flow/Merge.h"
+#include "flow/Zip.h"
 #include "flow/Chain.h"
 #include "flow/Successors.h"
 #include "flow/Take.h"
 #include "flow/Stride.h"
-#include "flow/Merge.h"
 #include "flow/Fuse.h"
 #include "flow/Enumerate.h"
 #include "flow/Fold.h"
@@ -56,12 +55,12 @@ f(Identifier const &s)
     return Identifier(s.id * 2);
 }
 
-TEST_CASE("Merge") {
+TEST_CASE("Zip") {
     auto as = {1, 2, 3};
     auto bs = {'a', 'b', 'c'};
     auto a = elements(as);
     auto b = elements(bs);
-    auto c = a | merge(b) | enumerate();
+    auto c = a | zip(b) | enumerate();
 
     for (auto [k, x]: ForEach(c))
     {
