@@ -61,11 +61,16 @@ TEST_CASE("Merge") {
     auto bs = {'a', 'b', 'c'};
     auto a = elements(as);
     auto b = elements(bs);
-    auto c = a | merge(b, a) | enumerate();
+    auto c = a | merge(b) | enumerate();
 
-    REQUIRE(c.next().value() == std::tuple(0, std::tuple(1, 'a', 1)));
-    REQUIRE(c.next().value() == std::tuple(1, std::tuple(2, 'b', 2)));
-    REQUIRE(c.next().value() == std::tuple(2, std::tuple(3, 'c', 3)));
+    for (auto [k, x]: ForEach(c))
+    {
+        auto [x1, x2] = x;
+    }
+    
+    REQUIRE(c.next().value() == std::tuple(0, std::tuple(1, 'a')));
+    REQUIRE(c.next().value() == std::tuple(1, std::tuple(2, 'b')));
+    REQUIRE(c.next().value() == std::tuple(2, std::tuple(3, 'c')));
     REQUIRE(!c.next().has_value());
 }
 
