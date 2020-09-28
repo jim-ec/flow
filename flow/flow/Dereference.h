@@ -8,9 +8,9 @@ namespace flow
 	/// Arity: 1 -> 1
     auto dereference()
     {
-        return map([] (auto *ptr)
+        return map([] (auto *pointer)
         {
-            return *ptr;
+            return *pointer;
         });
     }
 }

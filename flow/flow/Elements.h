@@ -20,28 +20,28 @@ namespace flow
         using ElementType = typename C::value_type;
         using IteratorType = typename C::iterator;
 
-        Elements(Elements const &rhs):
-            xs(rhs.xs),
-            iterator(xs.begin()),
-            end(xs.end())
+        Elements(Elements const &elements):
+            container(elements.container),
+            iterator(container.begin()),
+            end(container.end())
         {}
 
-        Elements(Elements &&rhs) noexcept:
-            xs(std::move(rhs.xs)),
-            iterator(xs.begin()),
-            end(xs.end())
+        Elements(Elements &&elements) noexcept:
+            container(std::move(elements.container)),
+            iterator(container.begin()),
+            end(container.end())
         {}
 
-        explicit Elements(C const &xs):
-            xs(xs),
-            iterator(this->xs.begin()),
-            end(this->xs.end())
+        explicit Elements(C const &container):
+            container(container),
+            iterator(this->container.begin()),
+            end(this->container.end())
         {}
 
-        explicit Elements(C &&xs):
-            xs(std::move(xs)),
-            iterator(this->xs.begin()),
-            end(this->xs.end())
+        explicit Elements(C &&container):
+            container(std::move(container)),
+            iterator(this->container.begin()),
+            end(this->container.end())
         {}
 
         std::optional<ElementType> next()
@@ -49,9 +49,9 @@ namespace flow
             if (iterator != end)
             {
                 // Because we own the container, we can move elements out of it.
-                ElementType el(std::move(*std::move(iterator)));
+                ElementType element(std::move(*std::move(iterator)));
                 ++iterator;
-                return std::move(el);
+                return std::move(element);
             }
             else
             {
@@ -60,15 +60,14 @@ namespace flow
         }
 
     private:
-        C xs;
+        C container;
         IteratorType iterator;
         IteratorType end;
     };
 
-    /// Creates an `Elements` flow.
     template<class C>
-    auto elements(C &&c)
+    auto elements(C &&container)
     {
-        return Flow(Elements(std::forward<C>(c)));
+        return Flow(Elements(std::forward<C>(container)));
     }
 }

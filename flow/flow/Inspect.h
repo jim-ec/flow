@@ -13,9 +13,9 @@ namespace flow
         static inline bool constexpr finite = S::finite;
         using ElementType = typename S::ElementType;
 
-        Inspect(S const &base, F fn):
+        Inspect(S const &base, F function):
             base(base),
-            fn(fn)
+            function(function)
         {
         }
 
@@ -26,22 +26,22 @@ namespace flow
             {
                 // Call inspection functional on contained element,
                 // but ensure that the element is not modified.
-                fn(static_cast<ElementType const &>(state.value()));
+                function(static_cast<ElementType const &>(state.value()));
             }
             return state;
         }
 
     private:
         S base;
-        F fn;
+        F function;
     };
 
     template<class F>
-    auto inspect(F fn)
+    auto inspect(F function)
     {
-        return [=] (auto &&seq)
+        return [=] (auto &&sequence)
         {
-            return Inspect(std::forward<decltype(seq)>(seq), fn);
+            return Inspect(std::forward<decltype(sequence)>(sequence), function);
         };
     }
 }

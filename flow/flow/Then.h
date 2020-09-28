@@ -22,46 +22,45 @@ namespace flow
         using FunctionOutputType = details::FunctionReturnType<F, FunctionInputType>;
         using ElementType = std::optional<FunctionOutputType>;
         
-        Then(S &&base, F fn):
+        Then(S &&base, F function):
             base(std::move(base)),
-            fn(fn)
+            function(function)
         {
         }
         
         std::optional<ElementType> next()
         {
-            std::optional<typename S::ElementType> k(base.next());
+            std::optional<typename S::ElementType> nextElement(base.next());
             
             // Return none if the base sequence is exhausted.
-            if (!k.has_value())
+            if (!nextElement.has_value())
             {
                 return {};
             }
             
-            auto nextOptional = k.value();
+            auto nextOptional = nextElement.value();
             if (nextOptional.has_value())
             {
                 // Map only some(some(x)) values.
-                return fn(std::move(nextOptional.value()));
+                return function(std::move(nextOptional.value()));
             }
             else {
                 // Pass through some(none) elements.
-                auto x = ElementType{};
-                return x;
+                return ElementType{};
             }
         }
         
     private:
         S base;
-        F fn;
+        F function;
     };
     
     template<class F>
-    auto then(F fn)
+    auto then(F function)
     {
-        return [=] (auto &&seq)
+        return [=] (auto &&sequence)
         {
-            return Then(std::forward<decltype(seq)>(seq),fn);
+            return Then(std::forward<decltype(sequence)>(sequence),function);
         };
     }
 }

@@ -30,10 +30,10 @@ namespace flow::details
         SequenceIterator &operator++()
         {
             element.reset();
-            std::optional<value_type> el(sequence.next());
-            if (el.has_value())
+            std::optional<value_type> nextElement(sequence.next());
+            if (nextElement.has_value())
             {
-                element.emplace(*el);
+                element.emplace(*nextElement);
             }
             return *this;
         }

@@ -29,14 +29,14 @@ namespace flow
         static_assert(std::is_same_v<T, typename FunctionReturnType::value_type::second_type>,
             "The function's second return value must have the same type as it's argument.");
 
-        explicit Unfold(T const &init, F fn):
-            fn(fn),
-            state(init)
+        explicit Unfold(T const &initialState, F function):
+            function(function),
+            state(initialState)
         {}
 
         std::optional<ElementType> next()
         {
-            FunctionReturnType nextOptionalValue(fn(std::move(state)));
+            FunctionReturnType nextOptionalValue(function(std::move(state)));
 
             if (nextOptionalValue.has_value())
             {
@@ -58,13 +58,13 @@ namespace flow
         }
 
     private:
-        F fn;
+        F function;
         T state;
     };
 
     template<class T, class F>
-    auto unfold(T const &init, F fn)
+    auto unfold(T const &initialState, F function)
     {
-        return Flow(Unfold(init, fn));
+        return Flow(Unfold(initialState, function));
     }
 }

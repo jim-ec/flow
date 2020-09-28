@@ -47,9 +47,9 @@ namespace flow
 
     auto fuse()
     {
-        return [] (auto &&seq)
+        return [] (auto &&sequence)
         {
-            return Fuse(std::forward<decltype(seq)>(seq));
+            return Fuse(std::forward<decltype(sequence)>(sequence));
         };
     }
 }

@@ -19,33 +19,33 @@ namespace flow
         static_assert(!std::is_lvalue_reference_v<ElementType>, "The mapped type must be owned.");
         static_assert(!std::is_rvalue_reference_v<ElementType>, "The mapped type must be owned.");
 
-        Map(S &&base, F fn):
+        Map(S &&base, F function):
             base(std::move(base)),
-            fn(fn)
+            function(function)
         {
         }
 
         std::optional<ElementType> next()
         {
-            std::optional<FunctionInputType> k(base.next());
-            if (k.has_value())
+            std::optional<FunctionInputType> nextElement(base.next());
+            if (nextElement.has_value())
             {
-                return fn(std::move(k.value()));
+                return function(std::move(nextElement.value()));
             }
             return {};
         }
 
     private:
         S base;
-        F fn;
+        F function;
     };
 
     template<class F>
-    auto map(F fn)
+    auto map(F function)
     {
-        return [=] (auto &&seq)
+        return [=] (auto &&sequence)
         {
-            return Map(std::forward<decltype(seq)>(seq),fn);
+            return Map(std::forward<decltype(sequence)>(sequence), function);
         };
     }
 }

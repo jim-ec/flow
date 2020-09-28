@@ -11,9 +11,9 @@ namespace flow
     auto enumerate()
     {
         size_t k = 0;
-        return map([=] (auto const &el) mutable
+        return map([=] (auto const &element) mutable
         {
-            return std::tuple(k++, el);
+            return std::tuple(k++, element);
         });
     }
 }

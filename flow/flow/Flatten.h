@@ -27,7 +27,8 @@ namespace flow
             // Try to get another element to return until there are no more elements.
             for (;;)
             {
-                if (currentSubSequence) {
+                if (currentSubSequence)
+                {
                     // Try to get the next value out of the current sub sequence.
                     std::optional<ElementType> state(currentSubSequence->next());
                     if (state.has_value())
@@ -37,11 +38,11 @@ namespace flow
                 }
 
                 // Current sub sequence is exhausted, go to next.
-                std::optional<SubSequenceType> next_sub_sequence(base.next());
-                if (next_sub_sequence.has_value())
+                std::optional<SubSequenceType> nextSubSequence(base.next());
+                if (nextSubSequence.has_value())
                 {
                     // Go to next subsequence.
-                    currentSubSequence.emplace(next_sub_sequence.value());
+                    currentSubSequence.emplace(nextSubSequence.value());
                 }
                 else
                 {
@@ -60,9 +61,9 @@ namespace flow
 
     auto flatten()
     {
-        return [] (auto &&seq)
+        return [] (auto &&sequence)
         {
-            return Flatten(std::forward<decltype(seq)>(seq));
+            return Flatten(std::forward<decltype(sequence)>(sequence));
         };
     }
 

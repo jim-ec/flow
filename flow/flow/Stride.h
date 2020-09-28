@@ -44,9 +44,9 @@ namespace flow
 
     auto stride(size_t const n)
     {
-        return [=] (auto &&seq)
+        return [=] (auto &&sequence)
         {
-            return Stride(std::forward<decltype(seq)>(seq), n);
+            return Stride(std::forward<decltype(sequence)>(sequence), n);
         };
     }
 }

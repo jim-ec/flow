@@ -45,9 +45,9 @@ namespace flow
 
     auto take(size_t const n)
     {
-        return [=] (auto &&seq)
+        return [=] (auto &&sequence)
         {
-            return Take(std::forward<decltype(seq)>(seq), n);
+            return Take(std::forward<decltype(sequence)>(sequence), n);
         };
     }
 }

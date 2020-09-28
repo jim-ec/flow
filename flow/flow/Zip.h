@@ -44,8 +44,8 @@ namespace flow
         R right;
     };
 
-    template<class Seq>
-    auto zip(Seq right)
+    template<class S>
+    auto zip(S right)
     {
         return [=] (auto const &left)
         {

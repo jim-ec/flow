@@ -71,7 +71,7 @@ TEST_CASE("Composition")
     REQUIRE(!aCopy.next().has_value());
     
     int sum = 0;
-    for (int x : a) {
+    for (int x: a) {
         sum += x;
     }
     
@@ -94,9 +94,7 @@ TEST_CASE("Zip")
 {
     auto as = {1, 2, 3};
     auto bs = {'a', 'b', 'c'};
-    auto a = flow::elements(as);
-    auto b = flow::elements(bs);
-    auto c = a | flow::zip(b);
+    auto c = flow::elements(as) | flow::zip(flow::elements(bs));
     
     REQUIRE(c.next().value() == std::tuple(1, 'a'));
     REQUIRE(c.next().value() == std::tuple(2, 'b'));

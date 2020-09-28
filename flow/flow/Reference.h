@@ -22,28 +22,28 @@ namespace flow
         using ElementType = typename C::value_type *;
         using IteratorType = typename C::iterator;
 
-        Reference(Reference const &rhs) = default;
+        Reference(Reference const &) = default;
 
-        Reference(Reference &&rhs) noexcept = default;
+        Reference(Reference &&) noexcept = default;
 
-        explicit Reference(C &xs):
-            xs(xs),
-            iterator(this->xs.begin()),
-            end(this->xs.end())
+        explicit Reference(C &container):
+            container(container),
+            iterator(this->container.begin()),
+            end(this->container.end())
         {
         }
 
         /// Since this sequence type does not own the underlying container,
         /// it cannot take ownership of it.
-        explicit Reference(C &&xs) = delete;
+        explicit Reference(C &&container) = delete;
 
         std::optional<ElementType> next()
         {
             if (iterator != end)
             {
-                ElementType const el_ptr(&*iterator);
+                ElementType const elementPointer(&*iterator);
                 ++iterator;
-                return el_ptr;
+                return elementPointer;
             }
             else
             {
@@ -52,14 +52,14 @@ namespace flow
         }
 
     private:
-        C &xs;
+        C &container;
         IteratorType iterator;
         IteratorType end;
     };
 
     template<class C>
-    auto reference(C &c)
+    auto reference(C &container)
     {
-        return Flow(Reference(c));
+        return Flow(Reference(container));
     }
 }
