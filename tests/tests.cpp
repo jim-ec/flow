@@ -6,7 +6,6 @@
 #include <map>
 #include <array>
 
-#include "flow/Iterator.h"
 #include "flow/Elements.h"
 #include "flow/Reference.h"
 #include "flow/Flatten.h"
@@ -28,6 +27,29 @@
 
 #include "TestsAuxiliary.h"
 
+TEST_CASE("Composition")
+{
+    auto xs = {1, 2, 3, 4, 5, 6};
+    
+    auto a = flow::elements(xs)
+        | flow::map([] (int i) { return i + 2; })
+        | flow::filter([] (int i) { return i % 2 == 0; });
+    
+    auto aCopy = a;
+    
+    REQUIRE(aCopy.next().value() == 4);
+    REQUIRE(aCopy.next().value() == 6);
+    REQUIRE(aCopy.next().value() == 8);
+    REQUIRE(!aCopy.next().has_value());
+    
+    int sum = 0;
+    for (int x : a) {
+        sum += x;
+    }
+    
+    REQUIRE(sum == 4 + 6 + 8);
+}
+
 TEST_CASE("Then")
 {
     auto xs = {std::optional(3), std::optional<int>(), std::optional(7)};
@@ -46,15 +68,15 @@ TEST_CASE("Zip")
     auto bs = {'a', 'b', 'c'};
     auto a = flow::elements(as);
     auto b = flow::elements(bs);
-    auto c = a | flow::zip(b) | flow::enumerate();
+    auto c = a | flow::zip(b);
     
-    REQUIRE(c.next().value() == std::tuple(0, std::tuple(1, 'a')));
-    REQUIRE(c.next().value() == std::tuple(1, std::tuple(2, 'b')));
-    REQUIRE(c.next().value() == std::tuple(2, std::tuple(3, 'c')));
+    REQUIRE(c.next().value() == std::tuple(1, 'a'));
+    REQUIRE(c.next().value() == std::tuple(2, 'b'));
+    REQUIRE(c.next().value() == std::tuple(3, 'c'));
     REQUIRE(!c.next().has_value());
 }
 
-TEST_CASE("Deref")
+TEST_CASE("Dereference")
 {
     std::array<int, 4> as{3, 1, 4, 2};
     std::array<int const *, 4> bs{&as[1], &as[3], &as[0], &as[2]};
@@ -181,14 +203,12 @@ TEST_CASE("Flatten")
 
     int invocations = 0;
 
-    // The container is moved here, so we do not need to expect
-    // any copies, only moves.
+    // The container is moved here, so we do not need to expect any copies, only moves.
     auto flow = flow::elements(std::move(cc))
                 | flow::map([&] (Container<Identifier> const &c) { ++invocations; return flow::elements(c); })
                 | flow::flatten();
 
-    // While building the sequence, the functors must not be called
-    // due to lazy evaluation.
+    // While building the sequence, the functors must not be called due to lazy evaluation.
     REQUIRE(invocations == 0);
 
     REQUIRE(flow.next().value().id == 1);

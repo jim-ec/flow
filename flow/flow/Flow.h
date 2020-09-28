@@ -1,6 +1,7 @@
 #pragma once
 
 #include <flow/TypeTraits.h>
+#include <flow/SequenceIterator.h>
 
 namespace flow
 {
@@ -45,6 +46,16 @@ namespace flow
         auto operator|(C sequenceConstructor) &&
         {
             return Flow<details::FunctionReturnType<C, S>>(sequenceConstructor(std::move(sequence)));
+        }
+        
+        details::SequenceIterator<S> begin()
+        {
+            return details::SequenceIterator<S>(sequence);
+        }
+        
+        details::SequenceEndIterator end()
+        {
+            return details::SequenceEndIterator{};
         }
 
     private:
