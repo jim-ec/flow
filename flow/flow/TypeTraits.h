@@ -8,7 +8,7 @@
 
 namespace flow::details
 {
-    template<class F, class... T>
+    template<class F, class T>
     using FunctionReturnType = decltype(std::declval<F>()(
         // This statically calls the functional type with the iterator's
         // value type, to get the functions return type since
@@ -16,6 +16,6 @@ namespace flow::details
         // This means that the iterator's value type must be convertible
         // to the functional's argument type, like:
         // `T -> T` or `T -> const T&`, but not `T -> T&`.
-        std::declval<T>()...
+        std::declval<T>()
     ));
 }
