@@ -16,7 +16,7 @@ namespace flow
     /// the returned elements are dangled references and contain undefined values.
     /// Arity: 0 -> 1
     template<class C>
-    class RefElements
+    class Reference
     {
     public:
         static inline bool constexpr finite = true;
@@ -24,11 +24,11 @@ namespace flow
         using output_type = value_type *;
         using iterator_type = typename C::iterator;
 
-        RefElements(RefElements const &rhs) = default;
+        Reference(Reference const &rhs) = default;
 
-        RefElements(RefElements &&rhs) noexcept = default;
+        Reference(Reference &&rhs) noexcept = default;
 
-        explicit RefElements(C &xs):
+        explicit Reference(C &xs):
             xs(xs),
             iterator(this->xs.begin()),
             end(this->xs.end())
@@ -37,7 +37,7 @@ namespace flow
 
         /// Since this sequence type does not own the underlying container,
         /// it cannot take ownership of it.
-        explicit RefElements(C &&xs) = delete;
+        explicit Reference(C &&xs) = delete;
 
         std::optional<output_type> next()
         {
@@ -59,10 +59,9 @@ namespace flow
         iterator_type end;
     };
 
-    /// Creates an `RefElements` flow.
     template<class C>
-    auto ref_elements(C &c)
+    auto reference(C &c)
     {
-        return Flow(RefElements(c));
+        return Flow(Reference(c));
     }
 }

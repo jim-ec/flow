@@ -8,7 +8,7 @@
 
 #include "flow/Iterator.h"
 #include "flow/Elements.h"
-#include "flow/RefElements.h"
+#include "flow/Reference.h"
 #include "flow/Flatten.h"
 #include "flow/Filter.h"
 #include "flow/Map.h"
@@ -147,12 +147,12 @@ TEST_CASE("Elements")
     REQUIRE(!seq.next().has_value());
 }
 
-TEST_CASE("ref_elements")
+TEST_CASE("Reference")
 {
     std::vector<Identifier> xs;
     xs.emplace_back(3);
 
-    auto seq = ref_elements(xs);
+    auto seq = reference(xs);
     REQUIRE(seq.next().value()->id == 3);
     REQUIRE(!seq.next().has_value());
 }

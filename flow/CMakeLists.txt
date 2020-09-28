@@ -15,7 +15,7 @@ target_sources(flow INTERFACE
     flow/Iterator.h
     flow/Map.h
     flow/Zip.h
-    flow/RefElements.h
+    flow/Reference.h
     flow/Stride.h
     flow/Successors.h
     flow/Take.h
