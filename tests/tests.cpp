@@ -29,43 +29,12 @@
 
 using namespace flow;
 
-static int
-inc(int n)
-{
-    return n + 1;
-}
-
-static bool
-is_even(int n)
-{
-    return n % 2 == 0;
-}
-
-static std::string
-display(int n)
-{
-    std::stringstream ss;
-    ss << n;
-    return ss.str();
-}
-
-static Identifier
-f(Identifier const &s)
-{
-    return Identifier(s.id * 2);
-}
-
 TEST_CASE("Zip") {
     auto as = {1, 2, 3};
     auto bs = {'a', 'b', 'c'};
     auto a = elements(as);
     auto b = elements(bs);
     auto c = a | zip(b) | enumerate();
-
-    for (auto [k, x]: ForEach(c))
-    {
-        auto [x1, x2] = x;
-    }
     
     REQUIRE(c.next().value() == std::tuple(0, std::tuple(1, 'a')));
     REQUIRE(c.next().value() == std::tuple(1, std::tuple(2, 'b')));
@@ -106,12 +75,9 @@ TEST_CASE("Chain")
 TEST_CASE("Fold")
 {
     auto flow = Flow(Successors(1)) | take(4);
-    auto sum = fold(
-        flow, 0, [](
-            int a,
-            int b
-        ) { return a + b; }
-    );
+    auto sum = fold(flow, 0, [] (int a, int b) {
+        return a + b;
+    });
     REQUIRE(sum == 10);
 }
 
