@@ -24,8 +24,36 @@
 #include "flow/Unfold.h"
 #include "flow/Flow.h"
 #include "flow/Then.h"
+#include "flow/Cycle.h"
 
 #include "TestsAuxiliary.h"
+
+TEST_CASE("Cycle")
+{
+    auto xs = {1, 2, 3};
+    
+    auto a = flow::elements(xs) | flow::cycle();
+    
+    REQUIRE(a.next().value() == 1);
+    REQUIRE(a.next().value() == 2);
+    REQUIRE(a.next().value() == 3);
+    REQUIRE(a.next().value() == 1);
+    REQUIRE(a.next().value() == 2);
+    REQUIRE(a.next().value() == 3);
+    REQUIRE(a.next().value() == 1);
+    REQUIRE(a.next().value() == 2);
+    REQUIRE(a.next().value() == 3);
+    REQUIRE(a.next().has_value());
+}
+
+TEST_CASE("Cycle empty")
+{
+    std::initializer_list<int> xs = {};
+    
+    auto a = flow::elements(xs) | flow::cycle();
+    
+    REQUIRE(!a.next().has_value());
+}
 
 TEST_CASE("Composition")
 {
