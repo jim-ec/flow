@@ -13,8 +13,8 @@ namespace flow
     {
     public:
         static inline bool constexpr finite = S::finite;
-        using domain_type = typename S::output_type;
-        using output_type = details::FunctionReturnType<F, domain_type>;
+        using FunctionInputType = typename S::output_type;
+        using output_type = details::FunctionReturnType<F, FunctionInputType>;
 
         static_assert(!std::is_lvalue_reference_v<output_type>, "The mapped type must be owned.");
         static_assert(!std::is_rvalue_reference_v<output_type>, "The mapped type must be owned.");
@@ -27,7 +27,7 @@ namespace flow
 
         std::optional<output_type> next()
         {
-            std::optional<domain_type> k(base.next());
+            std::optional<FunctionInputType> k(base.next());
             if (k.has_value())
             {
                 return fn(std::move(k.value()));

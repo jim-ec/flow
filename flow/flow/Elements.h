@@ -5,7 +5,8 @@
 
 #include <flow/Flow.h>
 
-namespace flow {
+namespace flow
+{
     /// Yields all elements of the given container.
     /// The container is owned by this sequence.
     /// This allows returning an `Elements` sequence from a scope without exceeding its lifetime.
@@ -16,9 +17,8 @@ namespace flow {
     {
     public:
         static inline bool constexpr finite = true;
-        using value_type = typename C::value_type;
-        using output_type = value_type;
-        using iterator_type = typename C::iterator;
+        using output_type = typename C::value_type;
+        using IteratorType = typename C::iterator;
 
         Elements(Elements const &rhs):
             xs(rhs.xs),
@@ -61,8 +61,8 @@ namespace flow {
 
     private:
         C xs;
-        iterator_type iterator;
-        iterator_type end;
+        IteratorType iterator;
+        IteratorType end;
     };
 
     /// Creates an `Elements` flow.

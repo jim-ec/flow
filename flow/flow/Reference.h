@@ -19,9 +19,8 @@ namespace flow
     {
     public:
         static inline bool constexpr finite = true;
-        using value_type = typename C::value_type;
-        using output_type = value_type *;
-        using iterator_type = typename C::iterator;
+        using output_type = typename C::value_type *;
+        using IteratorType = typename C::iterator;
 
         Reference(Reference const &rhs) = default;
 
@@ -54,8 +53,8 @@ namespace flow
 
     private:
         C &xs;
-        iterator_type iterator;
-        iterator_type end;
+        IteratorType iterator;
+        IteratorType end;
     };
 
     template<class C>
