@@ -1,7 +1,3 @@
-//
-// Created by jim on 11/13/19.
-//
-
 #pragma once
 
 #include <optional>
@@ -14,14 +10,10 @@ namespace flow
     class Filter
     {
     public:
-
         constexpr static inline bool finite = Seq::finite;
         using output_type = typename Seq::output_type;
 
-        Filter(
-            Seq const &base,
-            Fn fn
-        ) :
+        Filter(Seq const &base, Fn fn):
             base(base),
             fn(fn)
         {}
@@ -48,8 +40,10 @@ namespace flow
     };
 
     template<class Fn>
-    auto filter(Fn fn) {
-        return [=](auto &&seq) {
+    auto filter(Fn fn)
+    {
+        return [=] (auto &&seq)
+        {
             return Filter(std::forward<decltype(seq)>(seq), fn);
         };
     }

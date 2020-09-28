@@ -1,7 +1,3 @@
-//
-// Created by jim on 11/13/19.
-//
-
 #pragma once
 
 #include <optional>
@@ -17,45 +13,49 @@ namespace flow {
     /// This is especially useful when mapping elements of a sequence to `Elements` flow.
     /// Arity: 0 -> 1
     template<class C>
-    class Elements {
+    class Elements
+    {
     public:
         static inline bool constexpr finite = true;
         using value_type = typename C::value_type;
         using output_type = value_type;
         using iterator_type = typename C::iterator;
 
-        Elements(Elements const &rhs) :
+        Elements(Elements const &rhs):
             xs(rhs.xs),
             iterator(xs.begin()),
             end(xs.end())
         {}
 
-        Elements(Elements &&rhs) noexcept :
+        Elements(Elements &&rhs) noexcept:
             xs(std::move(rhs.xs)),
             iterator(xs.begin()),
             end(xs.end())
         {}
 
-        explicit Elements(C const &xs) :
+        explicit Elements(C const &xs):
             xs(xs),
             iterator(this->xs.begin()),
             end(this->xs.end())
         {}
 
-        explicit Elements(C &&xs) :
+        explicit Elements(C &&xs):
             xs(std::move(xs)),
             iterator(this->xs.begin()),
             end(this->xs.end())
         {}
 
-        std::optional<output_type> next() {
-            if (iterator != end) {
+        std::optional<output_type> next()
+        {
+            if (iterator != end)
+            {
                 // Because we own the container, we can move elements out of it.
                 output_type el(std::move(*std::move(iterator)));
                 ++iterator;
                 return std::move(el);
             }
-            else {
+            else
+            {
                 return {};
             }
         }
@@ -68,7 +68,8 @@ namespace flow {
 
     /// Creates an `Elements` flow.
     template<class C>
-    auto elements(C &&c) {
+    auto elements(C &&c)
+    {
         return Flow(Elements(std::forward<C>(c)));
     }
 }

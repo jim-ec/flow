@@ -1,7 +1,3 @@
-//
-// Created by jim on 11/13/19.
-//
-
 #pragma once
 
 #include <optional>
@@ -16,25 +12,22 @@ namespace flow
     class Flatten
     {
     public:
-
         static inline bool constexpr finite = Seq::finite;
         using sub_sequence_type = typename Seq::output_type;
         using output_type = typename sub_sequence_type::output_type;
 
-        explicit Flatten(
-            Seq &&base
-        ) :
+        explicit Flatten(Seq &&base):
             base(std::move(base)),
             current_sub_sequence()
-        {}
+        {
+        }
 
         std::optional<output_type> next()
         {
             // Try to get another element to return until there are no more elements.
             for (;;)
             {
-                if (current_sub_sequence)
-                {
+                if (current_sub_sequence) {
                     // Try to get the next value out of the current sub sequence.
                     std::optional<output_type> state(current_sub_sequence->next());
                     if (state.has_value())
@@ -65,8 +58,10 @@ namespace flow
         std::optional<sub_sequence_type> current_sub_sequence;
     };
 
-    auto flatten() {
-        return [](auto &&seq) {
+    auto flatten()
+    {
+        return [] (auto &&seq)
+        {
             return Flatten(std::forward<decltype(seq)>(seq));
         };
     }

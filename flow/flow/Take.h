@@ -14,18 +14,15 @@ namespace flow
     class Take
     {
     public:
-
         static inline bool constexpr finite = true;
         using output_type = typename Seq::output_type;
 
-        Take(
-            Seq const &base,
-            size_t const n
-        ) :
+        Take(Seq const &base, size_t const n):
             base(base),
             k(0),
             n(n)
-        {}
+        {
+        }
 
         std::optional<output_type> next()
         {
@@ -46,8 +43,10 @@ namespace flow
         size_t n;
     };
 
-    auto take(size_t const n) {
-        return [=] (auto &&seq) {
+    auto take(size_t const n)
+    {
+        return [=] (auto &&seq)
+        {
             return Take(std::forward<decltype(seq)>(seq), n);
         };
     }

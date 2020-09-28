@@ -1,7 +1,3 @@
-//
-// Created by jim on 11/13/19.
-//
-
 #pragma once
 
 #include <optional>
@@ -19,7 +15,8 @@ namespace flow {
     /// the returned elements are dangled references and contain undefined values.
     /// Arity: 0 -> 1
     template<class C>
-    class RefElements {
+    class RefElements
+    {
     public:
         static inline bool constexpr finite = true;
         using value_type = typename C::value_type;
@@ -30,23 +27,27 @@ namespace flow {
 
         RefElements(RefElements &&rhs) noexcept = default;
 
-        explicit RefElements(C &xs) :
+        explicit RefElements(C &xs):
             xs(xs),
             iterator(this->xs.begin()),
             end(this->xs.end())
-        {}
+        {
+        }
 
         /// Since this sequence type does not own the underlying container,
         /// it cannot take ownership of it.
         explicit RefElements(C &&xs) = delete;
 
-        std::optional<output_type> next() {
-            if (iterator != end) {
+        std::optional<output_type> next()
+        {
+            if (iterator != end)
+            {
                 output_type const el_ptr(&*iterator);
                 ++iterator;
                 return el_ptr;
             }
-            else {
+            else
+            {
                 return {};
             }
         }
@@ -59,7 +60,8 @@ namespace flow {
 
     /// Creates an `RefElements` flow.
     template<class C>
-    auto ref_elements(C &c) {
+    auto ref_elements(C &c)
+    {
         return Flow(RefElements(c));
     }
 }

@@ -1,7 +1,3 @@
-//
-// Created by jim on 11/13/19.
-//
-
 #pragma once
 
 #include <optional>
@@ -16,7 +12,6 @@ namespace flow
     class Map
     {
     public:
-
         static inline bool constexpr finite = Seq::finite;
         using domain_type = typename Seq::output_type;
         using output_type = function_return_type<Fn, domain_type>;
@@ -24,13 +19,11 @@ namespace flow
         static_assert(!std::is_lvalue_reference_v<output_type>, "The mapped type must be owned.");
         static_assert(!std::is_rvalue_reference_v<output_type>, "The mapped type must be owned.");
 
-        Map(
-            Seq &&base,
-            Fn fn
-        ) :
+        Map(Seq &&base, Fn fn):
             base(std::move(base)),
             fn(fn)
-        {}
+        {
+        }
 
         std::optional<output_type> next()
         {
@@ -48,8 +41,10 @@ namespace flow
     };
 
     template<class Fn>
-    auto map(Fn fn) {
-        return [=](auto &&seq) {
+    auto map(Fn fn)
+    {
+        return [=] (auto &&seq)
+        {
             return Map(std::forward<decltype(seq)>(seq),fn);
         };
     }

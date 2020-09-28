@@ -1,12 +1,9 @@
-//
-// Created by jim on 11/13/19.
-//
-
 #pragma once
 
 namespace flow
 {
-	class SequenceEndIterator {
+	class SequenceEndIterator
+    {
 	};
 
 	/// A forward iterator, yielding elements from a sequence.
@@ -16,16 +13,16 @@ namespace flow
     class SequenceIterator
     {
     public:
-
     	/// The type of elements yielded by this iterator is simply the type of elements yielded by the
     	/// underlying sequence.
         using value_type = typename Seq::output_type;
 
     	/// Constructs an iterator yielding elements from the given sequence.
-        explicit SequenceIterator(Seq const &seq) :
+        explicit SequenceIterator(Seq const &seq):
             seq(seq),
             element(this->seq.next())
-        {}
+        {
+        }
 
         /// Yields the next element from the sequence.
         /// Unless the sequence is fused, this should not be called anymore as soon as the element is `None`,
@@ -34,7 +31,8 @@ namespace flow
         {
             element.reset();
             std::optional<value_type> el(seq.next());
-            if (el.has_value()) {
+            if (el.has_value())
+            {
                 element.emplace(*el);
             }
             return *this;
@@ -82,9 +80,10 @@ namespace flow
         static_assert(Seq::finite, "Cannot exhaust an infinite sequence.");
         using value_type = typename Seq::output_type;
 
-        explicit ForEach(Seq const &seq) :
+        explicit ForEach(Seq const &seq):
             seq(seq)
-        {}
+        {
+        }
 
         SequenceIterator<Seq> begin()
         {
@@ -101,8 +100,10 @@ namespace flow
     };
 
     template<class Seq>
-    void exhaust(Seq const &seq) {
-        for(auto const &el : ForEach{seq}) {
+    void exhaust(Seq const &seq)
+    {
+        for (auto const &el : ForEach{seq})
+        {
             static_cast<void>(el);
         }
     }

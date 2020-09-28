@@ -1,7 +1,3 @@
-//
-// Created by jim on 11/13/19.
-//
-
 #pragma once
 
 #include <optional>
@@ -15,12 +11,11 @@ namespace flow
     class Fuse
     {
     public:
-
         // TODO: Optimized implementation for infinite flow?
         static inline bool constexpr finite = Seq::finite;
         using output_type = typename Seq::output_type;
 
-        explicit Fuse(Seq const &base) :
+        explicit Fuse(Seq const &base):
             base(base),
             exhausted(false)
         {}
@@ -35,7 +30,8 @@ namespace flow
             }
 
             std::optional<output_type> state(base.next());
-            if (!state.has_value()) {
+            if (!state.has_value())
+            {
                 // The base sequence has been exhausted.
                 exhausted = true;
                 return {};
@@ -49,8 +45,10 @@ namespace flow
         bool exhausted;
     };
 
-    auto fuse() {
-        return [] (auto &&seq) {
+    auto fuse()
+    {
+        return [] (auto &&seq)
+        {
             return Fuse(std::forward<decltype(seq)>(seq));
         };
     }

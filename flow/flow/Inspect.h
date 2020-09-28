@@ -1,7 +1,3 @@
-//
-// Created by jim on 11/13/19.
-//
-
 #pragma once
 
 #include <optional>
@@ -14,17 +10,14 @@ namespace flow
     class Inspect
     {
     public:
-
         static inline bool constexpr finite = Seq::finite;
         using output_type = typename Seq::output_type;
 
-        Inspect(
-            Seq const &base,
-            Fn fn
-        ) :
+        Inspect(Seq const &base, Fn fn):
             base(base),
             fn(fn)
-        {}
+        {
+        }
 
         std::optional<output_type> next()
         {
@@ -44,8 +37,10 @@ namespace flow
     };
 
     template<class Fn>
-    auto inspect(Fn fn) {
-        return [=](auto &&seq) {
+    auto inspect(Fn fn)
+    {
+        return [=] (auto &&seq)
+        {
             return Inspect(std::forward<decltype(seq)>(seq), fn);
         };
     }

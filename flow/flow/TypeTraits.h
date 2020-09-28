@@ -22,21 +22,15 @@ namespace flow
     namespace impl
     {
         template<template<class> class TypeMap, class Tuple, size_t... Is>
-        auto
-        tuple_type_map_(
-            std::index_sequence<Is...>
-        )
+        auto tuple_type_map_(std::index_sequence<Is...>)
         {
             return std::make_tuple((TypeMap<std::tuple_element_t<Is, Tuple>>())...);
         }
 
         template<template<class> class TypeMap, class Tuple>
-        auto
-        tuple_type_map()
+        auto tuple_type_map()
         {
-            return tuple_type_map_<TypeMap, Tuple>(
-                std::make_index_sequence<std::tuple_size<Tuple>::value>()
-            );
+            return tuple_type_map_<TypeMap, Tuple>(std::make_index_sequence<std::tuple_size<Tuple>::value>());
         }
     }
 

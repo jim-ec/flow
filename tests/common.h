@@ -1,6 +1,3 @@
-//
-// Created by jim on 27.05.19.
-//
 #pragma once
 
 #include <sstream>
@@ -20,25 +17,27 @@ struct Identifier
     bool move_assigned{};
     bool moved_away{};
 
-    Identifier() : id{-1}, default_constructed{true}
+    Identifier():
+        id(-1),
+        default_constructed(true)
     {
     }
 
-    explicit Identifier(int id) :
-            id{id},
-            argument_constructed{true}
+    explicit Identifier(int id):
+            id(id),
+            argument_constructed(true)
     {
     }
 
-    Identifier(const Identifier &rhs) :
-            id{rhs.id},
-            copy_constructed{true}
+    Identifier(const Identifier &rhs):
+            id(rhs.id),
+            copy_constructed(true)
     {
     }
 
-    Identifier(Identifier &&rhs) noexcept :
-            id{rhs.id},
-            move_constructed{true}
+    Identifier(Identifier &&rhs) noexcept:
+            id(rhs.id),
+            move_constructed(true)
     {
         rhs.moved_away = true;
     }
@@ -58,51 +57,62 @@ struct Identifier
         return *this;
     }
 
-    bool operator==(Identifier const &rhs) const {
+    bool operator==(Identifier const &rhs) const
+    {
         return id == rhs.id;
     }
 };
 
 template<class T>
-struct ConstContainerIterator {
+struct ConstContainerIterator
+{
     T const *ptr;
 
-    ConstContainerIterator &operator++() {
+    ConstContainerIterator &operator++()
+    {
         ++ptr;
         return *this;
     }
 
-    bool operator!=(ConstContainerIterator const &rhs) {
+    bool operator!=(ConstContainerIterator const &rhs)
+    {
         return ptr != rhs.ptr;
     }
 
-    T const *operator->() const {
+    T const *operator->() const
+    {
         return ptr;
     }
 
-    T const &operator*() const {
+    T const &operator*() const
+    {
         return *ptr;
     }
 };
 
 template<class T>
-struct ContainerIterator {
+struct ContainerIterator
+{
     T *ptr;
 
-    ContainerIterator &operator++() {
+    ContainerIterator &operator++()
+    {
         ++ptr;
         return *this;
     }
 
-    bool operator!=(ContainerIterator const &rhs) {
+    bool operator!=(ContainerIterator const &rhs)
+    {
         return ptr != rhs.ptr;
     }
 
-    T *operator->() {
+    T *operator->()
+    {
         return ptr;
     }
 
-    T &operator*() {
+    T &operator*()
+    {
         return *ptr;
     }
 };
@@ -113,18 +123,19 @@ template<class E>
 class Container
 {
 public:
-
     using value_type = E;
     using iterator = ContainerIterator<E>;
     using const_iterator = ConstContainerIterator<E>;
 
-    Container() {
+    Container()
+    {
         data = (E *) malloc(sizeof(E) * 2);
         new (data) E();
         new (data + 1) E();
     }
 
-    ~Container() {
+    ~Container()
+    {
         if (data != nullptr)
         {
             data[0].~E();
@@ -146,35 +157,43 @@ public:
         rhs.data = nullptr;
     }
 
-    ConstContainerIterator<E> begin() const {
+    ConstContainerIterator<E> begin() const
+    {
         return {data};
     }
 
-    ConstContainerIterator<E> end() const {
+    ConstContainerIterator<E> end() const
+    {
         return {data + 1};
     }
 
-    ContainerIterator<E> begin() {
+    ContainerIterator<E> begin()
+    {
         return {data};
     }
 
-    ContainerIterator<E> end() {
+    ContainerIterator<E> end()
+    {
         return {data + 2};
     }
 
-    E &a() {
+    E &a()
+    {
         return data[0];
     }
 
-    E &b() {
+    E &b()
+    {
         return data[1];
     }
 
-    E const &a() const {
+    E const &a() const
+    {
         return data[0];
     }
 
-    E const &b() const {
+    E const &b() const
+    {
         return data[1];
     }
 

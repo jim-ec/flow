@@ -1,7 +1,3 @@
-//
-// Created by jim on 11/13/19.
-//
-
 #pragma once
 
 #include <optional>
@@ -24,7 +20,6 @@ namespace flow
     class Cofold
     {
     public:
-
         /// This is simply assumed, as it is impossible to check if the
         /// cofolding function will ever return `None`.
         static inline bool constexpr finite = true;
@@ -37,7 +32,7 @@ namespace flow
         static_assert(std::is_same_v<seed_type, typename fn_domain_inner_type::second_type>,
             "The functional's second return value must have the same type as it's argument.");
 
-        explicit Cofold(seed_type const &init, Fn fn) :
+        explicit Cofold(seed_type const &init, Fn fn):
             fn(fn),
             state(init)
         {}
@@ -71,7 +66,8 @@ namespace flow
     };
 
     template<class T, class Fn>
-    auto cofold(T const &init, Fn fn) {
+    auto cofold(T const &init, Fn fn)
+    {
         return Flow(Cofold(init, fn));
     }
 }

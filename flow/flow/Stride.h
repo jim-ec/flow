@@ -1,7 +1,3 @@
-//
-// Created by jim on 11/13/19.
-//
-
 #pragma once
 
 #include <optional>
@@ -16,14 +12,10 @@ namespace flow
     class Stride
     {
     public:
-
         static inline bool constexpr finite = Seq::finite;
         using output_type = typename Seq::output_type;
 
-        Stride(
-            Seq const &base,
-            size_t const n
-        ) :
+        Stride(Seq const &base, size_t const n):
             base(Fuse(base)),
             n(n)
         {}
@@ -37,7 +29,7 @@ namespace flow
                 // Skip `n - 1` elements.
                 // Because base is fused, it guarantees that consecutive calls to
                 // `next()` return `None`.
-                for(size_t k = 0; k < n - 1; ++k) {
+                for (size_t k = 0; k < n - 1; ++k) {
                     base.next();
                 }
             }
@@ -50,8 +42,10 @@ namespace flow
         size_t n;
     };
 
-    auto stride(size_t const n) {
-        return [=](auto &&seq) {
+    auto stride(size_t const n)
+    {
+        return [=] (auto &&seq)
+        {
             return Stride(std::forward<decltype(seq)>(seq), n);
         };
     }

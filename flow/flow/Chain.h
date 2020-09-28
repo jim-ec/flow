@@ -1,7 +1,3 @@
-//
-// Created by jim on 11/13/19.
-//
-
 #pragma once
 
 #include <optional>
@@ -22,10 +18,7 @@ namespace flow
         static inline bool constexpr finite = ContSeq::finite;
         using output_type = typename DrainSeq::output_type;
 
-        explicit Chain(
-            DrainSeq const &drain_seq,
-            ContSeq const &cont_seq
-        ) :
+        explicit Chain(DrainSeq const &drain_seq, ContSeq const &cont_seq):
             drain_seq(drain_seq),
             cont_seq(cont_seq),
             draining(true)
@@ -33,13 +26,16 @@ namespace flow
 
         std::optional<output_type> next()
         {
-            if (draining) {
+            if (draining)
+            {
                 // Try to get another element of the drain sequence.
                 std::optional<output_type> element = drain_seq.next();
-                if (element.has_value()) {
+                if (element.has_value())
+                {
                     return std::move(element);
                 }
-                else {
+                else
+                {
                     // The draining sequence is exhausted.
                     // From here on, yield from the continuation sequence.
                     draining = false;
@@ -56,8 +52,10 @@ namespace flow
     };
 
     template<class ContSeq>
-    auto chain(ContSeq const &cont_seq) {
-        return [=](auto const &drain_seq) {
+    auto chain(ContSeq const &cont_seq)
+    {
+        return [=] (auto const &drain_seq)
+        {
             return Chain(drain_seq, cont_seq);
         };
     }

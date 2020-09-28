@@ -1,7 +1,3 @@
-//
-// Created by jim on 11/13/19.
-//
-
 #pragma once
 
 #include <optional>
@@ -14,13 +10,13 @@ namespace flow
     class Successors
     {
     public:
-
         static inline bool constexpr finite = false;
         using output_type = T;
 
-        explicit Successors(T const &n) :
+        explicit Successors(T const &n):
             n(n)
-        {}
+        {
+        }
 
         std::optional<T> next()
         {
@@ -34,7 +30,8 @@ namespace flow
     };
 
     template<class T>
-    auto successors(T const &n) {
+    auto successors(T const &n)
+    {
         return Flow(Successors(n));
     }
 }

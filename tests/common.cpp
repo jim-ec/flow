@@ -1,6 +1,3 @@
-//
-// Created by jim on 27.05.19.
-//
 #include <sstream>
 
 #include "common.h"

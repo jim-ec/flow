@@ -133,7 +133,8 @@ TEST_CASE("Cofold")
     REQUIRE(!flow.next().has_value());
 }
 
-TEST_CASE("Elements") {
+TEST_CASE("Elements")
+{
     std::vector<Identifier> xs;
     xs.emplace_back(3);
 
@@ -142,7 +143,8 @@ TEST_CASE("Elements") {
     REQUIRE(!seq.next().has_value());
 }
 
-TEST_CASE("ref_elements") {
+TEST_CASE("ref_elements")
+{
     std::vector<Identifier> xs;
     xs.emplace_back(3);
 
