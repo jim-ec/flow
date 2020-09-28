@@ -1,11 +1,5 @@
 #pragma once
 
-#include <sstream>
-
-std::string concat(const std::string &a, const std::string &b);
-
-std::string concat(const std::string &a, int n);
-
 struct Identifier
 {
     int id{};

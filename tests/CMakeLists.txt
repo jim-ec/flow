@@ -1,4 +1,9 @@
-add_executable(tests main.cpp common.cpp common.h tests.cpp)
+add_executable(tests
+    TestsMain.cpp
+    Tests.cpp
+    TestsAuxiliary.h
+)
+
 target_link_libraries(tests flow)
 enable_testing()
 add_test(tests tests)

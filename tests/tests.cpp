@@ -25,7 +25,7 @@
 #include "flow/Unfold.h"
 #include "flow/Flow.h"
 
-#include "common.h"
+#include "TestsAuxiliary.h"
 
 using namespace flow;
 
