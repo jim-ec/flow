@@ -7,15 +7,15 @@ namespace flow
     /// Ensures the further calls to `next()` on a sequence return `None`s
     /// after it has been returned once from the base sequence.
 	/// Arity: 1 -> 1
-    template<class Seq>
+    template<class S>
     class Fuse
     {
     public:
         // TODO: Optimized implementation for infinite flow?
-        static inline bool constexpr finite = Seq::finite;
-        using output_type = typename Seq::output_type;
+        static inline bool constexpr finite = S::finite;
+        using output_type = typename S::output_type;
 
-        explicit Fuse(Seq const &base):
+        explicit Fuse(S const &base):
             base(base),
             exhausted(false)
         {}
@@ -41,7 +41,7 @@ namespace flow
         }
 
     private:
-        Seq base;
+        S base;
         bool exhausted;
     };
 

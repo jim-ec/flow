@@ -6,14 +6,14 @@ namespace flow
 {
     /// Calls a function on sequence elements, but passes the elements unchanged otherwise.
 	/// Arity: 1 -> 1
-    template<class Seq, class Fn>
+    template<class S, class F>
     class Inspect
     {
     public:
-        static inline bool constexpr finite = Seq::finite;
-        using output_type = typename Seq::output_type;
+        static inline bool constexpr finite = S::finite;
+        using output_type = typename S::output_type;
 
-        Inspect(Seq const &base, Fn fn):
+        Inspect(S const &base, F fn):
             base(base),
             fn(fn)
         {
@@ -32,12 +32,12 @@ namespace flow
         }
 
     private:
-        Seq base;
-        Fn fn;
+        S base;
+        F fn;
     };
 
-    template<class Fn>
-    auto inspect(Fn fn)
+    template<class F>
+    auto inspect(F fn)
     {
         return [=] (auto &&seq)
         {

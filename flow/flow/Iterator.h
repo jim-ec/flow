@@ -9,16 +9,16 @@ namespace flow
 	/// A forward iterator, yielding elements from a sequence.
 	/// Unless the sequence is fused, the iterator should not be incremented
 	/// after the contained element is `None`.
-    template<class Seq>
+    template<class S>
     class SequenceIterator
     {
     public:
     	/// The type of elements yielded by this iterator is simply the type of elements yielded by the
     	/// underlying sequence.
-        using value_type = typename Seq::output_type;
+        using value_type = typename S::output_type;
 
     	/// Constructs an iterator yielding elements from the given sequence.
-        explicit SequenceIterator(Seq const &seq):
+        explicit SequenceIterator(S const &seq):
             seq(seq),
             element(this->seq.next())
         {
@@ -63,7 +63,7 @@ namespace flow
         }
 
     private:
-        Seq seq;
+        S seq;
         std::optional<value_type> element;
     };
 
@@ -72,22 +72,22 @@ namespace flow
     /// which is not possible with flow directly, as they have a simpler interface.
     /// The main purpose of this class is that the actual flow do not need to implement the impractical iterator
     /// interface, such as comparing to another iterator to check whether a sequence is still valid.
-    template<class Seq>
+    template<class S>
     class ForEach
     {
     public:
 
-        static_assert(Seq::finite, "Cannot exhaust an infinite sequence.");
-        using value_type = typename Seq::output_type;
+        static_assert(S::finite, "Cannot exhaust an infinite sequence.");
+        using value_type = typename S::output_type;
 
-        explicit ForEach(Seq const &seq):
+        explicit ForEach(S const &seq):
             seq(seq)
         {
         }
 
-        SequenceIterator<Seq> begin()
+        SequenceIterator<S> begin()
         {
-            return SequenceIterator<Seq>(seq);
+            return SequenceIterator<S>(seq);
         }
 
 		SequenceEndIterator end()
@@ -96,11 +96,11 @@ namespace flow
         }
 
     private:
-        Seq seq;
+        S seq;
     };
 
-    template<class Seq>
-    void exhaust(Seq const &seq)
+    template<class S>
+    void exhaust(S const &seq)
     {
         for (auto const &el : ForEach{seq})
         {

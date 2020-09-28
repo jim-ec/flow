@@ -10,17 +10,17 @@ namespace flow
     /// Elements from the continuation flow must be convertible to the output
     /// type of the drain sequence.
     /// Arity: 2 -> 1
-    template<class DrainSeq, class ContSeq>
+    template<class D, class C>
     class Chain
     {
     public:
-        static_assert(DrainSeq::finite, "Cannot chain sequence to an infinite sequence.");
-        static inline bool constexpr finite = ContSeq::finite;
-        using output_type = typename DrainSeq::output_type;
+        static_assert(D::finite, "Cannot enchain a sequence to an infinite sequence.");
+        static inline bool constexpr finite = C::finite;
+        using output_type = typename D::output_type;
 
-        explicit Chain(DrainSeq const &drain_seq, ContSeq const &cont_seq):
-            drain_seq(drain_seq),
-            cont_seq(cont_seq),
+        explicit Chain(D const &drain_seq, C const &cont_seq):
+            drainingSequence(drain_seq),
+            continuationSequence(cont_seq),
             draining(true)
         {}
 
@@ -29,7 +29,7 @@ namespace flow
             if (draining)
             {
                 // Try to get another element of the drain sequence.
-                std::optional<output_type> element = drain_seq.next();
+                std::optional<output_type> element = drainingSequence.next();
                 if (element.has_value())
                 {
                     return std::move(element);
@@ -42,21 +42,21 @@ namespace flow
                 }
             }
 
-            return cont_seq.next();
+            return continuationSequence.next();
         }
 
     private:
-        DrainSeq drain_seq;
-        ContSeq cont_seq;
+        D drainingSequence;
+        C continuationSequence;
         bool draining;
     };
 
-    template<class ContSeq>
-    auto chain(ContSeq const &cont_seq)
+    template<class C>
+    auto chain(C const &continuationSequence)
     {
-        return [=] (auto const &drain_seq)
+        return [=] (auto const &drainingSequence)
         {
-            return Chain(drain_seq, cont_seq);
+            return Chain(drainingSequence, continuationSequence);
         };
     }
 

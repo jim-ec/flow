@@ -8,15 +8,15 @@ namespace flow
 {
     /// Reduces the sequence depth by one.
 	/// Arity: 1 -> 1
-    template<class Seq>
+    template<class S>
     class Flatten
     {
     public:
-        static inline bool constexpr finite = Seq::finite;
-        using sub_sequence_type = typename Seq::output_type;
+        static inline bool constexpr finite = S::finite;
+        using sub_sequence_type = typename S::output_type;
         using output_type = typename sub_sequence_type::output_type;
 
-        explicit Flatten(Seq &&base):
+        explicit Flatten(S &&base):
             base(std::move(base)),
             current_sub_sequence()
         {
@@ -54,7 +54,7 @@ namespace flow
         }
 
     private:
-        Seq base;
+        S base;
         std::optional<sub_sequence_type> current_sub_sequence;
     };
 

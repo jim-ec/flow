@@ -16,7 +16,7 @@ namespace flow
     /// and `second_type`.
     /// This sequence generates elements of type `first_type`.
     /// `Fn` must take a single owned parameter whose type is `second_type`.
-    template<class T, class Fn>
+    template<class T, class F>
     class Cofold
     {
     public:
@@ -24,22 +24,22 @@ namespace flow
         /// cofolding function will ever return `None`.
         static inline bool constexpr finite = true;
 
-        using seed_type = T;
-        using fn_domain_type = function_return_type<Fn, T>;
-        using fn_domain_inner_type = typename fn_domain_type::value_type;
+        using SeedType = T;
+        using DomainType = function_return_type<F, T>;
+        using fn_domain_inner_type = typename DomainType::value_type;
         using output_type = typename fn_domain_inner_type::first_type;
 
-        static_assert(std::is_same_v<seed_type, typename fn_domain_inner_type::second_type>,
-            "The functional's second return value must have the same type as it's argument.");
+        static_assert(std::is_same_v<SeedType, typename fn_domain_inner_type::second_type>,
+            "The function's second return value must have the same type as it's argument.");
 
-        explicit Cofold(seed_type const &init, Fn fn):
+        explicit Cofold(SeedType const &init, F fn):
             fn(fn),
             state(init)
         {}
 
         std::optional<output_type> next()
         {
-            fn_domain_type result(fn(std::move(state)));
+            DomainType result(fn(std::move(state)));
 
             if (result.has_value())
             {
@@ -47,8 +47,8 @@ namespace flow
                 fn_domain_inner_type &result_value = result.value();
 
                 // Re-initialize new state.
-                state.~seed_type();
-                new (&state) seed_type(std::move(result_value.second));
+                state.~SeedType();
+                new (&state) SeedType(std::move(result_value.second));
 
                 // Yield the actual compute element.
                 return std::move(result_value.first);
@@ -61,12 +61,12 @@ namespace flow
         }
 
     private:
-        Fn fn;
-        seed_type state;
+        F fn;
+        SeedType state;
     };
 
-    template<class T, class Fn>
-    auto cofold(T const &init, Fn fn)
+    template<class T, class F>
+    auto cofold(T const &init, F fn)
     {
         return Flow(Cofold(init, fn));
     }

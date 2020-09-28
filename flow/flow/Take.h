@@ -10,14 +10,14 @@ namespace flow
 {
     /// Yields up to a fixed amount of elements out of a base sequence.
 	/// Arity: 1 -> 1
-    template<class Seq>
+    template<class S>
     class Take
     {
     public:
         static inline bool constexpr finite = true;
-        using output_type = typename Seq::output_type;
+        using output_type = typename S::output_type;
 
-        Take(Seq const &base, size_t const n):
+        Take(S const &base, size_t const n):
             base(base),
             k(0),
             n(n)
@@ -38,7 +38,7 @@ namespace flow
         }
 
     private:
-        Seq base;
+        S base;
         size_t k;
         size_t n;
     };

@@ -6,7 +6,8 @@
 #include <flow/Flow.h>
 #include <flow/Deref.h>
 
-namespace flow {
+namespace flow
+{
     /// Yields all elements by reference of the given container.
     /// Because references cannot be used with `std::optional`, pointers are used instead.
     /// As the pointer are not `const`, it is possible to mutate the underlying container values.

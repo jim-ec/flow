@@ -8,14 +8,14 @@ namespace flow
 {
     /// Before yielding the next element, skip `n - 1` elements.
 	/// Arity: 1 -> 1
-    template<class Seq>
+    template<class S>
     class Stride
     {
     public:
-        static inline bool constexpr finite = Seq::finite;
-        using output_type = typename Seq::output_type;
+        static inline bool constexpr finite = S::finite;
+        using output_type = typename S::output_type;
 
-        Stride(Seq const &base, size_t const n):
+        Stride(S const &base, size_t const n):
             base(Fuse(base)),
             n(n)
         {}
@@ -38,7 +38,7 @@ namespace flow
         }
 
     private:
-        Fuse<Seq> base;
+        Fuse<S> base;
         size_t n;
     };
 

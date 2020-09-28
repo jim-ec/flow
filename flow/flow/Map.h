@@ -8,18 +8,18 @@ namespace flow
 {
     /// Maps each sequence element through a function.
     /// Arity: 1 -> 1
-    template<class Seq, class Fn>
+    template<class S, class F>
     class Map
     {
     public:
-        static inline bool constexpr finite = Seq::finite;
-        using domain_type = typename Seq::output_type;
-        using output_type = function_return_type<Fn, domain_type>;
+        static inline bool constexpr finite = S::finite;
+        using domain_type = typename S::output_type;
+        using output_type = function_return_type<F, domain_type>;
 
         static_assert(!std::is_lvalue_reference_v<output_type>, "The mapped type must be owned.");
         static_assert(!std::is_rvalue_reference_v<output_type>, "The mapped type must be owned.");
 
-        Map(Seq &&base, Fn fn):
+        Map(S &&base, F fn):
             base(std::move(base)),
             fn(fn)
         {
@@ -36,12 +36,12 @@ namespace flow
         }
 
     private:
-        Seq base;
-        Fn fn;
+        S base;
+        F fn;
     };
 
-    template<class Fn>
-    auto map(Fn fn)
+    template<class F>
+    auto map(F fn)
     {
         return [=] (auto &&seq)
         {

@@ -4,8 +4,8 @@
 
 #include <flow/TypeTraits.h>
 
-namespace flow {
-
+namespace flow
+{
     /// Arity: 2 -> 1
     template<class L, class R>
     class Zip
