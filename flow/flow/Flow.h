@@ -5,8 +5,8 @@
 namespace flow
 {
     /// A flow merely acts as a wrapper for another sequence, while also offering a composition function to
-    /// compose a new sequence out of the hold sequence and another sequence.
-    /// To compose two flow, `a` and `b`: `Suence(a) | b`.
+    /// compose a new sequence out of the held sequence and another sequence.
+    /// To compose two sequences, `a` and `b`, write `Flow(a) | b`.
     template<class S>
     class Flow
     {
@@ -19,37 +19,35 @@ namespace flow
         /// The next element in this stream is simply the next element of the sequence.
         std::optional<ElementType> next()
         {
-            return seq.next();
+            return sequence.next();
         }
 
-        explicit Flow(S const &seq):
-            seq(seq)
+        explicit Flow(S const &sequence):
+            sequence(sequence)
         {
         }
 
-        explicit Flow(S &&seq):
-            seq(std::move(seq))
+        explicit Flow(S &&sequence):
+            sequence(std::move(sequence))
         {
         }
 
         /// The sequence composition.
         /// Takes a sequence constructor, i.e. a function which expects this sequence and returns a new sequence
         /// based on it. The resulting sequence is returned.
-        template<class Ctor>
-        auto operator|(Ctor ctor) const &
+        template<class C>
+        auto operator|(C sequenceConstructor) const &
         {
-            using SType = Flow<details::FunctionReturnType<Ctor, S>>;
-            return SType(ctor(seq));
+            return Flow<details::FunctionReturnType<C, S>>(sequenceConstructor(sequence));
         }
 
-        template<class Ctor>
-        auto operator|(Ctor ctor) &&
+        template<class C>
+        auto operator|(C sequenceConstructor) &&
         {
-            using SType = Flow<details::FunctionReturnType<Ctor, S>>;
-            return SType(ctor(std::move(seq)));
+            return Flow<details::FunctionReturnType<C, S>>(sequenceConstructor(std::move(sequence)));
         }
 
     private:
-        S seq;
+        S sequence;
     };
 }
