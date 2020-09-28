@@ -18,9 +18,9 @@ namespace flow
         static inline bool constexpr finite = C::finite;
         using ElementType = typename D::ElementType;
 
-        explicit Chain(D const &drain_seq, C const &cont_seq):
-            drainingSequence(drain_seq),
-            continuationSequence(cont_seq),
+        explicit Chain(D const &drainingSequence, C const &continuationSequence):
+            drainingSequence(drainingSequence),
+            continuationSequence(continuationSequence),
             draining(true)
         {}
 
