@@ -4,7 +4,6 @@
 #include <initializer_list>
 
 #include <flow/Flow.h>
-#include <flow/Deref.h>
 
 namespace flow {
     /// Yields all elements of the given container.

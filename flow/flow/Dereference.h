@@ -6,7 +6,7 @@ namespace flow
 {
     /// Dereferences the values behind element pointers.
 	/// Arity: 1 -> 1
-    auto deref()
+    auto dereference()
     {
         return map([] (auto *ptr)
         {

@@ -20,7 +20,7 @@
 #include "flow/Fuse.h"
 #include "flow/Enumerate.h"
 #include "flow/Fold.h"
-#include "flow/Deref.h"
+#include "flow/Dereference.h"
 #include "flow/Inspect.h"
 #include "flow/Unfold.h"
 #include "flow/Flow.h"
@@ -79,7 +79,7 @@ TEST_CASE("Deref")
     std::array<int const *, 4> bs{&as[1], &as[3], &as[0], &as[2]};
 
     auto b = elements(bs)
-             | deref();
+             | dereference();
 
     REQUIRE(b.next().value() == 1);
     REQUIRE(b.next().value() == 2);

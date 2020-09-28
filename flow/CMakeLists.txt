@@ -4,7 +4,7 @@ target_include_directories(flow INTERFACE .)
 target_sources(flow INTERFACE
     flow/Chain.h
     flow/Unfold.h
-    flow/Deref.h
+    flow/Dereference.h
     flow/Elements.h
     flow/Enumerate.h
     flow/Filter.h
