@@ -5,8 +5,6 @@
 
 #include <sstream>
 
-#include <flow/core/Log.h>
-
 std::string concat(const std::string &a, const std::string &b);
 
 std::string concat(const std::string &a, int n);
@@ -22,62 +20,26 @@ struct Identifier
     bool move_assigned{};
     bool moved_away{};
 
-    [[nodiscard]] std::string
-    display_flags() const
-    {
-        std::stringstream ss;
-        if (default_constructed) {
-            ss << "default constructed, ";
-        }
-        if (argument_constructed) {
-            ss << "argument constructed, ";
-        }
-        if (copy_constructed) {
-            ss << "copy constructed, ";
-        }
-        if (move_constructed) {
-            ss << "move constructed, ";
-        }
-        if (copy_assigned) {
-            ss << "copy assigned, ";
-        }
-        if (move_assigned) {
-            ss << "move assigned, ";
-        }
-
-        std::string s = ss.str();
-        if (!s.empty()) {
-            s.pop_back();
-            s.pop_back();
-        }
-        return s;
-    }
-
     Identifier() : id{-1}, default_constructed{true}
     {
-        log("S() = %p", this);
     }
 
     explicit Identifier(int id) :
             id{id},
             argument_constructed{true}
     {
-        log("S(int): %d = %p", id, this);
     }
 
     Identifier(const Identifier &rhs) :
             id{rhs.id},
             copy_constructed{true}
     {
-        log("S(const S&): %d = %p, rhs: %s = %p",
-            id, this, rhs.display_flags().data(), &rhs);
     }
 
     Identifier(Identifier &&rhs) noexcept :
             id{rhs.id},
             move_constructed{true}
     {
-        log("S(S&&): %d = %p, rhs: %s = %p", id, this, rhs.display_flags().data(), &rhs);
         rhs.moved_away = true;
     }
 
@@ -85,8 +47,6 @@ struct Identifier
     {
         copy_assigned = true;
         id = rhs.id;
-        log("S::operator=(const S &): %d = %p, rhs:  %s = %p",
-            id, display_flags().data(), this, rhs.display_flags().data(), &rhs);
         return *this;
     }
 
@@ -94,8 +54,6 @@ struct Identifier
     {
         move_assigned = true;
         id = rhs.id;
-        log("S::operator=(S&&): %d, %s = %p, rhs:  %s = %p",
-            id, display_flags().data(), this, rhs.display_flags().data(), &rhs);
         rhs.moved_away = true;
         return *this;
     }
@@ -162,13 +120,11 @@ public:
 
     Container() {
         data = (E *) malloc(sizeof(E) * 2);
-        log("Container() = %p, data = %p", this, data);
         new (data) E();
         new (data + 1) E();
     }
 
     ~Container() {
-        log("~Container() = %p,data = %p", this, data);
         if (data != nullptr)
         {
             data[0].~E();
@@ -182,16 +138,12 @@ public:
         data = (E *) malloc(sizeof(E) * 2);
         new (data) E(rhs.data[0]);
         new (data + 1) E(rhs.data[1]);
-        log("Container(Container const &) = %p, data = %p, rhs = %p, rhs.data = %p",
-            this, data, &rhs, rhs.data);
     }
 
     Container(Container &&rhs) noexcept
     {
         data = rhs.data;
         rhs.data = nullptr;
-        log("Container(Container &&) = %p, data = %p, rhs= %p",
-            this, data, &rhs);
     }
 
     ConstContainerIterator<E> begin() const {

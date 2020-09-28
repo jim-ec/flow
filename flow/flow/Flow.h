@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <flow/core/TypeTraits.h>
+#include <flow/TypeTraits.h>
 
 namespace flow {
 

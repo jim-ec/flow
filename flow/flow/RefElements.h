@@ -8,8 +8,7 @@
 #include <initializer_list>
 
 #include <flow/Flow.h>
-#include <flow/functional/Deref.h>
-#include <flow/core/Log.h>
+#include <flow/Deref.h>
 
 namespace flow {
     /// Yields all elements by reference of the given container.

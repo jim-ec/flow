@@ -6,7 +6,7 @@
 
 #include <optional>
 
-#include <flow/functional/Fuse.h>
+#include <flow/Fuse.h>
 
 namespace flow
 {

@@ -8,8 +8,7 @@
 #include <initializer_list>
 
 #include <flow/Flow.h>
-#include <flow/functional/Deref.h>
-#include <flow/core/Log.h>
+#include <flow/Deref.h>
 
 namespace flow {
     /// Yields all elements of the given container.
@@ -52,10 +51,8 @@ namespace flow {
         std::optional<output_type> next() {
             if (iterator != end) {
                 // Because we own the container, we can move elements out of it.
-                log("Elements: Move next element out of container.");
                 output_type el(std::move(*std::move(iterator)));
                 ++iterator;
-                log("Elements: Return element by move.");
                 return std::move(el);
             }
             else {

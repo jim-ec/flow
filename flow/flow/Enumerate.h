@@ -6,7 +6,7 @@
 
 #include <tuple>
 
-#include <flow/functional/Map.h>
+#include <flow/Map.h>
 
 namespace flow
 {

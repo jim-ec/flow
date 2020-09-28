@@ -6,9 +6,9 @@ SET(CMAKE_CXX_COMPILER clang++)
 
 project(flow)
 
-option(FLOW_BUILD_TESTS "Build unit tests" ON)
+cmake_policy(SET CMP0076 NEW)
 
-set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT flow)
+option(FLOW_BUILD_TESTS "Build unit tests" ON)
 
 add_subdirectory(flow)
 
@@ -16,4 +16,3 @@ if (${FLOW_BUILD_TESTS})
     add_subdirectory(tests)
 endif ()
 
-message(STATUS "")

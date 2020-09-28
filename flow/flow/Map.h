@@ -6,8 +6,7 @@
 
 #include <optional>
 
-#include <flow/core/Log.h>
-#include <flow/core/TypeTraits.h>
+#include <flow/TypeTraits.h>
 
 namespace flow
 {
@@ -35,11 +34,9 @@ namespace flow
 
         std::optional<output_type> next()
         {
-            log("Map: Get next element.");
             std::optional<domain_type> k(base.next());
             if (k.has_value())
             {
-                log("Map: Give element by move to function.");
                 return fn(std::move(k.value()));
             }
             return {};

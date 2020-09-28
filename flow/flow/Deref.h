@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <flow/functional/Map.h>
+#include <flow/Map.h>
 
 namespace flow
 {
