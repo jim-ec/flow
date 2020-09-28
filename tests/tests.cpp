@@ -27,14 +27,12 @@
 
 #include "TestsAuxiliary.h"
 
-using namespace flow;
-
 TEST_CASE("Zip") {
     auto as = {1, 2, 3};
     auto bs = {'a', 'b', 'c'};
-    auto a = elements(as);
-    auto b = elements(bs);
-    auto c = a | zip(b) | enumerate();
+    auto a = flow::elements(as);
+    auto b = flow::elements(bs);
+    auto c = a | flow::zip(b) | flow::enumerate();
     
     REQUIRE(c.next().value() == std::tuple(0, std::tuple(1, 'a')));
     REQUIRE(c.next().value() == std::tuple(1, std::tuple(2, 'b')));
@@ -47,8 +45,8 @@ TEST_CASE("Deref")
     std::array<int, 4> as{3, 1, 4, 2};
     std::array<int const *, 4> bs{&as[1], &as[3], &as[0], &as[2]};
 
-    auto b = elements(bs)
-             | dereference();
+    auto b = flow::elements(bs)
+             | flow::dereference();
 
     REQUIRE(b.next().value() == 1);
     REQUIRE(b.next().value() == 2);
@@ -62,8 +60,8 @@ TEST_CASE("Chain")
     std::array<int, 2> as{1, 2};
     std::array<int, 2> bs{3, 4};
 
-    auto flow = elements(as)
-                | chain(elements(bs));
+    auto flow = flow::elements(as)
+                | flow::chain(flow::elements(bs));
 
     REQUIRE(flow.next().value() == 1);
     REQUIRE(flow.next().value() == 2);
@@ -74,7 +72,7 @@ TEST_CASE("Chain")
 
 TEST_CASE("Fold")
 {
-    auto flow = Flow(Successors(1)) | take(4);
+    auto flow = flow::Flow(flow::Successors(1)) | flow::take(4);
     auto sum = fold(flow, 0, [] (int a, int b) {
         return a + b;
     });
@@ -94,7 +92,7 @@ TEST_CASE("Unfold")
         }
     };
 
-    auto flow = Unfold(4, unfoldDescending);
+    auto flow = flow::Unfold(4, unfoldDescending);
 
     REQUIRE(flow.next().value() == 4);
     REQUIRE(flow.next().value() == 3);
@@ -108,7 +106,7 @@ TEST_CASE("Elements")
     std::vector<Identifier> xs;
     xs.emplace_back(3);
 
-    auto seq = elements(xs);
+    auto seq = flow::elements(xs);
     REQUIRE(seq.next().value().id == 3);
     REQUIRE(!seq.next().has_value());
 }
@@ -118,7 +116,7 @@ TEST_CASE("Reference")
     std::vector<Identifier> xs;
     xs.emplace_back(3);
 
-    auto seq = reference(xs);
+    auto seq = flow::reference(xs);
     REQUIRE(seq.next().value()->id == 3);
     REQUIRE(!seq.next().has_value());
 }
@@ -127,8 +125,8 @@ TEST_CASE("Filter")
 {
     std::array<int, 4> as{1, 2, 3, 4};
 
-    auto flow = elements(as)
-                | filter([] (int n) { return n % 2 == 0; });
+    auto flow = flow::elements(as)
+                | flow::filter([] (int n) { return n % 2 == 0; });
 
     REQUIRE(flow.next().value() == 2);
     REQUIRE(flow.next().value() == 4);
@@ -138,9 +136,9 @@ TEST_CASE("Filter")
 TEST_CASE("Strings")
 {
     std::vector<std::string> strings{"hello,", "ciao,", "foo"};
-    auto flow = elements(strings)
-                | map([] (std::string const &s) { return elements(s); })
-                | flatten();
+    auto flow = flow::elements(strings)
+                | flow::map([] (std::string const &s) { return flow::elements(s); })
+                | flow::flatten();
 
     REQUIRE(flow.next().value() == 'h');
     REQUIRE(flow.next().value() == 'e');
@@ -171,9 +169,9 @@ TEST_CASE("Flatten")
 
     // The container is moved here, so we do not need to expect
     // any copies, only moves.
-    auto flow = elements(std::move(cc))
-                | map([&] (Container<Identifier> const &c) { ++invocations; return elements(c); })
-                | flatten();
+    auto flow = flow::elements(std::move(cc))
+                | flow::map([&] (Container<Identifier> const &c) { ++invocations; return flow::elements(c); })
+                | flow::flatten();
 
     // While building the sequence, the functors must not be called
     // due to lazy evaluation.
