@@ -25,7 +25,7 @@ namespace flow
         static inline bool constexpr finite = true;
 
         using SeedType = T;
-        using DomainType = function_return_type<F, T>;
+        using DomainType = details::FunctionReturnType<F, T>;
         using fn_domain_inner_type = typename DomainType::value_type;
         using output_type = typename fn_domain_inner_type::first_type;
 

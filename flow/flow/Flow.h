@@ -38,14 +38,14 @@ namespace flow
         template<class Ctor>
         auto operator|(Ctor ctor) const &
         {
-            using SType = Flow<function_return_type<Ctor, S>>;
+            using SType = Flow<details::FunctionReturnType<Ctor, S>>;
             return SType(ctor(seq));
         }
 
         template<class Ctor>
         auto operator|(Ctor ctor) &&
         {
-            using SType = Flow<function_return_type<Ctor, S>>;
+            using SType = Flow<details::FunctionReturnType<Ctor, S>>;
             return SType(ctor(std::move(seq)));
         }
 

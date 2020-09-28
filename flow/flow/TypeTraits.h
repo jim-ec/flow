@@ -6,35 +6,16 @@
 
 #include <type_traits>
 
-namespace flow
+namespace flow::details
 {
-    template<class Fn, class... As>
-    using function_return_type = decltype(std::declval<Fn>()(
+    template<class F, class... T>
+    using FunctionReturnType = decltype(std::declval<F>()(
         // This statically calls the functional type with the iterator's
         // value type, to get the functions return type since
-        // no `std::functional` but raw template types are used.
+        // no `std::function` but raw template types are used.
         // This means that the iterator's value type must be convertible
         // to the functional's argument type, like:
         // `T -> T` or `T -> const T&`, but not `T -> T&`.
-        std::declval<As>()...
+        std::declval<T>()...
     ));
-
-    namespace impl
-    {
-        template<template<class> class TypeMap, class Tuple, size_t... Is>
-        auto tuple_type_map_(std::index_sequence<Is...>)
-        {
-            return std::make_tuple((TypeMap<std::tuple_element_t<Is, Tuple>>())...);
-        }
-
-        template<template<class> class TypeMap, class Tuple>
-        auto tuple_type_map()
-        {
-            return tuple_type_map_<TypeMap, Tuple>(std::make_index_sequence<std::tuple_size<Tuple>::value>());
-        }
-    }
-
-    /// Maps a tuple type (A, ...) to a tuple type (A::output_type, ...).
-    template<template<class> class TypeMap, class Tuple>
-    using tuple_type_map = decltype(impl::tuple_type_map<TypeMap, Tuple>());
 }

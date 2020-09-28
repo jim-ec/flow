@@ -14,7 +14,7 @@ namespace flow
     public:
         static inline bool constexpr finite = S::finite;
         using domain_type = typename S::output_type;
-        using output_type = function_return_type<F, domain_type>;
+        using output_type = details::FunctionReturnType<F, domain_type>;
 
         static_assert(!std::is_lvalue_reference_v<output_type>, "The mapped type must be owned.");
         static_assert(!std::is_rvalue_reference_v<output_type>, "The mapped type must be owned.");
