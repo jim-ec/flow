@@ -20,18 +20,6 @@ namespace flow
         using ElementType = typename C::value_type;
         using IteratorType = typename C::iterator;
 
-        Elements(Elements const &elements):
-            container(elements.container),
-            iterator(container.begin()),
-            end(container.end())
-        {}
-
-        Elements(Elements &&elements) noexcept:
-            container(std::move(elements.container)),
-            iterator(container.begin()),
-            end(container.end())
-        {}
-
         explicit Elements(C const &container):
             container(container),
             iterator(this->container.begin()),

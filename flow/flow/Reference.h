@@ -22,10 +22,6 @@ namespace flow
         using ElementType = typename C::value_type *;
         using IteratorType = typename C::iterator;
 
-        Reference(Reference const &) = default;
-
-        Reference(Reference &&) noexcept = default;
-
         explicit Reference(C &container):
             container(container),
             iterator(this->container.begin()),
