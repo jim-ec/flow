@@ -33,15 +33,16 @@ namespace flow
         {
         }
 
-        /// The sequence composition.
-        /// Takes a sequence constructor, i.e. a function which expects this sequence and returns a new sequence
-        /// based on it. The resulting sequence is returned.
+        /// Sequence composition.
+        /// This instance stays intact, the new flow contains a copy of this instance's sequence.
         template<class C>
         auto operator|(C sequenceConstructor) const &
         {
             return Flow<details::FunctionReturnType<C, S>>(sequenceConstructor(sequence));
         }
 
+        /// Move sequence composition.
+        /// Moves the held sequence into the new flow while wrapping it into new sequence.
         template<class C>
         auto operator|(C sequenceConstructor) &&
         {
