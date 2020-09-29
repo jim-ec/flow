@@ -1,7 +1,5 @@
 #pragma once
 
-#include <optional>
-
 namespace flow
 {
     /// Successors based on some initial value.
@@ -17,12 +15,17 @@ namespace flow
             n(n)
         {
         }
-
-        std::optional<T> next()
+        
+        bool probe()
         {
-            T state(n);
+            return true;
+        }
+
+        T next()
+        {
+            T nextElement = n;
             ++n;
-            return state;
+            return nextElement;
         }
 
     private:

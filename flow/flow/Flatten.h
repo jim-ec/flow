@@ -3,6 +3,7 @@
 #include <optional>
 
 #include <flow/Fuse.h>
+#include <flow/TypeTraits.h>
 
 namespace flow
 {
@@ -16,46 +17,50 @@ namespace flow
         using SubSequenceType = typename S::ElementType;
         using ElementType = typename SubSequenceType::ElementType;
 
-        explicit Flatten(S &&base):
-            base(std::move(base)),
+        explicit Flatten(S &&sequence):
+            sequence(std::move(sequence)),
             currentSubSequence()
         {
         }
-
-        std::optional<ElementType> next()
+        
+        bool probe()
         {
             // Try to get another element to return until there are no more elements.
             for (;;)
             {
-                if (currentSubSequence)
+                if (currentSubSequence.has_value())
                 {
                     // Try to get the next value out of the current sub sequence.
-                    std::optional<ElementType> state(currentSubSequence->next());
-                    if (state.has_value())
+                    if (currentSubSequence.value().probe())
                     {
-                        return state;
+                        details::reinitialize(nextElement, currentSubSequence->next());
+                        return true;
                     }
                 }
-
+                
                 // Current sub sequence is exhausted, go to next.
-                std::optional<SubSequenceType> nextSubSequence(base.next());
-                if (nextSubSequence.has_value())
+                if (sequence.probe())
                 {
                     // Go to next subsequence.
-                    currentSubSequence.emplace(nextSubSequence.value());
+                    details::reinitialize(currentSubSequence, sequence.next());
                 }
                 else
                 {
                     // The base sequence is exhausted.
                     // There are ultimately no elements left.
-                    return {};
+                    return false;
                 }
             }
-
+        }
+        
+        ElementType next()
+        {
+            return std::move(nextElement.value());
         }
 
     private:
-        S base;
+        S sequence;
+        std::optional<ElementType> nextElement;
         std::optional<SubSequenceType> currentSubSequence;
     };
 

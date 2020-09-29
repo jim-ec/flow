@@ -1,7 +1,5 @@
 #pragma once
 
-#include <optional>
-
 namespace flow
 {
     /// Calls a function on sequence elements, but passes the elements unchanged otherwise.
@@ -13,26 +11,29 @@ namespace flow
         static inline bool constexpr finite = S::finite;
         using ElementType = typename S::ElementType;
 
-        Inspect(S const &base, F function):
-            base(base),
+        Inspect(S const &sequence, F function):
+            sequence(sequence),
             function(function)
         {
         }
-
-        std::optional<ElementType> next()
+        
+        bool probe()
         {
-            std::optional<ElementType> state(base.next());
-            if (state.has_value())
-            {
-                // Call inspection functional on contained element,
-                // but ensure that the element is not modified.
-                function(static_cast<ElementType const &>(state.value()));
-            }
-            return state;
+            return sequence.probe();
+        }
+
+        ElementType next()
+        {
+            ElementType nextElement = sequence.next();
+            
+            // Call inspection functional on contained element, but ensure that the element is not modified.
+            function(static_cast<ElementType const &>(nextElement));
+            
+            return nextElement;
         }
 
     private:
-        S base;
+        S sequence;
         F function;
     };
 

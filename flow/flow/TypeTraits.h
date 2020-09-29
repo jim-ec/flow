@@ -18,4 +18,11 @@ namespace flow::details
         // `T -> T` or `T -> const T&`, but not `T -> T&`.
         std::declval<T>()
     ));
+    
+    template<class T, class E>
+    void reinitialize(T &value, E &&constructorArgument)
+    {
+        value.~T();
+        new (&value) T(std::forward<E>(constructorArgument));
+    }
 }

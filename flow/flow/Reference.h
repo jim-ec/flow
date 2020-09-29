@@ -1,8 +1,5 @@
 #pragma once
 
-#include <optional>
-#include <initializer_list>
-
 #include <flow/Flow.h>
 
 namespace flow
@@ -32,19 +29,17 @@ namespace flow
         /// Since this sequence type does not own the underlying container,
         /// it cannot take ownership of it.
         explicit Reference(C &&container) = delete;
-
-        std::optional<ElementType> next()
+        
+        bool probe()
         {
-            if (iterator != end)
-            {
-                ElementType const elementPointer(&*iterator);
-                ++iterator;
-                return elementPointer;
-            }
-            else
-            {
-                return {};
-            }
+            return iterator != end;
+        }
+
+        ElementType next()
+        {
+            ElementType const elementPointer = &*iterator;
+            ++iterator;
+            return elementPointer;
         }
 
     private:

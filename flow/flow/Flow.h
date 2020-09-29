@@ -1,5 +1,7 @@
 #pragma once
 
+#include <optional>
+
 #include <flow/TypeTraits.h>
 #include <flow/SequenceIterator.h>
 
@@ -13,16 +15,30 @@ namespace flow
     {
     public:
         using ElementType = typename S::ElementType;
-
-        /// Whether this sequence is finite or not depends on the underlying sequence.
         static inline bool const finite = S::finite;
 
-        /// The next element in this stream is simply the next element of the sequence.
-        std::optional<ElementType> next()
+        std::optional<ElementType> yield()
+        {
+            if (sequence.probe())
+            {
+                return sequence.next();
+            }
+            else
+            {
+                return {};
+            }
+        }
+        
+        bool probe()
+        {
+            return sequence.probe();
+        }
+
+        ElementType next()
         {
             return sequence.next();
         }
-
+        
         explicit Flow(S const &sequence):
             sequence(sequence)
         {

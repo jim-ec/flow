@@ -19,24 +19,15 @@ namespace flow
             right(right)
         {
         }
-
-        std::optional<ElementType> next()
+        
+        bool probe()
         {
-            // Create tuple containing the next element for each sequence.
-            // Then check is any entry is none, if so, this sequence is exhausted.
-            // Otherwise, return the tuple.
-            
-            auto nextLeft = left.next();
-            auto nextRight = right.next();
+            return left.probe() && right.probe();
+        }
 
-            if (!nextLeft.has_value() || !nextRight.has_value())
-            {
-                return {};
-            }
-            else
-            {
-                return {std::tuple(std::move(*nextLeft), std::move(*nextRight))};
-            }
+        ElementType next()
+        {
+            return {std::tuple(left.next(), right.next())};
         }
 
     private:

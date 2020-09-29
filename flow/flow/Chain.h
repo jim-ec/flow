@@ -1,7 +1,5 @@
 #pragma once
 
-#include <optional>
-
 namespace flow
 {
     /// First yields all elements from the first sequence,
@@ -23,26 +21,36 @@ namespace flow
             continuationSequence(continuationSequence),
             draining(true)
         {}
-
-        std::optional<ElementType> next()
+        
+        bool probe()
         {
             if (draining)
             {
-                // Try to get another element of the drain sequence.
-                std::optional<ElementType> element = drainingSequence.next();
-                if (element.has_value())
+                // Check whether there is another element in the draining sequence.
+                if (drainingSequence.probe())
                 {
-                    return std::move(element);
+                    return true;
                 }
-                else
-                {
+                else {
                     // The draining sequence is exhausted.
                     // From here on, yield from the continuation sequence.
                     draining = false;
                 }
             }
+            
+            return continuationSequence.probe();
+        }
 
-            return continuationSequence.next();
+        ElementType next()
+        {
+            if (draining)
+            {
+                return drainingSequence.next();
+            }
+            else
+            {
+                return continuationSequence.next();
+            }
         }
 
     private:

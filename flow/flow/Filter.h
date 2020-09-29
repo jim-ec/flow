@@ -2,6 +2,8 @@
 
 #include <optional>
 
+#include "flow/TypeTraits.h"
+
 namespace flow
 {
     /// Yields only elements of the base sequence where the predicate function returns `true`.
@@ -13,29 +15,40 @@ namespace flow
         constexpr static inline bool finite = S::finite;
         using ElementType = typename S::ElementType;
 
-        Filter(S const &base, F predicate):
-            base(base),
+        Filter(S const &sequence, F predicate):
+            sequence(sequence),
             predicate(predicate)
         {}
-
-        std::optional<ElementType> next()
+        
+        bool probe()
         {
             for (;;)
             {
-                std::optional<ElementType> state(base.next());
-                if (!state.has_value())
+                if (!sequence.probe())
                 {
-                    return {};
+                    // Sequence is exhausted.
+                    return false;
                 }
-                if (predicate(*state))
+                
+                // Call predicate on current element.
+                // If it succeeds, this element is stored.
+                ElementType nextElement = sequence.next();
+                if (predicate(nextElement))
                 {
-                    return state;
+                    details::reinitialize(this->nextElement, std::move(nextElement));
+                    return true;
                 }
             }
         }
 
+        ElementType next()
+        {
+            return std::move(nextElement.value());
+        }
+
     private:
-        S base;
+        S sequence;
+        std::optional<ElementType> nextElement;
         F predicate;
     };
 

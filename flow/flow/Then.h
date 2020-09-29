@@ -1,7 +1,5 @@
 #pragma once
 
-#include <optional>
-
 #include <flow/TypeTraits.h>
 
 namespace flow
@@ -22,23 +20,21 @@ namespace flow
         using FunctionOutputType = details::FunctionReturnType<F, FunctionInputType>;
         using ElementType = std::optional<FunctionOutputType>;
         
-        Then(S &&base, F function):
-            base(std::move(base)),
+        Then(S &&sequence, F function):
+            sequence(std::move(sequence)),
             function(function)
         {
         }
         
-        std::optional<ElementType> next()
+        bool probe()
         {
-            std::optional<typename S::ElementType> nextElement(base.next());
+            return sequence.probe();
+        }
+        
+        ElementType next()
+        {
+            typename S::ElementType nextOptional = sequence.next();
             
-            // Return none if the base sequence is exhausted.
-            if (!nextElement.has_value())
-            {
-                return {};
-            }
-            
-            auto nextOptional = nextElement.value();
             if (nextOptional.has_value())
             {
                 // Map only some(some(x)) values.
@@ -46,12 +42,12 @@ namespace flow
             }
             else {
                 // Pass through some(none) elements.
-                return ElementType{};
+                return nextOptional;
             }
         }
         
     private:
-        S base;
+        S sequence;
         F function;
     };
     

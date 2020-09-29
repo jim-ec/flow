@@ -2,6 +2,8 @@
 
 #include <optional>
 
+#include <flow/TypeTraits.h>
+
 namespace flow
 {
     /// Generates a sequence out of a unfolding function.
@@ -34,32 +36,38 @@ namespace flow
             state(initialState)
         {}
 
-        std::optional<ElementType> next()
+        bool probe()
         {
-            FunctionReturnType nextOptionalValue(function(std::move(state)));
-
+            FunctionReturnType nextOptionalValue = function(std::move(state));
+            
             if (nextOptionalValue.has_value())
             {
                 // The sequence is not terminated.
                 auto &nextValue = nextOptionalValue.value();
-
+                
                 // Re-initialize new state.
-                state.~T();
-                new (&state) T(std::move(nextValue.second));
-
-                // Yield the actual compute element.
-                return std::move(nextValue.first);
+                details::reinitialize(state, std::move(nextValue.second));
+                
+                // Yield the actually computed element.
+                details::reinitialize(nextElement, std::move(nextValue.first));
+                return true;
             }
             else
             {
                 // The sequence is terminated.
-                return {};
+                return false;
             }
+        }
+        
+        ElementType next()
+        {
+            return std::move(nextElement.value());
         }
 
     private:
         F function;
         T state;
+        std::optional<ElementType> nextElement;
     };
 
     template<class T, class F>

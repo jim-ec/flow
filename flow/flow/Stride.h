@@ -1,7 +1,5 @@
 #pragma once
 
-#include <optional>
-
 #include <flow/Fuse.h>
 
 namespace flow
@@ -15,30 +13,29 @@ namespace flow
         static inline bool constexpr finite = S::finite;
         using ElementType = typename S::ElementType;
 
-        Stride(S const &base, size_t const n):
-            base(Fuse(base)),
+        Stride(S const &sequence, size_t const n):
+            sequence(Fuse(sequence)),
             n(n)
         {}
-
-        std::optional<ElementType> next()
+        
+        bool probe()
         {
-            std::optional<ElementType> state(base.next());
-
-            if (state.has_value())
-            {
-                // Skip `n - 1` elements.
-                // Because base is fused, it guarantees that consecutive calls to
-                // `next()` return `None`.
-                for (size_t k = 0; k < n - 1; ++k) {
-                    base.next();
-                }
+            // Skip `n` elements.
+            // Because base is fused, it guarantees that consecutive calls to
+            // `next()` return `None`.
+            for (size_t k = 0; k < n - 1; ++k) {
+                sequence.probe();
             }
+            return sequence.probe();
+        }
 
-            return state;
+        ElementType next()
+        {
+            return sequence.next();
         }
 
     private:
-        Fuse<S> base;
+        Fuse<S> sequence;
         size_t n;
     };
 

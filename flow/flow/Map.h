@@ -1,7 +1,5 @@
 #pragma once
 
-#include <optional>
-
 #include <flow/TypeTraits.h>
 
 namespace flow
@@ -19,24 +17,24 @@ namespace flow
         static_assert(!std::is_lvalue_reference_v<ElementType>, "The mapped type must be owned.");
         static_assert(!std::is_rvalue_reference_v<ElementType>, "The mapped type must be owned.");
 
-        Map(S &&base, F function):
-            base(std::move(base)),
+        Map(S &&sequence, F function):
+            sequence(std::move(sequence)),
             function(function)
         {
         }
-
-        std::optional<ElementType> next()
+        
+        bool probe()
         {
-            std::optional<FunctionInputType> nextElement(base.next());
-            if (nextElement.has_value())
-            {
-                return function(std::move(nextElement.value()));
-            }
-            return {};
+            return sequence.probe();
+        }
+
+        ElementType next()
+        {
+            return function(sequence.next());
         }
 
     private:
-        S base;
+        S sequence;
         F function;
     };
 

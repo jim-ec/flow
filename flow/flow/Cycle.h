@@ -1,6 +1,6 @@
 #pragma once
 
-#include <optional>
+#include "flow/TypeTraits.h"
 
 namespace flow
 {
@@ -17,30 +17,31 @@ namespace flow
         
         explicit Cycle(S const &sequence):
             base(sequence),
-            sequence(sequence)
-        {}
-        
-        std::optional<ElementType> next()
+            sequence(sequence),
+            nonempty(S(sequence).probe())
         {
-            // Try to get another element of the sequence.
-            std::optional<ElementType> element = sequence.next();
-            
-            if (element.has_value())
-            {
-                return std::move(element);
-            }
-            else
+        }
+        
+        bool probe()
+        {
+            if (!sequence.probe())
             {
                 // The sequence is exhausted.
                 // Restart by re-initializing the sequence to the base sequence.
-                sequence.~S();
-                new (&sequence) S(base);
-                
-                return sequence.next();
+                // This is also done if the sequence is empty, but an empty sequence is probably not too expensive to construct.
+                details::reinitialize(sequence, base);
             }
+            
+            return nonempty;
+        }
+        
+        ElementType next()
+        {
+            return sequence.next();
         }
         
     private:
+        bool nonempty;
         S base;
         S sequence;
     };

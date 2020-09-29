@@ -1,7 +1,5 @@
 #pragma once
 
-#include <optional>
-
 namespace flow
 {
     /// Ensures the further calls to `next()` on a sequence return `None`s
@@ -15,33 +13,37 @@ namespace flow
         static inline bool constexpr finite = S::finite;
         using ElementType = typename S::ElementType;
 
-        explicit Fuse(S const &base):
-            base(base),
+        explicit Fuse(S const &sequence):
+            sequence(sequence),
             exhausted(false)
         {}
-
-        std::optional<ElementType> next()
+        
+        bool probe()
         {
             if (exhausted)
             {
-                // The base sequence is already exhausted from previous calls
-                // to this functional.
-                return {};
+                // The base sequence is already exhausted from previous calls.
+                return false;
             }
-
-            std::optional<ElementType> state(base.next());
-            if (!state.has_value())
+            else if (!sequence.probe())
             {
-                // The base sequence has been exhausted.
+                // The base sequence has become exhausted.
                 exhausted = true;
-                return {};
+                return false;
             }
+            else
+            {
+                return true;
+            }
+        }
 
-            return state;
+        ElementType next()
+        {
+            return sequence.next();
         }
 
     private:
-        S base;
+        S sequence;
         bool exhausted;
     };
 

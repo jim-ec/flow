@@ -20,7 +20,7 @@ namespace flow::details
         /// Constructs an iterator yielding elements from the given sequence.
         explicit SequenceIterator(S const &sequence):
             sequence(sequence),
-            element(this->sequence.next())
+            element((this->sequence.probe(), this->sequence.next()))
         {
         }
         
@@ -29,12 +29,15 @@ namespace flow::details
         /// which can be queried by using the comparision function.
         SequenceIterator &operator++()
         {
-            element.reset();
-            std::optional<value_type> nextElement(sequence.next());
-            if (nextElement.has_value())
+            if (sequence.probe())
             {
-                element.emplace(*nextElement);
+                details::reinitialize(element, sequence.next());
             }
+            else
+            {
+                element.reset();
+            }
+            
             return *this;
         }
         

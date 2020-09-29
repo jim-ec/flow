@@ -4,8 +4,6 @@
 
 #pragma once
 
-#include <optional>
-
 namespace flow
 {
     /// Yields up to a fixed amount of elements out of a base sequence.
@@ -17,28 +15,33 @@ namespace flow
         static inline bool constexpr finite = true;
         using ElementType = typename S::ElementType;
 
-        Take(S const &base, size_t const n):
-            base(base),
+        Take(S const &sequence, size_t const n):
+            sequence(sequence),
             k(0),
             n(n)
         {
         }
-
-        std::optional<ElementType> next()
+        
+        bool probe()
         {
             if (k < n)
             {
                 ++k;
-                return base.next();
+                return sequence.probe();
             }
             else
             {
-                return {};
+                return false;
             }
         }
 
+        ElementType next()
+        {
+            return sequence.next();
+        }
+
     private:
-        S base;
+        S sequence;
         size_t k;
         size_t n;
     };

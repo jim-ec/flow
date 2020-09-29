@@ -1,8 +1,5 @@
 #pragma once
 
-#include <optional>
-#include <initializer_list>
-
 #include <flow/Flow.h>
 
 namespace flow
@@ -24,27 +21,37 @@ namespace flow
             container(container),
             iterator(this->container.begin()),
             end(this->container.end())
-        {}
+        {
+        }
 
         explicit Elements(C &&container):
             container(std::move(container)),
             iterator(this->container.begin()),
             end(this->container.end())
-        {}
-
-        std::optional<ElementType> next()
         {
-            if (iterator != end)
-            {
-                // Because we own the container, we can move elements out of it.
-                ElementType element(std::move(*std::move(iterator)));
-                ++iterator;
-                return std::move(element);
-            }
-            else
-            {
-                return {};
-            }
+        }
+        
+        explicit Elements(Elements const &elements):
+            Elements(elements.container)
+        {
+        }
+        
+        explicit Elements(Elements &&elements):
+            Elements(std::move(elements.container))
+        {
+        }
+        
+        bool probe()
+        {
+            return iterator != end;
+        }
+
+        ElementType next()
+        {
+            // Because we own the container, we can move elements out of it.
+            ElementType element(std::move(*iterator));
+            ++iterator;
+            return element;
         }
 
     private:
