@@ -12,7 +12,6 @@ namespace flow
     class Filter
     {
     public:
-        constexpr static inline bool finite = S::finite;
         using ElementType = typename S::ElementType;
 
         Filter(S const &sequence, F predicate):

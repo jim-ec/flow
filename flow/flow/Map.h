@@ -10,7 +10,6 @@ namespace flow
     class Map
     {
     public:
-        static inline bool constexpr finite = S::finite;
         using FunctionInputType = typename S::ElementType;
         using ElementType = details::FunctionReturnType<F, FunctionInputType>;
 

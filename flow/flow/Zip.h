@@ -11,7 +11,6 @@ namespace flow
     class Zip
     {
     public:
-        static inline bool constexpr finite = L::finite || R::finite;
         using ElementType = std::tuple<typename L::ElementType, typename R::ElementType>;
 
         explicit Zip(L const &left, R const &right):

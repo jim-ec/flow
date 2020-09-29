@@ -13,9 +13,7 @@ namespace flow
     template<class S, class F>
     class Then
     {
-    public:
-        static inline bool constexpr finite = S::finite;
-                
+    public:                
         using FunctionInputType = typename S::ElementType::value_type;
         using FunctionOutputType = details::FunctionReturnType<F, FunctionInputType>;
         using ElementType = std::optional<FunctionOutputType>;

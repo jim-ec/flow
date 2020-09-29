@@ -12,7 +12,6 @@ namespace flow
     class Cycle
     {
     public:
-        static inline bool constexpr finite = false;
         using ElementType = typename S::ElementType;
         
         explicit Cycle(S const &sequence):

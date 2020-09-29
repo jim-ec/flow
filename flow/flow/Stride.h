@@ -10,7 +10,6 @@ namespace flow
     class Stride
     {
     public:
-        static inline bool constexpr finite = S::finite;
         using ElementType = typename S::ElementType;
 
         Stride(S const &sequence, size_t const n):

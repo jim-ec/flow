@@ -13,7 +13,6 @@ namespace flow
     class Elements
     {
     public:
-        static inline bool constexpr finite = true;
         using ElementType = typename C::value_type;
         using IteratorType = typename C::iterator;
 

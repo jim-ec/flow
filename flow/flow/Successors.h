@@ -8,7 +8,6 @@ namespace flow
     class Successors
     {
     public:
-        static inline bool constexpr finite = false;
         using ElementType = T;
 
         explicit Successors(T const &n):

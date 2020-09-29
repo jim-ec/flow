@@ -9,8 +9,6 @@ namespace flow
     class Fuse
     {
     public:
-        // TODO: Optimized implementation for infinite flow?
-        static inline bool constexpr finite = S::finite;
         using ElementType = typename S::ElementType;
 
         explicit Fuse(S const &sequence):

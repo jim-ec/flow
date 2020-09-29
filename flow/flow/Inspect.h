@@ -8,7 +8,6 @@ namespace flow
     class Inspect
     {
     public:
-        static inline bool constexpr finite = S::finite;
         using ElementType = typename S::ElementType;
 
         Inspect(S const &sequence, F function):

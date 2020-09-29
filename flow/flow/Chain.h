@@ -12,8 +12,6 @@ namespace flow
     class Chain
     {
     public:
-        static_assert(D::finite, "Cannot enchain a sequence to an infinite sequence.");
-        static inline bool constexpr finite = C::finite;
         using ElementType = typename D::ElementType;
 
         explicit Chain(D const &drainingSequence, C const &continuationSequence):

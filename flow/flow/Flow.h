@@ -15,7 +15,6 @@ namespace flow
     {
     public:
         using ElementType = typename S::ElementType;
-        static inline bool const finite = S::finite;
 
         std::optional<ElementType> yield()
         {

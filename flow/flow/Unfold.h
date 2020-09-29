@@ -21,10 +21,6 @@ namespace flow
     class Unfold
     {
     public:
-        /// This is simply assumed, as it is impossible to statically check if the
-        /// unfolding function will ever return `None`.
-        static inline bool constexpr finite = true;
-
         using FunctionReturnType = details::FunctionReturnType<F, T>;
         using ElementType = typename FunctionReturnType::value_type::first_type;
 

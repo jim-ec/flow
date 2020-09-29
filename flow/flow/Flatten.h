@@ -13,7 +13,6 @@ namespace flow
     class Flatten
     {
     public:
-        static inline bool constexpr finite = S::finite;
         using SubSequenceType = typename S::ElementType;
         using ElementType = typename SubSequenceType::ElementType;
 

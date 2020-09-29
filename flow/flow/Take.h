@@ -12,7 +12,6 @@ namespace flow
     class Take
     {
     public:
-        static inline bool constexpr finite = true;
         using ElementType = typename S::ElementType;
 
         Take(S const &sequence, size_t const n):
