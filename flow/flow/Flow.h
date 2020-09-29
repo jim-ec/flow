@@ -49,15 +49,6 @@ namespace flow
         }
 
         /// Sequence composition.
-        /// This instance stays intact, the new flow contains a copy of this instance's sequence.
-        template<class C>
-        auto operator|(C sequenceConstructor) const &
-        {
-            return Flow<details::FunctionReturnType<C, S>>(sequenceConstructor(sequence));
-        }
-
-        /// Move sequence composition.
-        /// Moves the held sequence into the new flow while wrapping it into new sequence.
         template<class C>
         auto operator|(C sequenceConstructor) &&
         {
@@ -74,7 +65,7 @@ namespace flow
             return details::SequenceEndIterator{};
         }
 
-    private:
+//    private:
         S sequence;
     };
 }

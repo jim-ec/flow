@@ -12,8 +12,8 @@ namespace flow
     public:
         using ElementType = typename S::ElementType;
 
-        Stride(S const &sequence, size_t const n):
-            sequence(Fuse(sequence)),
+        Stride(S &&sequence, size_t const n):
+            sequence(Fuse(std::move(sequence))),
             n(n)
         {}
         

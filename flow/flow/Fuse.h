@@ -11,8 +11,8 @@ namespace flow
     public:
         using ElementType = typename S::ElementType;
 
-        explicit Fuse(S const &sequence):
-            sequence(sequence),
+        explicit Fuse(S &&sequence):
+            sequence(std::move(sequence)),
             exhausted(false)
         {}
         

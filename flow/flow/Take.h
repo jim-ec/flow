@@ -14,8 +14,8 @@ namespace flow
     public:
         using ElementType = typename S::ElementType;
 
-        Take(S const &sequence, size_t const n):
-            sequence(sequence),
+        Take(S &&sequence, size_t const n):
+            sequence(std::move(sequence)),
             k(0),
             n(n)
         {

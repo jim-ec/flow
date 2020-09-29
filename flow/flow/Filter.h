@@ -14,8 +14,8 @@ namespace flow
     public:
         using ElementType = typename S::ElementType;
 
-        Filter(S const &sequence, F predicate):
-            sequence(sequence),
+        Filter(S &&sequence, F predicate):
+            sequence(std::move(sequence)),
             predicate(predicate)
         {}
         
@@ -56,7 +56,7 @@ namespace flow
     {
         return [=] (auto &&sequence)
         {
-            return Filter(std::forward<decltype(sequence)>(sequence), predicate);
+            return Filter(std::move(sequence), predicate);
         };
     }
 }

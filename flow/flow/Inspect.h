@@ -10,8 +10,8 @@ namespace flow
     public:
         using ElementType = typename S::ElementType;
 
-        Inspect(S const &sequence, F function):
-            sequence(sequence),
+        Inspect(S &&sequence, F function):
+            sequence(std::move(sequence)),
             function(function)
         {
         }

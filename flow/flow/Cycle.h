@@ -14,9 +14,9 @@ namespace flow
     public:
         using ElementType = typename S::ElementType;
         
-        explicit Cycle(S const &sequence):
-            base(sequence),
-            sequence(sequence),
+        explicit Cycle(S &&sequence):
+            base(std::move(sequence)),
+            sequence(base),
             nonempty(S(sequence).probe())
         {
         }
@@ -40,16 +40,16 @@ namespace flow
         }
         
     private:
-        bool nonempty;
         S base;
         S sequence;
+        bool nonempty;
     };
     
     auto cycle()
     {
-        return [=] (auto const &sequence)
+        return [=] (auto &&sequence)
         {
-            return Cycle(sequence);
+            return Cycle(std::move(sequence));
         };
     }
     

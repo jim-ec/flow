@@ -27,9 +27,9 @@ namespace flow
         static_assert(std::is_same_v<T, typename FunctionReturnType::value_type::second_type>,
             "The function's second return value must have the same type as it's argument.");
 
-        explicit Unfold(T const &initialState, F function):
+        explicit Unfold(T &&initialState, F function):
             function(function),
-            state(initialState)
+            state(std::move(initialState))
         {}
 
         bool probe()
@@ -67,8 +67,8 @@ namespace flow
     };
 
     template<class T, class F>
-    auto unfold(T const &initialState, F function)
+    auto unfold(T &&initialState, F function)
     {
-        return Flow(Unfold(initialState, function));
+        return Flow(Unfold(std::move(initialState), function));
     }
 }
