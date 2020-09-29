@@ -18,20 +18,20 @@ struct Identifier
     }
 
     explicit Identifier(int id):
-            id(id),
-            argument_constructed(true)
+        id(id),
+        argument_constructed(true)
     {
     }
 
     Identifier(const Identifier &rhs):
-            id(rhs.id),
-            copy_constructed(true)
+        id(rhs.id),
+        copy_constructed(true)
     {
     }
 
     Identifier(Identifier &&rhs) noexcept:
-            id(rhs.id),
-            move_constructed(true)
+        id(rhs.id),
+        move_constructed(true)
     {
         rhs.moved_away = true;
     }
