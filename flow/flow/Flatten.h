@@ -3,7 +3,7 @@
 #include <optional>
 
 #include <flow/Fuse.h>
-#include <flow/TypeTraits.h>
+#include <flow/details.h>
 
 namespace flow
 {

@@ -17,7 +17,6 @@
 #include "flow/Take.h"
 #include "flow/Stride.h"
 #include "flow/Fuse.h"
-#include "flow/Enumerate.h"
 #include "flow/Fold.h"
 #include "flow/Inspect.h"
 #include "flow/Unfold.h"

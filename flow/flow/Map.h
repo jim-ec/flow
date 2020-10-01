@@ -1,6 +1,6 @@
 #pragma once
 
-#include <flow/TypeTraits.h>
+#include <flow/details.h>
 
 namespace flow
 {
@@ -67,6 +67,15 @@ namespace flow
                 using OutputType = decltype(function(std::move(*inputOptional)));
                 return std::optional<OutputType>();
             }
+        });
+    }
+    
+    auto enumerate()
+    {
+        size_t k = 0;
+        return map([=] (auto const &element) mutable
+        {
+            return std::tuple(k++, element);
         });
     }
 }

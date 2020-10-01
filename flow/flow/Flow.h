@@ -2,7 +2,7 @@
 
 #include <optional>
 
-#include <flow/TypeTraits.h>
+#include <flow/details.h>
 #include <flow/SequenceIterator.h>
 
 namespace flow

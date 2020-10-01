@@ -5,7 +5,6 @@ target_sources(flow INTERFACE
     flow/Chain.h
     flow/Unfold.h
     flow/Elements.h
-    flow/Enumerate.h
     flow/Filter.h
     flow/Flatten.h
     flow/Flow.h
