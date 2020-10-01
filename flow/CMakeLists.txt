@@ -5,6 +5,7 @@ target_sources(flow INTERFACE
     flow/Chain.h
     flow/Unfold.h
     flow/Elements.h
+    flow/ElementsReferenced.h
     flow/Filter.h
     flow/Flatten.h
     flow/Flow.h
@@ -14,7 +15,6 @@ target_sources(flow INTERFACE
     flow/SequenceIterator.h
     flow/Map.h
     flow/Zip.h
-    flow/Reference.h
     flow/Stride.h
     flow/Successors.h
     flow/Take.h

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <functional>
-
 #include <flow/Flow.h>
 
 namespace flow
@@ -13,15 +11,15 @@ namespace flow
     /// the returned elements are dangled references and contain undefined values.
     /// Arity: 0 -> 1
     template<class C>
-    class Reference
+    class ElementsReferenced
     {
     private:
         using IteratorType = typename C::iterator;
         
     public:
-        using ElementType = std::reference_wrapper<typename C::value_type>;
+        using ElementType = typename C::value_type *;
 
-        explicit Reference(C &container):
+        explicit ElementsReferenced(C &container):
             container(container),
             iterator(this->container.begin()),
             end(this->container.end())
@@ -30,7 +28,7 @@ namespace flow
 
         /// Since this sequence type does not own the underlying container,
         /// it cannot take ownership of it.
-        explicit Reference(C &&container) noexcept = delete;
+        explicit ElementsReferenced(C &&container) noexcept = delete;
         
         bool probe()
         {
@@ -39,7 +37,7 @@ namespace flow
 
         ElementType next()
         {
-            ElementType element = *iterator;
+            ElementType element = &*iterator;
             ++iterator;
             return element;
         }
@@ -51,8 +49,8 @@ namespace flow
     };
 
     template<class C>
-    auto reference(C &container)
+    auto elementsReferenced(C &container)
     {
-        return Flow(Reference(container));
+        return Flow(ElementsReferenced(container));
     }
 }

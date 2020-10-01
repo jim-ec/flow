@@ -6,8 +6,8 @@ namespace flow
 {
     /// Yields all elements of the given container.
     /// The container is owned by this sequence.
-    /// This allows returning an `Elements` sequence from a scope without exceeding its lifetime.
-    /// This is especially useful when mapping elements of a sequence to `Elements` flow.
+    /// This allows returning an `ElementsCopy` sequence from a scope without exceeding its lifetime.
+    /// This is especially useful when mapping elements of a sequence to `ElementsCopy` flow.
     /// Arity: 0 -> 1
     template<class C>
     class Elements

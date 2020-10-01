@@ -7,7 +7,7 @@
 #include <array>
 
 #include "flow/Elements.h"
-#include "flow/Reference.h"
+#include "flow/ElementsReferenced.h"
 #include "flow/Flatten.h"
 #include "flow/Filter.h"
 #include "flow/Map.h"
@@ -46,7 +46,7 @@ TEST_CASE("Owning subsequences")
         auto string = n == 1 ? std::string("hello") : std::string("ciao");
         return flow::elements(string) | flow::map(uppercase);
     });
-        
+    
     auto a1 = a.yield().value();
     REQUIRE(a1.yield().value() == 'H');
     REQUIRE(a1.yield().value() == 'E');
@@ -212,23 +212,37 @@ TEST_CASE("Unfold")
     REQUIRE(!flow.yield().has_value());
 }
 
-TEST_CASE("Elements")
+TEST_CASE("Referenced elements")
 {
-    std::vector<Identifier> xs;
-    xs.emplace_back(3);
-
-    auto seq = flow::elements(xs);
-    REQUIRE(seq.yield().value().id == 3);
+    std::array xs = {1, 2, 3};
+    
+    auto seq = flow::elementsReferenced(xs);
+    
+    REQUIRE(seq.yield().value() == &xs[0]);
+    REQUIRE(seq.yield().value() == &xs[1]);
+    REQUIRE(seq.yield().value() == &xs[2]);
     REQUIRE(!seq.yield().has_value());
 }
 
-TEST_CASE("Reference")
+TEST_CASE("Referenced elements mutate")
 {
-    std::vector<Identifier> xs;
-    xs.emplace_back(3);
+    std::array xs = {1, 2, 3};
+    
+    auto seq = flow::elementsReferenced(xs);
+    
+    *seq.yield().value() = 8;
+    
+    REQUIRE(xs[0] == 8);
+}
 
-    auto seq = flow::reference(xs);
-    REQUIRE(seq.yield().value().get().id == 3);
+TEST_CASE("Elements")
+{
+    auto xs = {1, 2, 3};
+
+    auto seq = flow::elements(xs);
+    REQUIRE(seq.yield().value() == 1);
+    REQUIRE(seq.yield().value() == 2);
+    REQUIRE(seq.yield().value() == 3);
     REQUIRE(!seq.yield().has_value());
 }
 
