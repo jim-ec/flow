@@ -22,7 +22,6 @@
 #include "flow/Inspect.h"
 #include "flow/Unfold.h"
 #include "flow/Flow.h"
-#include "flow/Then.h"
 #include "flow/Cycle.h"
 
 #include "TestsAuxiliary.h"

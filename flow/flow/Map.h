@@ -50,9 +50,23 @@ namespace flow
     /// Arity: 1 -> 1
     auto dereference()
     {
-        return map([] (auto *pointer)
-                   {
-            return *pointer;
+        return map([] (auto *pointer) { return *pointer; });
+    }
+    
+    template<class F>
+    auto then(F function)
+    {
+        return map([=] (auto &&inputOptional)
+        {
+            if (inputOptional)
+            {
+                return std::optional(function(std::move(*inputOptional)));
+            }
+            else
+            {
+                using OutputType = decltype(function(std::move(*inputOptional)));
+                return std::optional<OutputType>();
+            }
         });
     }
 }
