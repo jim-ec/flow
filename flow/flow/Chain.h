@@ -13,10 +13,10 @@ namespace flow
     {
     public:
         using ElementType = typename D::ElementType;
-
-        explicit Chain(D const &drainingSequence, C const &continuationSequence):
-            drainingSequence(drainingSequence),
-            continuationSequence(continuationSequence),
+        
+        explicit Chain(D &&drainingSequence, C &&continuationSequence):
+            drainingSequence(std::move(drainingSequence)),
+            continuationSequence(std::move(continuationSequence)),
             draining(true)
         {}
         
@@ -58,11 +58,11 @@ namespace flow
     };
 
     template<class C>
-    auto chain(C const &continuationSequence)
+    auto chain(C &&continuationSequence)
     {
-        return [=] (auto const &drainingSequence)
+        return [continuationSequence = std::move(continuationSequence)] (auto &&drainingSequence) mutable
         {
-            return Chain(drainingSequence, continuationSequence);
+            return Chain(std::move(drainingSequence), std::move(continuationSequence));
         };
     }
 
