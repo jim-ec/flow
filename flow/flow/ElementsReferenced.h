@@ -4,12 +4,8 @@
 
 namespace flow
 {
-    /// Yields all elements by reference of the given container.
-    /// As the pointer are not `const`, it is possible to mutate the underlying container values.
-    /// The container is not owned by this sequence.
-    /// When returning an `RefElements` sequence from a scope i.e. exceeding its lifetime,
-    /// the returned elements are dangled references and contain undefined values.
-    /// Arity: 0 -> 1
+    /// Yields pointers to all elements of the given container, avoiding creating copying the original elements.
+    /// Using this sequence beyond the given container's lifetime will yield dangling pointers.
     template<class C>
     class ElementsReferenced
     {

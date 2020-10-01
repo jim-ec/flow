@@ -5,10 +5,10 @@
 namespace flow
 {
     /// Yields all elements of the given container.
-    /// The container is owned by this sequence.
-    /// This allows returning an `ElementsCopy` sequence from a scope without exceeding its lifetime.
-    /// This is especially useful when mapping elements of a sequence to `ElementsCopy` flow.
-    /// Arity: 0 -> 1
+    /// The container is owned by this sequence and therefore copied during initialization.
+    /// This allows keeping this sequence beyond the lifetime of the container the sequence was created from.
+    /// Since each sequence usually copies, moves or creates new elements during each iteration,
+    /// the container copy cost might be neglected if the whole container is used during iteration.
     template<class C>
     class Elements
     {
