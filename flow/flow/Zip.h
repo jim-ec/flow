@@ -13,9 +13,9 @@ namespace flow
     public:
         using ElementType = std::tuple<typename L::ElementType, typename R::ElementType>;
 
-        explicit Zip(L const &left, R const &right):
-            left(left),
-            right(right)
+        explicit Zip(L &&left, R &&right):
+            left(std::move(left)),
+            right(std::move(right))
         {
         }
         
@@ -26,7 +26,7 @@ namespace flow
 
         ElementType next()
         {
-            return {std::tuple(left.next(), right.next())};
+            return {left.next(), right.next()};
         }
 
     private:
@@ -35,11 +35,11 @@ namespace flow
     };
 
     template<class S>
-    auto zip(S right)
+    auto zip(S &&right)
     {
-        return [=] (auto const &left)
+        return [right = std::move(right)] (auto &&left) mutable
         {
-            return Zip(left, right);
+            return Zip(std::move(left), std::move(right));
         };
     }
 }
