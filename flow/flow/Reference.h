@@ -1,11 +1,12 @@
 #pragma once
 
+#include <functional>
+
 #include <flow/Flow.h>
 
 namespace flow
 {
     /// Yields all elements by reference of the given container.
-    /// Because references cannot be used with `std::optional`, pointers are used instead.
     /// As the pointer are not `const`, it is possible to mutate the underlying container values.
     /// The container is not owned by this sequence.
     /// When returning an `RefElements` sequence from a scope i.e. exceeding its lifetime,
@@ -14,9 +15,11 @@ namespace flow
     template<class C>
     class Reference
     {
-    public:
-        using ElementType = typename C::value_type *;
+    private:
         using IteratorType = typename C::iterator;
+        
+    public:
+        using ElementType = std::reference_wrapper<typename C::value_type>;
 
         explicit Reference(C &container):
             container(container),
@@ -27,7 +30,7 @@ namespace flow
 
         /// Since this sequence type does not own the underlying container,
         /// it cannot take ownership of it.
-        explicit Reference(C &&container) = delete;
+        explicit Reference(C &&container) noexcept = delete;
         
         bool probe()
         {
@@ -36,9 +39,9 @@ namespace flow
 
         ElementType next()
         {
-            ElementType const elementPointer = &*iterator;
+            ElementType element = *iterator;
             ++iterator;
-            return elementPointer;
+            return element;
         }
 
     private:

@@ -228,7 +228,7 @@ TEST_CASE("Reference")
     xs.emplace_back(3);
 
     auto seq = flow::reference(xs);
-    REQUIRE(seq.yield().value()->id == 3);
+    REQUIRE(seq.yield().value().get().id == 3);
     REQUIRE(!seq.yield().has_value());
 }
 
