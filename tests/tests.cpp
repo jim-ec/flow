@@ -19,7 +19,6 @@
 #include "flow/Fuse.h"
 #include "flow/Enumerate.h"
 #include "flow/Fold.h"
-#include "flow/Dereference.h"
 #include "flow/Inspect.h"
 #include "flow/Unfold.h"
 #include "flow/Flow.h"
@@ -37,6 +36,34 @@ TEST_CASE("Take")
     REQUIRE(a.yield().value() == 3);
     REQUIRE(a.yield().value() == 4);
     REQUIRE(a.yield().value() == 5);
+    REQUIRE(!a.yield().has_value());
+}
+
+TEST_CASE("Owning subsequences")
+{
+    auto uppercase = [] (char c) { return static_cast<char>(std::toupper(c)); };
+    
+    auto a = flow::successors(1) | flow::take(2) | flow::map([=] (int n)
+    {
+        auto string = n == 1 ? std::string("hello") : std::string("ciao");
+        return flow::elements(string) | flow::map(uppercase);
+    });
+    
+    auto a1 = a.yield().value();
+    REQUIRE(a1.yield().value() == 'H');
+    REQUIRE(a1.yield().value() == 'E');
+    REQUIRE(a1.yield().value() == 'L');
+    REQUIRE(a1.yield().value() == 'L');
+    REQUIRE(a1.yield().value() == 'O');
+    REQUIRE(!a1.yield().has_value());
+    
+    auto a2 = a.yield().value();
+    REQUIRE(a2.yield().value() == 'C');
+    REQUIRE(a2.yield().value() == 'I');
+    REQUIRE(a2.yield().value() == 'A');
+    REQUIRE(a2.yield().value() == 'O');
+    REQUIRE(!a2.yield().has_value());
+    
     REQUIRE(!a.yield().has_value());
 }
 

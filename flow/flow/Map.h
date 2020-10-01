@@ -45,4 +45,14 @@ namespace flow
             return Map(std::forward<decltype(sequence)>(sequence), function);
         };
     }
+    
+    /// Dereferences the values behind element pointers.
+    /// Arity: 1 -> 1
+    auto dereference()
+    {
+        return map([] (auto *pointer)
+                   {
+            return *pointer;
+        });
+    }
 }
