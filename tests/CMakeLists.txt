@@ -1,6 +1,6 @@
 add_executable(tests
     TestsMain.cpp
-    Tests.cpp
+    tests.cpp
     TestsAuxiliary.h
 )
 
