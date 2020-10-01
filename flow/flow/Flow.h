@@ -47,12 +47,19 @@ namespace flow
             sequence(std::move(sequence))
         {
         }
-
+        
         /// Sequence composition.
         template<class C>
         auto operator|(C sequenceConstructor) &&
         {
             return Flow<details::FunctionReturnType<C, S>>(sequenceConstructor(std::move(sequence)));
+        }
+        
+        /// Sequence composition when flow is copied simultaneously.
+        template<class C>
+        auto operator|(C sequenceConstructor) const &
+        {
+            return Flow<details::FunctionReturnType<C, S>>(sequenceConstructor(S(sequence)));
         }
         
         details::SequenceIterator<S> begin()
@@ -65,7 +72,7 @@ namespace flow
             return details::SequenceEndIterator{};
         }
 
-//    private:
+    private:
         S sequence;
     };
 }

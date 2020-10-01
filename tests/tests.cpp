@@ -47,7 +47,7 @@ TEST_CASE("Owning subsequences")
         auto string = n == 1 ? std::string("hello") : std::string("ciao");
         return flow::elements(string) | flow::map(uppercase);
     });
-    
+        
     auto a1 = a.yield().value();
     REQUIRE(a1.yield().value() == 'H');
     REQUIRE(a1.yield().value() == 'E');
