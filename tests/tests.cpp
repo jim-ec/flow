@@ -28,6 +28,18 @@
 
 #include "TestsAuxiliary.h"
 
+TEST_CASE("Take")
+{
+    auto a = flow::successors(1) | flow::take(5);
+    
+    REQUIRE(a.yield().value() == 1);
+    REQUIRE(a.yield().value() == 2);
+    REQUIRE(a.yield().value() == 3);
+    REQUIRE(a.yield().value() == 4);
+    REQUIRE(a.yield().value() == 5);
+    REQUIRE(!a.yield().has_value());
+}
+
 TEST_CASE("Cycle")
 {
     auto xs = {1, 2, 3};
