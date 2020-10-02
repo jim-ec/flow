@@ -14,7 +14,6 @@
 #include "flow/Map.h"
 #include "flow/Zip.h"
 #include "flow/Chain.h"
-#include "flow/Successors.h"
 #include "flow/Take.h"
 #include "flow/Stride.h"
 #include "flow/Fuse.h"
@@ -230,21 +229,21 @@ TEST_CASE("Chain")
 
 TEST_CASE("Fold")
 {
-    auto flow = flow::Flow(flow::Successors(1)) | flow::take(4);
+    auto flow = flow::Flow(flow::successors(1)) | flow::take(4);
     auto sum = flow::fold(flow, 0, [] (int a, int b) { return a + b; });
     REQUIRE(sum == 10);
 }
 
 TEST_CASE("Fold maybe")
 {
-    auto flow = flow::Flow(flow::Successors(1)) | flow::take(4);
+    auto flow = flow::Flow(flow::successors(1)) | flow::take(4);
     auto sum = flow::fold(flow, [] (int a, int b) { return a + b; });
     REQUIRE(sum.value() == 10);
 }
 
 TEST_CASE("Fold maybe empty")
 {
-    auto flow = flow::Flow(flow::Successors(1)) | flow::take(0);
+    auto flow = flow::Flow(flow::successors(1)) | flow::take(0);
     auto sum = flow::fold(flow, [] (int a, int b) { return a + b; });
     REQUIRE(!sum.hasValue());
 }

@@ -16,7 +16,6 @@ target_sources(flow INTERFACE
     flow/Map.h
     flow/Zip.h
     flow/Stride.h
-    flow/Successors.h
     flow/Take.h
     flow/Cycle.h
     Flow/Maybe.h
