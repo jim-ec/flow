@@ -8,7 +8,7 @@ namespace flow
     T fold(S sequence, T const &initial, F function) {
         T acc = initial;
         
-        for (Maybe<typename S::ElementType> maybe = sequence.next(); maybe.holdsValue(); maybe = sequence.next())
+        for (Maybe<typename S::ElementType> maybe = sequence.next(); maybe.hasValue(); maybe = sequence.next())
         {
             details::reinitialize(acc, function(std::move(acc), maybe.value()));
         }
@@ -21,14 +21,14 @@ namespace flow
     fold(S sequence, F function) {
         Maybe<typename S::ElementType> maybe = sequence.next();
         
-        if (!maybe.holdsValue())
+        if (!maybe.hasValue())
         {
             return None();
         }
         
         T acc = maybe.value();
 
-        for (Maybe<typename S::ElementType> maybe = sequence.next(); maybe.holdsValue(); maybe = sequence.next())
+        for (Maybe<typename S::ElementType> maybe = sequence.next(); maybe.hasValue(); maybe = sequence.next())
         {
             details::reinitialize(acc, function(std::move(acc), maybe.value()));
         }

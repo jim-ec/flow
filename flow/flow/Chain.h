@@ -47,7 +47,7 @@ namespace flow
             {
                 // Check whether there is another element in the draining sequence.
                 Maybe<ElementType> nextElement = drainingSequence.next();
-                if (nextElement.holdsValue())
+                if (nextElement.hasValue())
                 {
                     return nextElement;
                 }

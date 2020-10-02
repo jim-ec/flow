@@ -56,7 +56,7 @@ namespace flow::details
         /// with C++'s convention of iterating over iterators.
         bool operator!=(SequenceEndIterator const&)
         {
-            return element.holdsValue();
+            return element.hasValue();
         }
         
     private:

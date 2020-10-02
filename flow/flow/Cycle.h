@@ -25,7 +25,7 @@ namespace flow
         {
             Maybe<ElementType> nextElement = sequence.next();
             
-            if (nextElement.holdsValue())
+            if (nextElement.hasValue())
             {
                 return nextElement;
             }

@@ -22,7 +22,7 @@ namespace flow
         {
             Maybe<ElementType> nextElement = sequence.next();
             
-            if (nextElement.holdsValue())
+            if (nextElement.hasValue())
             {
                 // Call inspection functional on contained element, but ensure that the element is not modified.
                 function(static_cast<ElementType const &>(nextElement.value()));

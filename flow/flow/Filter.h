@@ -24,7 +24,7 @@ namespace flow
             {
                 Maybe<ElementType> nextElement = sequence.next();
                 
-                if (!nextElement.holdsValue())
+                if (!nextElement.hasValue())
                 {
                     // Sequence is exhausted.
                     return None();

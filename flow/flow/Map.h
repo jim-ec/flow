@@ -26,7 +26,7 @@ namespace flow
         Maybe<ElementType> next()
         {
             Maybe<FunctionInputType> functionInput = sequence.next();
-            if (functionInput.holdsValue())
+            if (functionInput.hasValue())
             {
                 return function(functionInput.value());
             }
@@ -62,7 +62,7 @@ namespace flow
     {
         return map([=] (auto &&inputMaybe)
         {
-            if (inputMaybe.holdsValue())
+            if (inputMaybe.hasValue())
             {
                 return Maybe(function(std::move(inputMaybe.value())));
             }

@@ -20,10 +20,10 @@ namespace flow
         Maybe<ElementType> next()
         {
             Maybe<typename L::ElementType> nextLeft = left.next();
-            if (nextLeft.holdsValue())
+            if (nextLeft.hasValue())
             {
                 Maybe<typename R::ElementType> nextRight = right.next();
-                if (nextRight.holdsValue())
+                if (nextRight.hasValue())
                 {
                     return std::pair(nextLeft.value(), nextRight.value());
                 }

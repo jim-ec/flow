@@ -71,7 +71,7 @@ namespace flow
             return *this;
         }
         
-        bool holdsValue() const
+        bool hasValue() const
         {
             return valid;
         }
@@ -137,7 +137,7 @@ namespace flow
             return *this;
         }
         
-        bool holdsValue() const
+        bool hasValue() const
         {
             return pointer != nullptr;
         }

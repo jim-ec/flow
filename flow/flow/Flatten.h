@@ -26,18 +26,18 @@ namespace flow
             // Try to get another element to return until there are no more elements.
             for (;;)
             {
-                if (currentSubSequence.holdsValue())
+                if (currentSubSequence.hasValue())
                 {
                     // Try to get the next value out of the current sub sequence.
                     Maybe<ElementType> nextElement = currentSubSequence.value().next();
-                    if (nextElement.holdsValue())
+                    if (nextElement.hasValue())
                     {
                         return nextElement;
                     }
                 }
                 
                 // Current sub sequence is exhausted, go to next.
-                if (!(currentSubSequence = sequence.next()).holdsValue())
+                if (!(currentSubSequence = sequence.next()).hasValue())
                 {
                     // The base sequence is exhausted.
                     // There are ultimately no elements left.

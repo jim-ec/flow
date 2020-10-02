@@ -30,7 +30,7 @@ TEST_CASE("Maybe: None")
 {
     flow::Maybe<int> a = flow::None();
     
-    REQUIRE(!a.holdsValue());
+    REQUIRE(!a.hasValue());
 }
 
 TEST_CASE("Maybe: Owning")
@@ -38,7 +38,7 @@ TEST_CASE("Maybe: Owning")
     int x = 5;
     flow::Maybe<int> a = x;
     
-    REQUIRE(a.holdsValue());
+    REQUIRE(a.hasValue());
     REQUIRE(a.value() == 5);
     REQUIRE(&a.value() != &x);
 }
@@ -48,7 +48,7 @@ TEST_CASE("Maybe: Reference")
     int x = 5;
     flow::Maybe<int &> a = x;
     
-    REQUIRE(a.holdsValue());
+    REQUIRE(a.hasValue());
     REQUIRE(a.value() == 5);
     REQUIRE(&a.value() == &x);
 }
@@ -58,7 +58,7 @@ TEST_CASE("Maybe: Pointer")
     int x = 5;
     flow::Maybe<int *> a = &x;
     
-    REQUIRE(a.holdsValue());
+    REQUIRE(a.hasValue());
     REQUIRE(a.value() == &x);
     REQUIRE(*a.value() == 5);
 }
@@ -93,7 +93,7 @@ TEST_CASE("Take")
     REQUIRE(a.next().value() == 3);
     REQUIRE(a.next().value() == 4);
     REQUIRE(a.next().value() == 5);
-    REQUIRE(!a.next().holdsValue());
+    REQUIRE(!a.next().hasValue());
 }
 
 TEST_CASE("Owning subsequences")
@@ -112,16 +112,16 @@ TEST_CASE("Owning subsequences")
     REQUIRE(a1.next().value() == 'L');
     REQUIRE(a1.next().value() == 'L');
     REQUIRE(a1.next().value() == 'O');
-    REQUIRE(!a1.next().holdsValue());
+    REQUIRE(!a1.next().hasValue());
 
     auto a2 = a.next().value();
     REQUIRE(a2.next().value() == 'C');
     REQUIRE(a2.next().value() == 'I');
     REQUIRE(a2.next().value() == 'A');
     REQUIRE(a2.next().value() == 'O');
-    REQUIRE(!a2.next().holdsValue());
+    REQUIRE(!a2.next().hasValue());
 
-    REQUIRE(!a.next().holdsValue());
+    REQUIRE(!a.next().hasValue());
 }
 
 TEST_CASE("Cycle")
@@ -139,7 +139,7 @@ TEST_CASE("Cycle")
     REQUIRE(a.next().value() == 1);
     REQUIRE(a.next().value() == 2);
     REQUIRE(a.next().value() == 3);
-    REQUIRE(a.next().holdsValue());
+    REQUIRE(a.next().hasValue());
 }
 
 TEST_CASE("Cycle empty")
@@ -148,7 +148,7 @@ TEST_CASE("Cycle empty")
 
     auto a = flow::elements(xs) | flow::cycle();
 
-    REQUIRE(!a.next().holdsValue());
+    REQUIRE(!a.next().hasValue());
 }
 
 TEST_CASE("Composition")
@@ -164,7 +164,7 @@ TEST_CASE("Composition")
     REQUIRE(aCopy.next().value() == 4);
     REQUIRE(aCopy.next().value() == 6);
     REQUIRE(aCopy.next().value() == 8);
-    REQUIRE(!aCopy.next().holdsValue());
+    REQUIRE(!aCopy.next().hasValue());
 
     int sum = 0;
     for (int x: a) {
@@ -181,9 +181,9 @@ TEST_CASE("Then")
     auto c = flow::elements(xs) | flow::then([] (int i) { return i + 1; });
 
     REQUIRE(c.next().value() == flow::Maybe(4));
-    REQUIRE(!c.next().value().holdsValue());
+    REQUIRE(!c.next().value().hasValue());
     REQUIRE(c.next().value() == flow::Maybe(8));
-    REQUIRE(!c.next().holdsValue());
+    REQUIRE(!c.next().hasValue());
 }
 
 TEST_CASE("Zip")
@@ -195,7 +195,7 @@ TEST_CASE("Zip")
     REQUIRE(c.next().value() == std::pair(1, 'a'));
     REQUIRE(c.next().value() == std::pair(2, 'b'));
     REQUIRE(c.next().value() == std::pair(3, 'c'));
-    REQUIRE(!c.next().holdsValue());
+    REQUIRE(!c.next().hasValue());
 }
 
 TEST_CASE("Dereference")
@@ -210,7 +210,7 @@ TEST_CASE("Dereference")
     REQUIRE(b.next().value() == 2);
     REQUIRE(b.next().value() == 3);
     REQUIRE(b.next().value() == 4);
-    REQUIRE(!b.next().holdsValue());
+    REQUIRE(!b.next().hasValue());
 }
 
 TEST_CASE("Chain")
@@ -225,7 +225,7 @@ TEST_CASE("Chain")
     REQUIRE(flow.next().value() == 2);
     REQUIRE(flow.next().value() == 3);
     REQUIRE(flow.next().value() == 4);
-    REQUIRE(!flow.next().holdsValue());
+    REQUIRE(!flow.next().hasValue());
 }
 
 TEST_CASE("Fold")
@@ -246,7 +246,7 @@ TEST_CASE("Fold maybe empty")
 {
     auto flow = flow::Flow(flow::Successors(1)) | flow::take(0);
     auto sum = flow::fold(flow, [] (int a, int b) { return a + b; });
-    REQUIRE(!sum.holdsValue());
+    REQUIRE(!sum.hasValue());
 }
 
 TEST_CASE("Generate")
@@ -269,7 +269,7 @@ TEST_CASE("Generate")
     REQUIRE(flow.next().value() == 3);
     REQUIRE(flow.next().value() == 2);
     REQUIRE(flow.next().value() == 1);
-    REQUIRE(!flow.next().holdsValue());
+    REQUIRE(!flow.next().hasValue());
 }
 
 TEST_CASE("Referenced elements")
@@ -281,7 +281,7 @@ TEST_CASE("Referenced elements")
     REQUIRE(seq.next().value() == &xs[0]);
     REQUIRE(seq.next().value() == &xs[1]);
     REQUIRE(seq.next().value() == &xs[2]);
-    REQUIRE(!seq.next().holdsValue());
+    REQUIRE(!seq.next().hasValue());
 }
 
 TEST_CASE("Referenced elements mutate")
@@ -303,7 +303,7 @@ TEST_CASE("Elements")
     REQUIRE(seq.next().value() == 1);
     REQUIRE(seq.next().value() == 2);
     REQUIRE(seq.next().value() == 3);
-    REQUIRE(!seq.next().holdsValue());
+    REQUIRE(!seq.next().hasValue());
 }
 
 TEST_CASE("Filter")
@@ -315,7 +315,7 @@ TEST_CASE("Filter")
 
     REQUIRE(flow.next().value() == 2);
     REQUIRE(flow.next().value() == 4);
-    REQUIRE(!flow.next().holdsValue());
+    REQUIRE(!flow.next().hasValue());
 }
 
 TEST_CASE("Strings")
@@ -339,7 +339,7 @@ TEST_CASE("Strings")
     REQUIRE(flow.next().value() == 'f');
     REQUIRE(flow.next().value() == 'o');
     REQUIRE(flow.next().value() == 'o');
-    REQUIRE(!flow.next().holdsValue());
+    REQUIRE(!flow.next().hasValue());
 }
 
 TEST_CASE("Flatten")
@@ -364,7 +364,7 @@ TEST_CASE("Flatten")
     REQUIRE(flow.next().value().id == 2);
     REQUIRE(flow.next().value().id == 3);
     REQUIRE(flow.next().value().id == 4);
-    REQUIRE(!flow.next().holdsValue());
+    REQUIRE(!flow.next().hasValue());
 
     // There are two inner maps.
     REQUIRE(invocations == 2);
