@@ -1,12 +1,12 @@
 #pragma once
 
+//#include <flow/Map.h>
 #include <flow/Maybe.h>
 #include <flow/details.h>
 
 namespace flow
 {
     /// Yields only elements of the base sequence where the predicate function returns `true`.
-	/// Arity: 1 -> 1
     template<class S, class F>
     class Filter
     {
@@ -32,7 +32,7 @@ namespace flow
                 
                 // If the predicate validates the element, return it.
                 // Otherwise, continue on the next element.
-                if (predicate(nextElement.value()))
+                if (predicate(reinterpret_cast<ElementType const &>(nextElement.value())))
                 {
                     return nextElement;
                 }
@@ -52,4 +52,11 @@ namespace flow
             return Filter(std::move(sequence), predicate);
         };
     }
+    
+    /// Removes empty maybes from a sequence and unwraps the remaining elements.
+//    auto filterMaybes()
+//    {
+//        return filter([] (auto const &maybe) { return maybe.hasValue(); })
+//            | map([] (auto &&maybe) { return maybe.value(); });
+//    }
 }
