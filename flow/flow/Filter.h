@@ -1,8 +1,7 @@
 #pragma once
 
-#include <optional>
-
-#include "flow/details.h"
+#include <flow/Maybe.h>
+#include <flow/details.h>
 
 namespace flow
 {
@@ -19,35 +18,29 @@ namespace flow
             predicate(predicate)
         {}
         
-        bool probe()
+        Maybe<ElementType> next()
         {
             for (;;)
             {
-                if (!sequence.probe())
+                Maybe<ElementType> nextElement = sequence.next();
+                
+                if (!nextElement.holdsValue())
                 {
                     // Sequence is exhausted.
-                    return false;
+                    return None();
                 }
                 
-                // Call predicate on current element.
-                // If it succeeds, this element is stored.
-                ElementType nextElement = sequence.next();
-                if (predicate(nextElement))
+                // If the predicate validates the element, return it.
+                // Otherwise, continue on the next element.
+                if (predicate(nextElement.value()))
                 {
-                    details::reinitialize(this->nextElement, std::move(nextElement));
-                    return true;
+                    return nextElement;
                 }
             }
         }
-
-        ElementType next()
-        {
-            return std::move(nextElement.value());
-        }
-
+        
     private:
         S sequence;
-        std::optional<ElementType> nextElement;
         F predicate;
     };
 

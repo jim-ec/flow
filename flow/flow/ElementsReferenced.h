@@ -22,20 +22,18 @@ namespace flow
         {
         }
 
-        /// Since this sequence type does not own the underlying container,
-        /// it cannot take ownership of it.
-        explicit ElementsReferenced(C &&container) noexcept = delete;
-        
-        bool probe()
+        Maybe<ElementType> next()
         {
-            return iterator != end;
-        }
-
-        ElementType next()
-        {
-            ElementType element = &*iterator;
-            ++iterator;
-            return element;
+            if (iterator != end)
+            {
+                ElementType element = &*iterator;
+                ++iterator;
+                return element;
+            }
+            else
+            {
+                return None();
+            }
         }
 
     private:

@@ -20,7 +20,7 @@
 #include "flow/Fuse.h"
 #include "flow/Fold.h"
 #include "flow/Inspect.h"
-#include "flow/Unfold.h"
+#include "flow/Generate.h"
 #include "flow/Flow.h"
 #include "flow/Cycle.h"
 
@@ -68,111 +68,122 @@ TEST_CASE("Maybe: Move out")
     Identifier id(5);
     flow::Maybe<Identifier> a = id;
     Identifier id2 = std::move(a).value();
-
+    
     REQUIRE(id2.move_constructed);
     REQUIRE(a.value().moved_away);
+}
+
+TEST_CASE("Maybe: Assignment")
+{
+    int n = 5;
+    flow::Maybe<int> a = n;
+    flow::Maybe<int> b = flow::None();
+    
+    b = a;
+    
+    REQUIRE(b.value() == 5);
 }
 
 TEST_CASE("Take")
 {
     auto a = flow::successors(1) | flow::take(5);
-    
-    REQUIRE(a.yield().value() == 1);
-    REQUIRE(a.yield().value() == 2);
-    REQUIRE(a.yield().value() == 3);
-    REQUIRE(a.yield().value() == 4);
-    REQUIRE(a.yield().value() == 5);
-    REQUIRE(!a.yield().has_value());
+
+    REQUIRE(a.next().value() == 1);
+    REQUIRE(a.next().value() == 2);
+    REQUIRE(a.next().value() == 3);
+    REQUIRE(a.next().value() == 4);
+    REQUIRE(a.next().value() == 5);
+    REQUIRE(!a.next().holdsValue());
 }
 
 TEST_CASE("Owning subsequences")
 {
     auto uppercase = [] (char c) { return static_cast<char>(std::toupper(c)); };
-    
+
     auto a = flow::successors(1) | flow::take(2) | flow::map([=] (int n)
     {
         auto string = n == 1 ? std::string("hello") : std::string("ciao");
         return flow::elements(string) | flow::map(uppercase);
     });
-    
-    auto a1 = a.yield().value();
-    REQUIRE(a1.yield().value() == 'H');
-    REQUIRE(a1.yield().value() == 'E');
-    REQUIRE(a1.yield().value() == 'L');
-    REQUIRE(a1.yield().value() == 'L');
-    REQUIRE(a1.yield().value() == 'O');
-    REQUIRE(!a1.yield().has_value());
-    
-    auto a2 = a.yield().value();
-    REQUIRE(a2.yield().value() == 'C');
-    REQUIRE(a2.yield().value() == 'I');
-    REQUIRE(a2.yield().value() == 'A');
-    REQUIRE(a2.yield().value() == 'O');
-    REQUIRE(!a2.yield().has_value());
-    
-    REQUIRE(!a.yield().has_value());
+
+    auto a1 = a.next().value();
+    REQUIRE(a1.next().value() == 'H');
+    REQUIRE(a1.next().value() == 'E');
+    REQUIRE(a1.next().value() == 'L');
+    REQUIRE(a1.next().value() == 'L');
+    REQUIRE(a1.next().value() == 'O');
+    REQUIRE(!a1.next().holdsValue());
+
+    auto a2 = a.next().value();
+    REQUIRE(a2.next().value() == 'C');
+    REQUIRE(a2.next().value() == 'I');
+    REQUIRE(a2.next().value() == 'A');
+    REQUIRE(a2.next().value() == 'O');
+    REQUIRE(!a2.next().holdsValue());
+
+    REQUIRE(!a.next().holdsValue());
 }
 
 TEST_CASE("Cycle")
 {
     auto xs = {1, 2, 3};
-    
+
     auto a = flow::elements(xs) | flow::cycle();
-    
-    REQUIRE(a.yield().value() == 1);
-    REQUIRE(a.yield().value() == 2);
-    REQUIRE(a.yield().value() == 3);
-    REQUIRE(a.yield().value() == 1);
-    REQUIRE(a.yield().value() == 2);
-    REQUIRE(a.yield().value() == 3);
-    REQUIRE(a.yield().value() == 1);
-    REQUIRE(a.yield().value() == 2);
-    REQUIRE(a.yield().value() == 3);
-    REQUIRE(a.yield().has_value());
+
+    REQUIRE(a.next().value() == 1);
+    REQUIRE(a.next().value() == 2);
+    REQUIRE(a.next().value() == 3);
+    REQUIRE(a.next().value() == 1);
+    REQUIRE(a.next().value() == 2);
+    REQUIRE(a.next().value() == 3);
+    REQUIRE(a.next().value() == 1);
+    REQUIRE(a.next().value() == 2);
+    REQUIRE(a.next().value() == 3);
+    REQUIRE(a.next().holdsValue());
 }
 
 TEST_CASE("Cycle empty")
 {
     std::initializer_list<int> xs = {};
-    
+
     auto a = flow::elements(xs) | flow::cycle();
-    
-    REQUIRE(!a.yield().has_value());
+
+    REQUIRE(!a.next().holdsValue());
 }
 
 TEST_CASE("Composition")
 {
     auto xs = {1, 2, 3, 4, 5, 6};
-    
+
     auto a = flow::elements(xs)
         | flow::map([] (int i) { return i + 2; })
         | flow::filter([] (int i) { return i % 2 == 0; });
-    
+
     auto aCopy = a;
-    
-    REQUIRE(aCopy.yield().value() == 4);
-    REQUIRE(aCopy.yield().value() == 6);
-    REQUIRE(aCopy.yield().value() == 8);
-    REQUIRE(!aCopy.yield().has_value());
-    
+
+    REQUIRE(aCopy.next().value() == 4);
+    REQUIRE(aCopy.next().value() == 6);
+    REQUIRE(aCopy.next().value() == 8);
+    REQUIRE(!aCopy.next().holdsValue());
+
     int sum = 0;
     for (int x: a) {
         sum += x;
     }
-    
+
     REQUIRE(sum == 4 + 6 + 8);
 }
 
 TEST_CASE("Then")
 {
-    auto xs = {std::optional(3), std::optional<int>(), std::optional(7)};
-    
+    std::vector<flow::Maybe<int>> xs = {3, flow::None(), 7};
+
     auto c = flow::elements(xs) | flow::then([] (int i) { return i + 1; });
-    
-    REQUIRE(c.yield().value() == std::optional(4));
-    REQUIRE(!c.yield().value().has_value());
-    REQUIRE(c.yield().value() == std::optional(8));
-    REQUIRE(!c.yield().has_value());
+
+    REQUIRE(c.next().value() == flow::Maybe(4));
+    REQUIRE(!c.next().value().holdsValue());
+    REQUIRE(c.next().value() == flow::Maybe(8));
+    REQUIRE(!c.next().holdsValue());
 }
 
 TEST_CASE("Zip")
@@ -180,11 +191,11 @@ TEST_CASE("Zip")
     auto as = {1, 2, 3};
     auto bs = {'a', 'b', 'c'};
     auto c = flow::elements(as) | flow::zip(flow::elements(bs));
-    
-    REQUIRE(c.yield().value() == std::tuple(1, 'a'));
-    REQUIRE(c.yield().value() == std::tuple(2, 'b'));
-    REQUIRE(c.yield().value() == std::tuple(3, 'c'));
-    REQUIRE(!c.yield().has_value());
+
+    REQUIRE(c.next().value() == std::pair(1, 'a'));
+    REQUIRE(c.next().value() == std::pair(2, 'b'));
+    REQUIRE(c.next().value() == std::pair(3, 'c'));
+    REQUIRE(!c.next().holdsValue());
 }
 
 TEST_CASE("Dereference")
@@ -194,12 +205,12 @@ TEST_CASE("Dereference")
 
     auto b = flow::elements(bs)
              | flow::dereference();
-    
-    REQUIRE(b.yield().value() == 1);
-    REQUIRE(b.yield().value() == 2);
-    REQUIRE(b.yield().value() == 3);
-    REQUIRE(b.yield().value() == 4);
-    REQUIRE(!b.yield().has_value());
+
+    REQUIRE(b.next().value() == 1);
+    REQUIRE(b.next().value() == 2);
+    REQUIRE(b.next().value() == 3);
+    REQUIRE(b.next().value() == 4);
+    REQUIRE(!b.next().holdsValue());
 }
 
 TEST_CASE("Chain")
@@ -210,11 +221,11 @@ TEST_CASE("Chain")
     auto flow = flow::elements(as)
                 | flow::chain(flow::elements(bs));
 
-    REQUIRE(flow.yield().value() == 1);
-    REQUIRE(flow.yield().value() == 2);
-    REQUIRE(flow.yield().value() == 3);
-    REQUIRE(flow.yield().value() == 4);
-    REQUIRE(!flow.yield().has_value());
+    REQUIRE(flow.next().value() == 1);
+    REQUIRE(flow.next().value() == 2);
+    REQUIRE(flow.next().value() == 3);
+    REQUIRE(flow.next().value() == 4);
+    REQUIRE(!flow.next().holdsValue());
 }
 
 TEST_CASE("Fold")
@@ -235,51 +246,52 @@ TEST_CASE("Fold maybe empty")
 {
     auto flow = flow::Flow(flow::Successors(1)) | flow::take(0);
     auto sum = flow::fold(flow, [] (int a, int b) { return a + b; });
-    REQUIRE(!sum.has_value());
+    REQUIRE(!sum.holdsValue());
 }
 
-TEST_CASE("Unfold")
+TEST_CASE("Generate")
 {
-    auto unfoldDescending = [] (int n) -> std::optional<std::pair<int, int>> {
+    int n = 4;
+    auto generateDescending = [=] () mutable -> flow::Maybe<int> {
         if (n == 0)
         {
-            return {};
+            return flow::None();
         }
         else
         {
-            return std::pair(n, n - 1);
+            return n--;
         }
     };
 
-    auto flow = flow::unfold(4, unfoldDescending);
+    auto flow = flow::generate(generateDescending);
 
-    REQUIRE(flow.yield().value() == 4);
-    REQUIRE(flow.yield().value() == 3);
-    REQUIRE(flow.yield().value() == 2);
-    REQUIRE(flow.yield().value() == 1);
-    REQUIRE(!flow.yield().has_value());
+    REQUIRE(flow.next().value() == 4);
+    REQUIRE(flow.next().value() == 3);
+    REQUIRE(flow.next().value() == 2);
+    REQUIRE(flow.next().value() == 1);
+    REQUIRE(!flow.next().holdsValue());
 }
 
 TEST_CASE("Referenced elements")
 {
     std::array xs = {1, 2, 3};
-    
+
     auto seq = flow::elementsReferenced(xs);
-    
-    REQUIRE(seq.yield().value() == &xs[0]);
-    REQUIRE(seq.yield().value() == &xs[1]);
-    REQUIRE(seq.yield().value() == &xs[2]);
-    REQUIRE(!seq.yield().has_value());
+
+    REQUIRE(seq.next().value() == &xs[0]);
+    REQUIRE(seq.next().value() == &xs[1]);
+    REQUIRE(seq.next().value() == &xs[2]);
+    REQUIRE(!seq.next().holdsValue());
 }
 
 TEST_CASE("Referenced elements mutate")
 {
     std::array xs = {1, 2, 3};
-    
+
     auto seq = flow::elementsReferenced(xs);
-    
-    *seq.yield().value() = 8;
-    
+
+    *seq.next().value() = 8;
+
     REQUIRE(xs[0] == 8);
 }
 
@@ -288,10 +300,10 @@ TEST_CASE("Elements")
     auto xs = {1, 2, 3};
 
     auto seq = flow::elements(xs);
-    REQUIRE(seq.yield().value() == 1);
-    REQUIRE(seq.yield().value() == 2);
-    REQUIRE(seq.yield().value() == 3);
-    REQUIRE(!seq.yield().has_value());
+    REQUIRE(seq.next().value() == 1);
+    REQUIRE(seq.next().value() == 2);
+    REQUIRE(seq.next().value() == 3);
+    REQUIRE(!seq.next().holdsValue());
 }
 
 TEST_CASE("Filter")
@@ -301,9 +313,9 @@ TEST_CASE("Filter")
     auto flow = flow::elements(as)
                 | flow::filter([] (int n) { return n % 2 == 0; });
 
-    REQUIRE(flow.yield().value() == 2);
-    REQUIRE(flow.yield().value() == 4);
-    REQUIRE(!flow.yield().has_value());
+    REQUIRE(flow.next().value() == 2);
+    REQUIRE(flow.next().value() == 4);
+    REQUIRE(!flow.next().holdsValue());
 }
 
 TEST_CASE("Strings")
@@ -313,21 +325,21 @@ TEST_CASE("Strings")
                 | flow::map([] (std::string const &s) { return flow::elements(s); })
                 | flow::flatten();
 
-    REQUIRE(flow.yield().value() == 'h');
-    REQUIRE(flow.yield().value() == 'e');
-    REQUIRE(flow.yield().value() == 'l');
-    REQUIRE(flow.yield().value() == 'l');
-    REQUIRE(flow.yield().value() == 'o');
-    REQUIRE(flow.yield().value() == ',');
-    REQUIRE(flow.yield().value() == 'c');
-    REQUIRE(flow.yield().value() == 'i');
-    REQUIRE(flow.yield().value() == 'a');
-    REQUIRE(flow.yield().value() == 'o');
-    REQUIRE(flow.yield().value() == ',');
-    REQUIRE(flow.yield().value() == 'f');
-    REQUIRE(flow.yield().value() == 'o');
-    REQUIRE(flow.yield().value() == 'o');
-    REQUIRE(!flow.yield().has_value());
+    REQUIRE(flow.next().value() == 'h');
+    REQUIRE(flow.next().value() == 'e');
+    REQUIRE(flow.next().value() == 'l');
+    REQUIRE(flow.next().value() == 'l');
+    REQUIRE(flow.next().value() == 'o');
+    REQUIRE(flow.next().value() == ',');
+    REQUIRE(flow.next().value() == 'c');
+    REQUIRE(flow.next().value() == 'i');
+    REQUIRE(flow.next().value() == 'a');
+    REQUIRE(flow.next().value() == 'o');
+    REQUIRE(flow.next().value() == ',');
+    REQUIRE(flow.next().value() == 'f');
+    REQUIRE(flow.next().value() == 'o');
+    REQUIRE(flow.next().value() == 'o');
+    REQUIRE(!flow.next().holdsValue());
 }
 
 TEST_CASE("Flatten")
@@ -348,11 +360,11 @@ TEST_CASE("Flatten")
     // While building the sequence, the functors must not be called due to lazy evaluation.
     REQUIRE(invocations == 0);
 
-    REQUIRE(flow.yield().value().id == 1);
-    REQUIRE(flow.yield().value().id == 2);
-    REQUIRE(flow.yield().value().id == 3);
-    REQUIRE(flow.yield().value().id == 4);
-    REQUIRE(!flow.yield().has_value());
+    REQUIRE(flow.next().value().id == 1);
+    REQUIRE(flow.next().value().id == 2);
+    REQUIRE(flow.next().value().id == 3);
+    REQUIRE(flow.next().value().id == 4);
+    REQUIRE(!flow.next().holdsValue());
 
     // There are two inner maps.
     REQUIRE(invocations == 2);

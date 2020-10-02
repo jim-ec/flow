@@ -1,7 +1,5 @@
 #pragma once
 
-#include <optional>
-
 #include <flow/details.h>
 
 namespace flow
@@ -9,28 +7,30 @@ namespace flow
     template<class S, class F, class T>
     T fold(S sequence, T const &initial, F function) {
         T acc = initial;
-
-        while (sequence.probe())
+        
+        for (Maybe<typename S::ElementType> maybe = sequence.next(); maybe.holdsValue(); maybe = sequence.next())
         {
-            details::reinitialize(acc, function(std::move(acc), sequence.next()));
+            details::reinitialize(acc, function(std::move(acc), maybe.value()));
         }
         
         return acc;
     }
 
     template<class S, class F, class T = typename S::ElementType>
-    std::optional<T>
+    Maybe<T>
     fold(S sequence, F function) {
-        if (!sequence.probe())
+        Maybe<typename S::ElementType> maybe = sequence.next();
+        
+        if (!maybe.holdsValue())
         {
-            return {};
+            return None();
         }
         
-        T acc = sequence.next();
+        T acc = maybe.value();
 
-        while (sequence.probe())
+        for (Maybe<typename S::ElementType> maybe = sequence.next(); maybe.holdsValue(); maybe = sequence.next())
         {
-            details::reinitialize(acc, function(std::move(acc), sequence.next()));
+            details::reinitialize(acc, function(std::move(acc), maybe.value()));
         }
         
         return acc;

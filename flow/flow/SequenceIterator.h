@@ -1,5 +1,7 @@
 #pragma once
 
+#include <flow/Maybe.h>
+
 namespace flow::details
 {
     class SequenceEndIterator
@@ -20,7 +22,7 @@ namespace flow::details
         /// Constructs an iterator yielding elements from the given sequence.
         explicit SequenceIterator(S const &sequence):
             sequence(sequence),
-            element((this->sequence.probe(), this->sequence.next()))
+            element(this->sequence.next())
         {
         }
         
@@ -29,15 +31,7 @@ namespace flow::details
         /// which can be queried by using the comparision function.
         SequenceIterator &operator++()
         {
-            if (sequence.probe())
-            {
-                details::reinitialize(element, sequence.next());
-            }
-            else
-            {
-                element.reset();
-            }
-            
+            element = sequence.next();
             return *this;
         }
         
@@ -45,14 +39,14 @@ namespace flow::details
         /// This must not be called if the element is `None`.
         value_type &operator*()
         {
-            return *element;
+            return element.value();
         }
         
         /// Returns a immutable reference to the hold element.
         /// This must not be called if the element is `None`.
         value_type const &operator*() const
         {
-            return *element;
+            return element.value();
         }
         
         /// Compares against the end iterator sentinel.
@@ -62,11 +56,11 @@ namespace flow::details
         /// with C++'s convention of iterating over iterators.
         bool operator!=(SequenceEndIterator const&)
         {
-            return element.has_value();
+            return element.holdsValue();
         }
         
     private:
         S sequence;
-        std::optional<value_type> element;
+        Maybe<value_type> element;
     };
 }

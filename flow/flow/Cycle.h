@@ -1,6 +1,7 @@
 #pragma once
 
-#include "flow/details.h"
+#include <flow/details.h>
+#include <flow/Maybe.h>
 
 namespace flow
 {
@@ -16,33 +17,33 @@ namespace flow
         
         explicit Cycle(S &&sequence):
             base(std::move(sequence)),
-            sequence(base),
-            nonempty(S(sequence).probe())
+            sequence(base)
         {
         }
         
-        bool probe()
+        Maybe<ElementType> next()
         {
-            if (!sequence.probe())
+            Maybe<ElementType> nextElement = sequence.next();
+            
+            if (nextElement.holdsValue())
+            {
+                return nextElement;
+            }
+            else
             {
                 // The sequence is exhausted.
                 // Restart by re-initializing the sequence to the base sequence.
                 // This is also done if the sequence is empty, but an empty sequence is probably not too expensive to construct.
                 details::reinitialize(sequence, base);
+                
+                // This will return an empty optional only if the underlying sequence is empty.
+                return sequence.next();
             }
-            
-            return nonempty;
-        }
-        
-        ElementType next()
-        {
-            return sequence.next();
         }
         
     private:
         S base;
         S sequence;
-        bool nonempty;
     };
     
     auto cycle()

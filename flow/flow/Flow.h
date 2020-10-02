@@ -1,9 +1,8 @@
 #pragma once
 
-#include <optional>
-
 #include <flow/details.h>
 #include <flow/SequenceIterator.h>
+#include <flow/Maybe.h>
 
 namespace flow
 {
@@ -16,24 +15,7 @@ namespace flow
     public:
         using ElementType = typename S::ElementType;
 
-        std::optional<ElementType> yield()
-        {
-            if (sequence.probe())
-            {
-                return sequence.next();
-            }
-            else
-            {
-                return {};
-            }
-        }
-        
-        bool probe()
-        {
-            return sequence.probe();
-        }
-
-        ElementType next()
+        Maybe<ElementType> next()
         {
             return sequence.next();
         }

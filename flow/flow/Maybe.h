@@ -6,13 +6,12 @@ namespace flow
     {
     };
     
-    /// An optional type, which is immutable by design.
-    /// It differs from the STL's optional type in that it's immutable design avoids rebinding versus assignment forwarding debate,
-    /// and therefore allowing optionals to hold references.
     template<class T>
     class Maybe
     {
     public:
+        using ValueType = T;
+        
         Maybe(None): valid(false)
         {
         }
@@ -25,6 +24,22 @@ namespace flow
         {
         }
         
+        Maybe(Maybe const &other): valid(other.valid)
+        {
+            if (valid)
+            {
+                new (&data) T(other.data);
+            }
+        }
+        
+        Maybe(Maybe &&other): valid(other.valid)
+        {
+            if (valid)
+            {
+                new (&data) T(std::move(other.data));
+            }
+        }
+        
         ~Maybe()
         {
             if (valid)
@@ -33,9 +48,37 @@ namespace flow
             }
         }
         
+        Maybe &operator=(Maybe const &other)
+        {
+            this->~Maybe();
+            valid = other.valid;
+            if (valid)
+            {
+                new (&data) T(other.data);
+            }
+            return *this;
+        }
+        
+        Maybe &operator=(T &&other)
+        {
+            this->~Maybe();
+            valid = other.valid;
+            if (valid)
+            {
+                new (&data) T(std::move(other.data));
+            }
+            
+            return *this;
+        }
+        
         bool holdsValue() const
         {
             return valid;
+        }
+        
+        T &value() &
+        {
+            return data;
         }
         
         T const &value() const &
@@ -46,6 +89,16 @@ namespace flow
         T &&value() &&
         {
             return std::move(data);
+        }
+        
+        bool operator==(Maybe const &other) const
+        {
+            return (!valid && !other.valid) || (valid && other.valid && data == other.data);
+        }
+        
+        bool operator!=(Maybe const &other) const
+        {
+            return !(*this == other);
         }
         
     private:
@@ -64,12 +117,24 @@ namespace flow
     class Maybe<T &>
     {
     public:
+        using ValueType = T &;
+        
         Maybe(None): pointer(nullptr)
         {
         }
         
-        Maybe(T &value): pointer(&value)
+        Maybe(T &reference): pointer(&reference)
         {
+        }
+        
+        Maybe(Maybe const &other): pointer(other.pointer)
+        {
+        }
+        
+        Maybe &operator=(Maybe const &other)
+        {
+            pointer = other.pointer;
+            return *this;
         }
         
         bool holdsValue() const
@@ -77,13 +142,28 @@ namespace flow
             return pointer != nullptr;
         }
         
-        T const &value()
+        T &value()
         {
             return *pointer;
         }
         
+        T const &value() const
+        {
+            return *pointer;
+        }
+        
+        bool operator==(Maybe const &other) const
+        {
+            return (!pointer && !other.pointer) || (pointer && other.pointer && *pointer == *other.pointer);
+        }
+        
+        bool operator!=(Maybe const &other) const
+        {
+            return !(*this == other);
+        }
+        
     private:
-        T const* const pointer;
+        T *pointer;
     };
     
     /// Maybes over rvalue references are still illegal.

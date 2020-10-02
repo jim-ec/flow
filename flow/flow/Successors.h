@@ -1,5 +1,7 @@
 #pragma once
 
+#include <flow/Maybe.h>
+
 namespace flow
 {
     /// Successors based on some initial value.
@@ -20,7 +22,7 @@ namespace flow
             return true;
         }
 
-        T next()
+        Maybe<T> next()
         {
             T nextElement = n;
             ++n;

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <flow/Maybe.h>
+
 namespace flow
 {
     /// Ensures the further calls to `next()` on a sequence return `None`s
@@ -16,28 +18,26 @@ namespace flow
             exhausted(false)
         {}
         
-        bool probe()
+        Maybe<ElementType> probe()
         {
             if (exhausted)
             {
                 // The base sequence is already exhausted from previous calls.
-                return false;
+                return None();
             }
-            else if (!sequence.probe())
+            
+            Maybe<ElementType> element = sequence.next();
+            
+            if (element.holdsValue())
             {
-                // The base sequence has become exhausted.
-                exhausted = true;
-                return false;
+                return element;
             }
             else
             {
-                return true;
+                // The base sequence has become exhausted.
+                exhausted = true;
+                return None();
             }
-        }
-
-        ElementType next()
-        {
-            return sequence.next();
         }
 
     private:
@@ -49,7 +49,7 @@ namespace flow
     {
         return [] (auto &&sequence)
         {
-            return Fuse(std::forward<decltype(sequence)>(sequence));
+            return Fuse(std::move(sequence));
         };
     }
 }

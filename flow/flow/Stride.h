@@ -1,6 +1,7 @@
 #pragma once
 
 #include <flow/Fuse.h>
+#include <flow/Maybe.h>
 
 namespace flow
 {
@@ -17,19 +18,13 @@ namespace flow
             n(n)
         {}
         
-        bool probe()
+        Maybe<ElementType> next()
         {
             // Skip `n` elements.
-            // Because base is fused, it guarantees that consecutive calls to
-            // `next()` return `None`.
+            // Because base is fused, it guarantees that consecutive calls to `next()` return `None`.
             for (size_t k = 0; k < n - 1; ++k) {
-                sequence.probe();
+                sequence.next();
             }
-            return sequence.probe();
-        }
-
-        ElementType next()
-        {
             return sequence.next();
         }
 
@@ -42,7 +37,7 @@ namespace flow
     {
         return [=] (auto &&sequence)
         {
-            return Stride(std::forward<decltype(sequence)>(sequence), n);
+            return Stride(std::move(sequence), n);
         };
     }
 }

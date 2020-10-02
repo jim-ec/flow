@@ -1,5 +1,7 @@
 #pragma once
 
+#include <flow/Maybe.h>
+
 namespace flow
 {
     /// First yields all elements from the first sequence,
@@ -39,16 +41,24 @@ namespace flow
             return continuationSequence.probe();
         }
 
-        ElementType next()
+        Maybe<ElementType> next()
         {
             if (draining)
             {
-                return drainingSequence.next();
+                // Check whether there is another element in the draining sequence.
+                Maybe<ElementType> nextElement = drainingSequence.next();
+                if (nextElement.holdsValue())
+                {
+                    return nextElement;
+                }
+                else {
+                    // The draining sequence is exhausted.
+                    // From here on, yield from the continuation sequence.
+                    draining = false;
+                }
             }
-            else
-            {
-                return continuationSequence.next();
-            }
+            
+            return continuationSequence.next();
         }
 
     private:
@@ -60,7 +70,7 @@ namespace flow
     template<class C>
     auto chain(C &&continuationSequence)
     {
-        return [continuationSequence = std::move(continuationSequence)] (auto &&drainingSequence) mutable
+        return [=] (auto &&drainingSequence) mutable
         {
             return Chain(std::move(drainingSequence), std::move(continuationSequence));
         };

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <flow/details.h>
+#include <flow/Maybe.h>
 
 namespace flow
 {
@@ -21,15 +22,18 @@ namespace flow
             function(function)
         {
         }
-        
-        bool probe()
-        {
-            return sequence.probe();
-        }
 
-        ElementType next()
+        Maybe<ElementType> next()
         {
-            return function(sequence.next());
+            Maybe<FunctionInputType> functionInput = sequence.next();
+            if (functionInput.holdsValue())
+            {
+                return function(functionInput.value());
+            }
+            else
+            {
+                return None();
+            }
         }
 
     private:
@@ -42,7 +46,7 @@ namespace flow
     {
         return [=] (auto &&sequence)
         {
-            return Map(std::forward<decltype(sequence)>(sequence), function);
+            return Map(std::move(sequence), function);
         };
     }
     
@@ -56,16 +60,16 @@ namespace flow
     template<class F>
     auto then(F function)
     {
-        return map([=] (auto &&inputOptional)
+        return map([=] (auto &&inputMaybe)
         {
-            if (inputOptional)
+            if (inputMaybe.holdsValue())
             {
-                return std::optional(function(std::move(*inputOptional)));
+                return Maybe(function(std::move(inputMaybe.value())));
             }
             else
             {
-                using OutputType = decltype(function(std::move(*inputOptional)));
-                return std::optional<OutputType>();
+                using OutputType = decltype(function(std::move(inputMaybe.value())));
+                return Maybe<OutputType>(None());
             }
         });
     }

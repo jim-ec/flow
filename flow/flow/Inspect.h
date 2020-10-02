@@ -1,5 +1,7 @@
 #pragma once
 
+#include <flow/Maybe.h>
+
 namespace flow
 {
     /// Calls a function on sequence elements, but passes the elements unchanged otherwise.
@@ -15,18 +17,16 @@ namespace flow
             function(function)
         {
         }
-        
-        bool probe()
-        {
-            return sequence.probe();
-        }
 
-        ElementType next()
+        Maybe<ElementType> next()
         {
-            ElementType nextElement = sequence.next();
+            Maybe<ElementType> nextElement = sequence.next();
             
-            // Call inspection functional on contained element, but ensure that the element is not modified.
-            function(static_cast<ElementType const &>(nextElement));
+            if (nextElement.holdsValue())
+            {
+                // Call inspection functional on contained element, but ensure that the element is not modified.
+                function(static_cast<ElementType const &>(nextElement.value()));
+            }
             
             return nextElement;
         }
@@ -41,7 +41,7 @@ namespace flow
     {
         return [=] (auto &&sequence)
         {
-            return Inspect(std::forward<decltype(sequence)>(sequence), function);
+            return Inspect(std::move(sequence), function);
         };
     }
 }

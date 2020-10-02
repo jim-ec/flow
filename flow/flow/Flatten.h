@@ -1,8 +1,7 @@
 #pragma once
 
-#include <optional>
-
 #include <flow/Fuse.h>
+#include <flow/Maybe.h>
 #include <flow/details.h>
 
 namespace flow
@@ -18,56 +17,45 @@ namespace flow
 
         explicit Flatten(S &&sequence):
             sequence(std::move(sequence)),
-            currentSubSequence()
+            currentSubSequence(None())
         {
         }
         
-        bool probe()
+        Maybe<ElementType> next()
         {
             // Try to get another element to return until there are no more elements.
             for (;;)
             {
-                if (currentSubSequence.has_value())
+                if (currentSubSequence.holdsValue())
                 {
                     // Try to get the next value out of the current sub sequence.
-                    if (currentSubSequence.value().probe())
+                    Maybe<ElementType> nextElement = currentSubSequence.value().next();
+                    if (nextElement.holdsValue())
                     {
-                        details::reinitialize(nextElement, currentSubSequence->next());
-                        return true;
+                        return nextElement;
                     }
                 }
                 
                 // Current sub sequence is exhausted, go to next.
-                if (sequence.probe())
-                {
-                    // Go to next subsequence.
-                    details::reinitialize(currentSubSequence, sequence.next());
-                }
-                else
+                if (!(currentSubSequence = sequence.next()).holdsValue())
                 {
                     // The base sequence is exhausted.
                     // There are ultimately no elements left.
-                    return false;
+                    return None();
                 }
             }
-        }
-        
-        ElementType next()
-        {
-            return std::move(nextElement.value());
         }
 
     private:
         S sequence;
-        std::optional<ElementType> nextElement;
-        std::optional<SubSequenceType> currentSubSequence;
+        Maybe<SubSequenceType> currentSubSequence;
     };
 
     auto flatten()
     {
         return [] (auto &&sequence)
         {
-            return Flatten(std::forward<decltype(sequence)>(sequence));
+            return Flatten(std::move(sequence));
         };
     }
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <flow/Flow.h>
+#include <flow/Maybe.h>
 
 namespace flow
 {
@@ -45,12 +46,19 @@ namespace flow
             return iterator != end;
         }
 
-        ElementType next()
+        Maybe<ElementType> next()
         {
-            // Because we own the container, we can move elements out of it.
-            ElementType element(std::move(*iterator));
-            ++iterator;
-            return element;
+            if (iterator != end)
+            {
+                // Because we own the container, we can move elements out of it.
+                ElementType element(std::move(*iterator));
+                ++iterator;
+                return element;
+            }
+            else
+            {
+                return None();
+            }
         }
 
     private:

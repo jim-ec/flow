@@ -34,9 +34,17 @@ namespace flow
             }
         }
 
-        ElementType next()
+        Maybe<ElementType> next()
         {
-            return sequence.next();
+            if (k < n)
+            {
+                ++k;
+                return sequence.next();
+            }
+            else
+            {
+                return None();
+            }
         }
 
     private:
@@ -49,7 +57,7 @@ namespace flow
     {
         return [=] (auto &&sequence)
         {
-            return Take(std::forward<decltype(sequence)>(sequence), n);
+            return Take(std::move(sequence), n);
         };
     }
 }
