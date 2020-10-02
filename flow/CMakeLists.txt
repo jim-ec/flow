@@ -19,5 +19,6 @@ target_sources(flow INTERFACE
     flow/Successors.h
     flow/Take.h
     flow/Cycle.h
+    Flow/Maybe.h
     flow/details.h
 )

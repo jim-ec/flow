@@ -6,6 +6,7 @@
 #include <map>
 #include <array>
 
+#include "flow/Maybe.h"
 #include "flow/Elements.h"
 #include "flow/ElementsReferenced.h"
 #include "flow/Flatten.h"
@@ -24,6 +25,46 @@
 #include "flow/Cycle.h"
 
 #include "TestsAuxiliary.h"
+
+TEST_CASE("Maybe: Owning")
+{
+    int x = 5;
+    flow::Maybe<int> a = x;
+    
+    REQUIRE(a.holdsValue());
+    REQUIRE(a.value() == 5);
+    REQUIRE(&a.value() != &x);
+}
+
+TEST_CASE("Maybe: Reference")
+{
+    int x = 5;
+    flow::Maybe<int &> a = x;
+    
+    REQUIRE(a.holdsValue());
+    REQUIRE(a.value() == 5);
+    REQUIRE(&a.value() == &x);
+}
+
+TEST_CASE("Maybe: Pointer")
+{
+    int x = 5;
+    flow::Maybe<int *> a = &x;
+    
+    REQUIRE(a.holdsValue());
+    REQUIRE(a.value() == &x);
+    REQUIRE(*a.value() == 5);
+}
+
+TEST_CASE("Maybe: Move out")
+{
+    Identifier id(5);
+    flow::Maybe<Identifier> a = id;
+    Identifier id2 = std::move(a).value();
+
+    REQUIRE(id2.move_constructed);
+    REQUIRE(a.value().moved_away);
+}
 
 TEST_CASE("Take")
 {
