@@ -44,14 +44,14 @@ namespace flow
             return Flow<details::FunctionReturnType<C, S>>(sequenceConstructor(S(sequence)));
         }
         
-        details::Iterator<S> begin()
+        Iterator<S> begin()
         {
-            return details::Iterator<S>(sequence);
+            return Iterator<S>(sequence);
         }
         
-        details::EndIterator end()
+        EndIterator end()
         {
-            return details::EndIterator{};
+            return EndIterator{};
         }
 
     private:

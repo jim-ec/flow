@@ -2,7 +2,7 @@
 
 #include <flow/Maybe.h>
 
-namespace flow::details
+namespace flow
 {
     class EndIterator
     {
