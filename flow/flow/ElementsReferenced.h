@@ -13,7 +13,7 @@ namespace flow
         using IteratorType = typename C::iterator;
         
     public:
-        using ElementType = typename C::value_type *;
+        using ElementType = typename C::value_type &;
 
         explicit ElementsReferenced(C &container):
             container(container),
@@ -26,7 +26,7 @@ namespace flow
         {
             if (iterator != end)
             {
-                ElementType element = &*iterator;
+                ElementType element = *iterator;
                 ++iterator;
                 return element;
             }

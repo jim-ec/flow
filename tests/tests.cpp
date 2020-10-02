@@ -277,9 +277,9 @@ TEST_CASE("Referenced elements")
 
     auto seq = flow::elementsReferenced(xs);
 
-    REQUIRE(seq.next().value() == &xs[0]);
-    REQUIRE(seq.next().value() == &xs[1]);
-    REQUIRE(seq.next().value() == &xs[2]);
+    REQUIRE(&seq.next().value() == &xs[0]);
+    REQUIRE(&seq.next().value() == &xs[1]);
+    REQUIRE(&seq.next().value() == &xs[2]);
     REQUIRE(!seq.next().hasValue());
 }
 
@@ -289,7 +289,7 @@ TEST_CASE("Referenced elements mutate")
 
     auto seq = flow::elementsReferenced(xs);
 
-    *seq.next().value() = 8;
+    seq.next().value() = 8;
 
     REQUIRE(xs[0] == 8);
 }
