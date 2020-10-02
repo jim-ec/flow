@@ -4,23 +4,22 @@
 
 namespace flow::details
 {
-    class SequenceEndIterator
+    class EndIterator
     {
     };
     
     /// A forward iterator, yielding elements from a sequence.
-    /// Unless the sequence is fused, the iterator should not be incremented
-    /// after the contained element is `None`.
+    /// When incrementing this iterator, the next element is stored.
+    /// It can be accessed by using the dereference operator.
     template<class S>
-    class SequenceIterator
+    class Iterator
     {
     public:
-        /// The type of elements yielded by this iterator is simply the type of elements yielded by the
-        /// underlying sequence.
+        /// The type of elements yielded by this iterator is simply the type of elements yielded by the underlying sequence.
         using value_type = typename S::ElementType;
         
         /// Constructs an iterator yielding elements from the given sequence.
-        explicit SequenceIterator(S const &sequence):
+        explicit Iterator(S const &sequence):
             sequence(sequence),
             element(this->sequence.next())
         {
@@ -29,7 +28,7 @@ namespace flow::details
         /// Yields the next element from the sequence.
         /// Unless the sequence is fused, this should not be called anymore as soon as the element is `None`,
         /// which can be queried by using the comparision function.
-        SequenceIterator &operator++()
+        Iterator &operator++()
         {
             element = sequence.next();
             return *this;
@@ -54,7 +53,7 @@ namespace flow::details
         /// element owned by this iterator is not `None`.
         /// The interface is only implemented to make the range-based for-each loop construct working and to comply
         /// with C++'s convention of iterating over iterators.
-        bool operator!=(SequenceEndIterator const&)
+        bool operator!=(EndIterator const&)
         {
             return element.hasValue();
         }

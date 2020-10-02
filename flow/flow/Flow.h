@@ -1,7 +1,7 @@
 #pragma once
 
 #include <flow/details.h>
-#include <flow/SequenceIterator.h>
+#include <flow/Iterator.h>
 #include <flow/Maybe.h>
 
 namespace flow
@@ -44,14 +44,14 @@ namespace flow
             return Flow<details::FunctionReturnType<C, S>>(sequenceConstructor(S(sequence)));
         }
         
-        details::SequenceIterator<S> begin()
+        details::Iterator<S> begin()
         {
-            return details::SequenceIterator<S>(sequence);
+            return details::Iterator<S>(sequence);
         }
         
-        details::SequenceEndIterator end()
+        details::EndIterator end()
         {
-            return details::SequenceEndIterator{};
+            return details::EndIterator{};
         }
 
     private:

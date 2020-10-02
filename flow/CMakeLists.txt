@@ -12,7 +12,7 @@ target_sources(flow INTERFACE
     flow/Fold.h
     flow/Fuse.h
     flow/Inspect.h
-    flow/SequenceIterator.h
+    flow/Iterator.h
     flow/Map.h
     flow/Zip.h
     flow/Stride.h
