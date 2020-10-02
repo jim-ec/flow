@@ -51,12 +51,13 @@ namespace flow
     }
     
     /// Dereferences the values behind element pointers.
-    /// Arity: 1 -> 1
     auto dereference()
     {
         return map([] (auto *pointer) { return *pointer; });
     }
     
+    /// Maps maybes which have a value through a function.
+    /// Empty maybes are kept.
     template<class F>
     auto then(F function)
     {
@@ -74,6 +75,7 @@ namespace flow
         });
     }
     
+    /// Identifies each element with a growing index.
     auto enumerate()
     {
         size_t k = 0;
