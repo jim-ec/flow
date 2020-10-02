@@ -2,6 +2,10 @@
 
 namespace flow
 {
+    struct None
+    {
+    };
+    
     /// An optional type, which is immutable by design.
     /// It differs from the STL's optional type in that it's immutable design avoids rebinding versus assignment forwarding debate,
     /// and therefore allowing optionals to hold references.
@@ -9,7 +13,7 @@ namespace flow
     class Maybe
     {
     public:
-        Maybe(): valid(false)
+        Maybe(None): valid(false)
         {
         }
         
@@ -60,7 +64,7 @@ namespace flow
     class Maybe<T &>
     {
     public:
-        Maybe(): pointer(nullptr)
+        Maybe(None): pointer(nullptr)
         {
         }
         

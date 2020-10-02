@@ -26,6 +26,13 @@
 
 #include "TestsAuxiliary.h"
 
+TEST_CASE("Maybe: None")
+{
+    flow::Maybe<int> a = flow::None();
+    
+    REQUIRE(!a.holdsValue());
+}
+
 TEST_CASE("Maybe: Owning")
 {
     int x = 5;
