@@ -201,4 +201,7 @@ namespace flow
     {
         static const constexpr bool value = true;
     };
+    
+    template<class T>
+    static const constexpr bool isMaybe = IsMaybe<T>::value;
 }

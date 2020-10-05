@@ -16,7 +16,7 @@ namespace flow
         B baseFlow;
         F function;
         
-        static_assert(flow::IsMaybe<decltype(std::declval<F>()(std::declval<B&>()))>::value,
+        static_assert(flow::isMaybe<decltype(std::declval<F>()(std::declval<B&>()))>,
                       "A flow has to produce maybes.");
         
         Flow2(B const &baseFlow, F const &function): baseFlow(baseFlow), function(function)
@@ -62,7 +62,7 @@ namespace flow
     {
         F function;
         
-        static_assert(flow::IsMaybe<decltype(std::declval<F>()())>::value,
+        static_assert(flow::isMaybe<decltype(std::declval<F>()())>,
                       "A generator has to produce maybes.");
         
         Generator(F const &function): function(function) {}
