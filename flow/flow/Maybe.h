@@ -170,4 +170,23 @@ namespace flow
     /// TODO: Does it make sense to implement them owning the value?
     template<class T>
     class Maybe<T &&>;
+    
+    /// Usually, when returning a maybe which is either a value or none, the type of the maybe has to be
+    /// noted explicitly, because both branches has to return the same type, and it is not possible
+    /// to reverse infer a type based on another branch or t infer the correct type using the none constructor.
+    /// Therefore, this function can be used to enforce forward type inference.
+    /// The maybe type is infered from the value which is returned if the condition evaluates to true.
+    /// Otherwise, a none maybe is returned.
+    template<class T>
+    Maybe<T> maybeIf(bool condition, T &&value)
+    {
+        if (condition)
+        {
+            return Maybe(value);
+        }
+        else
+        {
+            return None();
+        }
+    }
 }

@@ -2,6 +2,7 @@
 
 #include <flow/details.h>
 #include <flow/Maybe.h>
+#include <flow/Flow.h>
 
 namespace flow
 {
@@ -48,6 +49,36 @@ namespace flow
         {
             return Map(std::move(sequence), function);
         };
+    }
+    
+    template<class T>
+    auto elements2(std::vector<T> const &container)
+    {
+        size_t i = 0;
+        
+        auto f = [=] () mutable -> Maybe<int>
+        {
+            if (i < container.size())
+            {
+                return container[i++];
+            }
+            else
+            {
+                return None();
+            }
+        };
+        
+        return Generator(f);
+    }
+    
+    template<class F>
+    auto map2(F function)
+    {
+        return Functor([=] (auto &flow)
+        {
+            auto maybe = flow.next();
+            return maybeIf(maybe.hasValue(), function(maybe.value()));
+        });
     }
     
     /// Dereferences the values behind element pointers.

@@ -25,6 +25,23 @@
 
 #include "TestsAuxiliary.h"
 
+int add(int a, int b) { return a + b; }
+
+TEST_CASE("Stream")
+{
+    std::vector<int> xs = {1, 2, 3, 4};
+    
+    auto a = flow::elements2(xs);
+    auto b = a | flow::map2([] (int i) { return i * 2; });
+    auto c = b | flow::map2([] (int i) { return i + 1; });
+    
+    REQUIRE(c.next() == 3);
+    REQUIRE(c.next() == 5);
+    REQUIRE(c.next() == 7);
+    REQUIRE(c.next() == 9);
+    REQUIRE(c.next() == flow::None());
+}
+
 TEST_CASE("Maybe: None")
 {
     flow::Maybe<int> a = flow::None();
