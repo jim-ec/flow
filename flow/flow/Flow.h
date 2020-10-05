@@ -16,13 +16,14 @@ namespace flow
         B baseFlow;
         F function;
         
-        using ElementType = typename details::FunctionReturnType<F, B&>::ValueType;
-
+        static_assert(flow::IsMaybe<decltype(std::declval<F>()(std::declval<B&>()))>::value,
+                      "A flow has to produce maybes.");
+        
         Flow2(B const &baseFlow, F const &function): baseFlow(baseFlow), function(function)
         {
         }
 
-        Maybe<ElementType> next()
+        auto next()
         {
             return function(baseFlow);
         }
@@ -61,11 +62,12 @@ namespace flow
     {
         F function;
         
-        using ElementType = typename decltype(std::declval<F>()())::ValueType;
+        static_assert(flow::IsMaybe<decltype(std::declval<F>()())>::value,
+                      "A generator has to produce maybes.");
         
         Generator(F const &function): function(function) {}
         
-        Maybe<ElementType> next()
+        auto next()
         {
             return function();
         }

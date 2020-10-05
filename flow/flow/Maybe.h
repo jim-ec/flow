@@ -189,4 +189,16 @@ namespace flow
             return None();
         }
     }
+    
+    template<class T>
+    struct IsMaybe
+    {
+        static const constexpr bool value = false;
+    };
+    
+    template<class T>
+    struct IsMaybe<Maybe<T>>
+    {
+        static const constexpr bool value = true;
+    };
 }
