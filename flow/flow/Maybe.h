@@ -6,35 +6,77 @@ namespace flow
     {
     };
     
-    template<class T>
-    class Maybe
+    template<bool WillAlwaysHaveValue>
+    struct MaybeTag;
+    
+    template<>
+    struct MaybeTag<false>
+    {
+        bool valid;
+        
+        MaybeTag(bool valid): valid(valid)
+        {
+        }
+        
+        bool hasValue() const
+        {
+            return valid;
+        }
+        
+        void setHasValue(bool valid)
+        {
+            this->valid = valid;
+        }
+    };
+    
+    template<>
+    struct MaybeTag<true>
+    {
+        MaybeTag(bool)
+        {
+        }
+        
+        bool hasValue() const
+        {
+            return true;
+        }
+        
+        void setHasValue(bool valid)
+        {
+//            static_assert(false, "");
+        }
+    };
+    
+    template<class T, bool WillAlwaysHaveValue = false>
+    class Maybe: private MaybeTag<WillAlwaysHaveValue>
     {
     public:
         using ValueType = T;
+        using MaybeTag = MaybeTag<WillAlwaysHaveValue>;
         
-        Maybe(None): valid(false)
+        Maybe(None): MaybeTag(false)
         {
         }
         
-        Maybe(T const &value): valid(true), data(value)
+        Maybe(T const &value): MaybeTag(true), data(value)
         {
         }
         
-        Maybe(T &&value): valid(true), data(std::move(value))
+        Maybe(T &&value): MaybeTag(true), data(std::move(value))
         {
         }
         
-        Maybe(Maybe const &other): valid(other.valid)
+        Maybe(Maybe const &other): MaybeTag(other.hasValue())
         {
-            if (valid)
+            if (hasValue())
             {
                 new (&data) T(other.data);
             }
         }
         
-        Maybe(Maybe &&other): valid(other.valid)
+        Maybe(Maybe &&other): MaybeTag(other.hasValue())
         {
-            if (valid)
+            if (hasValue())
             {
                 new (&data) T(std::move(other.data));
             }
@@ -42,7 +84,7 @@ namespace flow
         
         ~Maybe()
         {
-            if (valid)
+            if (hasValue())
             {
                 data.~T();
             }
@@ -51,8 +93,8 @@ namespace flow
         Maybe &operator=(Maybe const &other)
         {
             this->~Maybe();
-            valid = other.valid;
-            if (valid)
+            MaybeTag::setHasValue(other.hasValue());
+            if (hasValue())
             {
                 new (&data) T(other.data);
             }
@@ -62,8 +104,8 @@ namespace flow
         Maybe &operator=(T &&other)
         {
             this->~Maybe();
-            valid = other.valid;
-            if (valid)
+            MaybeTag::setHasValue(other.hasValue());
+            if (hasValue())
             {
                 new (&data) T(std::move(other.data));
             }
@@ -73,7 +115,7 @@ namespace flow
         
         bool hasValue() const
         {
-            return valid;
+            return MaybeTag::hasValue();
         }
         
         T &value() &
@@ -93,7 +135,7 @@ namespace flow
         
         bool operator==(Maybe const &other) const
         {
-            return (!valid && !other.valid) || (valid && other.valid && data == other.data);
+            return (!hasValue() && !other.hasValue()) || (hasValue() && other.hasValue() && data == other.data);
         }
         
         bool operator!=(Maybe const &other) const
@@ -102,7 +144,6 @@ namespace flow
         }
         
     private:
-        bool valid;
         union
         {
             T data;
@@ -170,6 +211,12 @@ namespace flow
     /// TODO: Does it make sense to implement them owning the value?
     template<class T>
     class Maybe<T &&>;
+    
+    template<class T>
+    Maybe<T, true> some(T &&value)
+    {
+        return Maybe<T, true>(std::forward<T>(value));
+    }
     
     /// Usually, when returning a maybe which is either a value or none, the type of the maybe has to be
     /// noted explicitly, because both branches has to return the same type, and it is not possible

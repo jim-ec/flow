@@ -28,7 +28,7 @@ namespace flow
             }
             else
             {
-                return Maybe(function(baseFlow));
+                return some(function(baseFlow));
             }
         }
         
@@ -76,7 +76,7 @@ namespace flow
             }
             else
             {
-                return Maybe(function());
+                return some(function());
             }
         }
         

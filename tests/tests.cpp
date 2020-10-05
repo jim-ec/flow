@@ -35,6 +35,9 @@ TEST_CASE("Stream")
     auto b = a | flow::map2([] (int i) { return i * 2; });
     auto c = b | flow::map2([] (int i) { return i + 1; });
     auto d = c | flow::take2(2);
+    
+    auto x = flow::elements2(xs) | flow::map2([] (int i) { return i + 1; });
+    x.next().hasValue();
 
     REQUIRE(d.next() == 3);
     REQUIRE(d.next() == 5);

@@ -56,17 +56,16 @@ namespace flow
     {
         size_t i = 0;
         
-        auto f = [=] () mutable -> int
+        auto f = [=] () mutable -> Maybe<int>
         {
-            return container[i++];
-//            if (i < container.size())
-//            {
-//                return container[i++];
-//            }
-//            else
-//            {
-//                return None();
-//            }
+            if (i < container.size())
+            {
+                return container[i++];
+            }
+            else
+            {
+                return None();
+            }
         };
         
         return Generator(f);
