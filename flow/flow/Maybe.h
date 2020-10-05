@@ -178,7 +178,7 @@ namespace flow
     /// The maybe type is infered from the value which is returned if the condition evaluates to true.
     /// Otherwise, a none maybe is returned.
     template<class T>
-    Maybe<T> maybeIf(bool condition, T &&value)
+    Maybe<T> maybeIf(bool condition, T value)
     {
         if (condition)
         {

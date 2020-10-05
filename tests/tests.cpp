@@ -34,12 +34,11 @@ TEST_CASE("Stream")
     auto a = flow::elements2(xs);
     auto b = a | flow::map2([] (int i) { return i * 2; });
     auto c = b | flow::map2([] (int i) { return i + 1; });
+    auto d = c | flow::take2(2);
 
-    REQUIRE(c.next() == 3);
-    REQUIRE(c.next() == 5);
-    REQUIRE(c.next() == 7);
-    REQUIRE(c.next() == 9);
-    REQUIRE(c.next() == flow::None());
+    REQUIRE(d.next() == 3);
+    REQUIRE(d.next() == 5);
+    REQUIRE(d.next() == flow::None());
 }
 
 TEST_CASE("Maybe: None")

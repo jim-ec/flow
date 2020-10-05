@@ -81,6 +81,16 @@ namespace flow
         });
     }
     
+    auto take2(size_t n)
+    {
+        size_t k = 0;
+        return Functor([=] (auto &flow) mutable
+        {
+            auto maybe = flow.next();
+            return maybeIf(maybe.hasValue() && k++ < n, maybe.value());
+        });
+    }
+    
     /// Dereferences the values behind element pointers.
     auto dereference()
     {
