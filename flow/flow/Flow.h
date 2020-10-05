@@ -15,17 +15,21 @@ namespace flow
     {
         B baseFlow;
         F function;
-        
-        static_assert(flow::isMaybe<decltype(std::declval<F>()(std::declval<B&>()))>,
-                      "A flow has to produce maybes.");
-        
+                
         Flow2(B const &baseFlow, F const &function): baseFlow(baseFlow), function(function)
         {
         }
 
         auto next()
         {
-            return function(baseFlow);
+            if constexpr (flow::isMaybe<decltype(std::declval<F>()(std::declval<B&>()))>)
+            {
+                return function(baseFlow);
+            }
+            else
+            {
+                return Maybe(function(baseFlow));
+            }
         }
         
         /// Appends the given functor to this flow.
@@ -61,15 +65,19 @@ namespace flow
     struct Generator
     {
         F function;
-        
-        static_assert(flow::isMaybe<decltype(std::declval<F>()())>,
-                      "A generator has to produce maybes.");
-        
+                
         Generator(F const &function): function(function) {}
         
         auto next()
         {
-            return function();
+            if constexpr (flow::isMaybe<decltype(std::declval<F>()())>)
+            {
+                return function();
+            }
+            else
+            {
+                return Maybe(function());
+            }
         }
         
         /// Appends a functor to this generator.
