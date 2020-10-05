@@ -40,11 +40,6 @@ namespace flow
         {
             return true;
         }
-        
-        void setHasValue(bool valid)
-        {
-//            static_assert(false, "");
-        }
     };
     
     template<class T, bool WillAlwaysHaveValue = false>
