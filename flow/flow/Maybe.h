@@ -45,11 +45,18 @@ namespace flow
     template<class T, bool WillAlwaysHaveValue = false>
     class Maybe: private MaybeTag<WillAlwaysHaveValue>
     {
-    public:
-        using ValueType = T;
+        template<class E>
+        friend Maybe<E, true> some(E const &value);
+        
+        template<class E>
+        friend Maybe<E, true> some(E &&value);
+        
+        template<class E>
+        friend Maybe<E, false> none();
+        
         using MaybeTag = MaybeTag<WillAlwaysHaveValue>;
         
-        Maybe(None): MaybeTag(false)
+        Maybe(): MaybeTag(false)
         {
         }
         
@@ -61,7 +68,10 @@ namespace flow
         {
         }
         
-        Maybe(Maybe const &other): MaybeTag(other.hasValue())
+    public:
+        using ValueType = T;
+        
+        Maybe(Maybe<T, false> const &other): MaybeTag(other.hasValue())
         {
             if (hasValue())
             {
@@ -69,12 +79,20 @@ namespace flow
             }
         }
         
-        Maybe(Maybe &&other): MaybeTag(other.hasValue())
+        Maybe(Maybe<T, false> &&other): MaybeTag(other.hasValue())
         {
             if (hasValue())
             {
                 new (&data) T(std::move(other.data));
             }
+        }
+        
+        Maybe(Maybe<T, true> const &other): MaybeTag(true), data(other.value())
+        {
+        }
+        
+        Maybe(Maybe<T, true> &&other): MaybeTag(true), data(std::move(other.value()))
+        {
         }
         
         ~Maybe()
@@ -134,6 +152,16 @@ namespace flow
         }
         
         bool operator!=(Maybe const &other) const
+        {
+            return !(*this == other);
+        }
+        
+        bool operator==(T const &other) const
+        {
+            return hasValue() && (data == other);
+        }
+        
+        bool operator!=(T const &other) const
         {
             return !(*this == other);
         }
@@ -210,7 +238,19 @@ namespace flow
     template<class T>
     Maybe<T, true> some(T &&value)
     {
-        return Maybe<T, true>(std::forward<T>(value));
+        return Maybe<T, true>(std::move(value));
+    }
+    
+    template<class T>
+    Maybe<T, true> some(T const &value)
+    {
+        return Maybe<T, true>(value);
+    }
+    
+    template<class T>
+    Maybe<T, false> none()
+    {
+        return Maybe<T, false>();
     }
     
     /// Usually, when returning a maybe which is either a value or none, the type of the maybe has to be
@@ -220,16 +260,15 @@ namespace flow
     /// The maybe type is infered from the value which is returned if the condition evaluates to true.
     /// Otherwise, a none maybe is returned.
     template<class T>
-    Maybe<T> maybeIf(bool condition, T value)
+    Maybe<T> maybeIf(bool condition, T const &value)
     {
-        if (condition)
-        {
-            return Maybe(value);
-        }
-        else
-        {
-            return None();
-        }
+        return condition ? some<T>(value) : none<T>();
+    }
+    
+    template<class T>
+    Maybe<T, false> maybeIf(bool condition, T &&value)
+    {
+        return condition ? Maybe<T, false>(some<T>(std::move(value))) : none<T>();
     }
     
     template<class T>

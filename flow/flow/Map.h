@@ -60,11 +60,11 @@ namespace flow
         {
             if (i < container.size())
             {
-                return container[i++];
+                return some<int>(std::move(container[i++]));
             }
             else
             {
-                return None();
+                return none<int>();
             }
         };
         
@@ -85,7 +85,7 @@ namespace flow
         size_t k = 0;
         return Functor([=] (auto &flow) mutable {
             auto maybe = flow.next();
-            return maybeIf(maybe.hasValue() && k++ < n, maybe.value());
+            return maybeIf(maybe.hasValue() && k++ < n, std::move(maybe.value()));
         });
     }
     
@@ -102,15 +102,7 @@ namespace flow
     {
         return map([=] (auto &&inputMaybe)
         {
-            if (inputMaybe.hasValue())
-            {
-                return Maybe(function(std::move(inputMaybe.value())));
-            }
-            else
-            {
-                using OutputType = decltype(function(std::move(inputMaybe.value())));
-                return Maybe<OutputType>(None());
-            }
+            return maybeIf(inputMaybe.hasValue(), function(std::move(inputMaybe.value())));
         });
     }
     

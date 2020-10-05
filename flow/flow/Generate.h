@@ -32,9 +32,9 @@ namespace flow
     
     auto successors(size_t i)
     {
-        return generate([=] () mutable -> Maybe<int>
+        return generate([=] () mutable
         {
-            return i++;
+            return some(i++);
         });
     }
 }

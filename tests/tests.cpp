@@ -35,18 +35,16 @@ TEST_CASE("Stream")
     auto b = a | flow::map2([] (int i) { return i * 2; });
     auto c = b | flow::map2([] (int i) { return i + 1; });
     auto d = c | flow::take2(2);
-    
-    auto x = flow::elements2(xs) | flow::map2([] (int i) { return i + 1; });
-    x.next().hasValue();
 
     REQUIRE(d.next() == 3);
     REQUIRE(d.next() == 5);
-    REQUIRE(d.next() == flow::None());
+    REQUIRE(!d.next().hasValue());
 }
 
 TEST_CASE("Maybe: None")
 {
-    flow::Maybe<int> a = flow::None();
+    flow::Maybe a = flow::some(5);
+    flow::Maybe<int, false> b = a;
     
     REQUIRE(!a.hasValue());
 }
@@ -54,7 +52,7 @@ TEST_CASE("Maybe: None")
 TEST_CASE("Maybe: Owning")
 {
     int x = 5;
-    flow::Maybe<int> a = x;
+    flow::Maybe a = flow::some<int>(x);
     
     REQUIRE(a.hasValue());
     REQUIRE(a.value() == 5);
@@ -74,7 +72,7 @@ TEST_CASE("Maybe: Reference")
 TEST_CASE("Maybe: Pointer")
 {
     int x = 5;
-    flow::Maybe<int *> a = &x;
+    flow::Maybe a = flow::some(&x);
     
     REQUIRE(a.hasValue());
     REQUIRE(a.value() == &x);
@@ -84,7 +82,7 @@ TEST_CASE("Maybe: Pointer")
 TEST_CASE("Maybe: Move out")
 {
     Identifier id(5);
-    flow::Maybe<Identifier> a = id;
+    flow::Maybe a = flow::some<Identifier>(id);
     Identifier id2 = std::move(a).value();
     
     REQUIRE(id2.move_constructed);
@@ -94,8 +92,8 @@ TEST_CASE("Maybe: Move out")
 TEST_CASE("Maybe: Assignment")
 {
     int n = 5;
-    flow::Maybe<int> a = n;
-    flow::Maybe<int> b = flow::None();
+    flow::Maybe a = flow::some<int>(n);
+    flow::Maybe b = flow::none<int>();
     
     b = a;
     
@@ -194,13 +192,13 @@ TEST_CASE("Composition")
 
 TEST_CASE("Then")
 {
-    std::vector<flow::Maybe<int>> xs = {3, flow::None(), 7};
+    std::vector<flow::Maybe<int>> xs = {flow::some(3), flow::none<int>(), flow::some(7)};
 
     auto c = flow::elements(xs) | flow::then([] (int i) { return i + 1; });
 
-    REQUIRE(c.next().value() == flow::Maybe(4));
+    REQUIRE(c.next().value() == 4);
     REQUIRE(!c.next().value().hasValue());
-    REQUIRE(c.next().value() == flow::Maybe(8));
+    REQUIRE(c.next().value() == 8);
     REQUIRE(!c.next().hasValue());
 }
 
@@ -273,11 +271,11 @@ TEST_CASE("Generate")
     auto generateDescending = [=] () mutable -> flow::Maybe<int> {
         if (n == 0)
         {
-            return flow::None();
+            return flow::none<int>();
         }
         else
         {
-            return n--;
+            return flow::some(n--);
         }
     };
 
