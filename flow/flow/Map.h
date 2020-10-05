@@ -74,8 +74,7 @@ namespace flow
     template<class F>
     auto map2(F function)
     {
-        return Functor([=] (auto &flow)
-        {
+        return Functor([=] (auto &flow) {
             auto maybe = flow.next();
             return maybeIf(maybe.hasValue(), function(maybe.value()));
         });
@@ -84,8 +83,7 @@ namespace flow
     auto take2(size_t n)
     {
         size_t k = 0;
-        return Functor([=] (auto &flow) mutable
-        {
+        return Functor([=] (auto &flow) mutable {
             auto maybe = flow.next();
             return maybeIf(maybe.hasValue() && k++ < n, maybe.value());
         });
